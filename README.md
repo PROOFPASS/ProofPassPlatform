@@ -2,7 +2,31 @@
 
 **Version 1.0.0 - Production Ready** 🎉
 
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![DPG](https://img.shields.io/badge/Digital%20Public%20Good-Candidate-orange)](DPG_SUBMISSION.md)
+[![Tests](https://img.shields.io/badge/Tests-111%20passing-success)](https://github.com/PROOFPASS/ProofPassPlatform)
+
 A blockchain-based platform for creating verifiable attestations, product passports, and zero-knowledge proofs with enterprise-grade security.
+
+## 🌍 Digital Public Good
+
+ProofPass is designed as a **Digital Public Good** to promote transparency, trust, and accountability globally. By providing free, open-source infrastructure for verifiable credentials, we're contributing to:
+
+- **SDG 9** - Industry, Innovation and Infrastructure
+- **SDG 12** - Responsible Consumption and Production
+- **SDG 16** - Peace, Justice and Strong Institutions
+
+### Why This Matters
+
+- **🌐 Accessible:** Free and open-source, no vendor lock-in
+- **🔐 Privacy-Preserving:** Zero-knowledge proofs protect sensitive data
+- **📊 Transparent:** Blockchain-anchored for public verifiability
+- **🤝 Interoperable:** W3C standards ensure compatibility
+- **♻️ Sustainable:** Low-cost deployment ($5-10/month)
+
+**Learn More:** [DPG Submission Document](DPG_SUBMISSION.md)
+
+---
 
 ## ✨ Features
 
@@ -439,14 +463,73 @@ npm run test:watch
 - Auth Routes: 85%
 - **Total: 111 tests passing**
 
-## License
+## 📜 License
 
-See LICENSE file for details.
+ProofPass Platform is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
-## Contributing
+This copyleft license ensures that:
+- ✅ The code remains free and open-source
+- ✅ Modifications must be shared (even for network services)
+- ✅ Commercial use is allowed
+- ✅ The platform remains a Digital Public Good
 
-Contributions are welcome! Please read the contributing guidelines first.
+See [LICENSE](LICENSE) for full details.
 
-## Support
+**Why AGPL-3.0?** We chose this license to ensure ProofPass always remains accessible to everyone, protecting it from becoming proprietary while allowing commercial applications.
 
-For issues and questions, please open an issue on GitHub.
+## 🤝 Contributing
+
+We welcome contributions from developers, organizations, and individuals worldwide!
+
+**Ways to Contribute:**
+- 🐛 Report bugs or suggest features via [GitHub Issues](https://github.com/PROOFPASS/ProofPassPlatform/issues)
+- 💻 Submit pull requests for code improvements
+- 📚 Improve documentation or add translations
+- 🌍 Share use cases and success stories
+- 💬 Join discussions about features and roadmap
+
+**Get Started:**
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines
+2. Check [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for community standards
+3. Fork the repository and start coding!
+
+**Recognition:** All contributors are acknowledged in our repository and release notes.
+
+## 💬 Support & Community
+
+### Get Help
+
+- **📖 Documentation:** Check [comprehensive docs](README.md)
+- **💬 GitHub Discussions:** Ask questions and share ideas
+- **🐛 GitHub Issues:** Report bugs or request features
+- **📧 Email:** fboiero@frvm.utn.edu.ar (for sensitive issues)
+
+### Stay Updated
+
+- **⭐ Star** the repository to follow updates
+- **👀 Watch** for new releases and announcements
+- **🔔 Subscribe** to issue notifications
+
+### Digital Public Good Alliance
+
+This project is a candidate for recognition as a Digital Public Good by the [Digital Public Goods Alliance](https://digitalpublicgoods.net/).
+
+**Learn More:**
+- [DPG Submission Document](DPG_SUBMISSION.md) - Complete submission details
+- [UN Sustainable Development Goals](https://sdgs.un.org/) - How ProofPass contributes
+
+---
+
+## 🌟 Mission
+
+**ProofPass Platform exists to democratize access to verifiable credential infrastructure.**
+
+We believe that transparent, trustworthy systems should be accessible to everyone—from small businesses to large organizations, from developing nations to advanced economies.
+
+By keeping ProofPass free, open-source, and standards-based, we're building infrastructure for a more transparent and accountable world.
+
+**Join us in making trust accessible to all.** 🌍
+
+---
+
+**Built with ❤️ by the ProofPass community | Licensed under AGPL-3.0 | A Digital Public Good**
