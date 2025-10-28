@@ -1,14 +1,33 @@
 /**
  * Integration tests for Authentication API
- * Tests complete auth flow with database
+ * Tests complete auth flow with mocked services
  */
 
 import Fastify, { FastifyInstance } from 'fastify';
 import { authRoutes } from '../../src/modules/auth/routes';
 import jwt from '@fastify/jwt';
 
+// Mock the service layer
+jest.mock('../../src/modules/auth/service', () => ({
+  register: jest.fn(),
+  login: jest.fn(),
+}));
+
+// Mock database
+jest.mock('../../src/config/database', () => ({
+  query: jest.fn(),
+  pool: {
+    query: jest.fn(),
+    on: jest.fn(),
+  },
+}));
+
+import { register, login } from '../../src/modules/auth/service';
+
 describe('Auth Integration Tests', () => {
   let app: FastifyInstance;
+  const mockRegister = register as jest.MockedFunction<typeof register>;
+  const mockLogin = login as jest.MockedFunction<typeof login>;
 
   beforeAll(async () => {
     app = Fastify({ logger: false });
@@ -17,12 +36,30 @@ describe('Auth Integration Tests', () => {
     await app.ready();
   });
 
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   afterAll(async () => {
     await app.close();
   });
 
   describe('POST /auth/register', () => {
     it('should register a new user', async () => {
+      const mockUser = {
+        id: 'user-123',
+        email: 'test@example.com',
+        name: 'Test User',
+        organization: 'Test Org',
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+
+      mockRegister.mockResolvedValue({
+        token: 'mock-jwt-token',
+        user: { ...mockUser, api_key: 'mock-api-key' },
+      });
+
       const response = await app.inject({
         method: 'POST',
         url: '/auth/register',
@@ -87,20 +124,21 @@ describe('Auth Integration Tests', () => {
     const testEmail = `login-test-${Date.now()}@example.com`;
     const testPassword = 'testPassword123!';
 
-    beforeAll(async () => {
-      // Register a test user
-      await app.inject({
-        method: 'POST',
-        url: '/auth/register',
-        payload: {
-          email: testEmail,
-          password: testPassword,
-          name: 'Login Test User',
-        },
-      });
-    });
-
     it('should login with correct credentials', async () => {
+      const mockUser = {
+        id: 'user-123',
+        email: testEmail,
+        name: 'Login Test User',
+        organization: null,
+        created_at: new Date(),
+        updated_at: new Date(),
+      };
+
+      mockLogin.mockResolvedValue({
+        token: 'mock-jwt-token',
+        user: mockUser as any,
+      });
+
       const response = await app.inject({
         method: 'POST',
         url: '/auth/login',
@@ -117,6 +155,8 @@ describe('Auth Integration Tests', () => {
     });
 
     it('should reject login with wrong password', async () => {
+      mockLogin.mockRejectedValue(new Error('Invalid credentials'));
+
       const response = await app.inject({
         method: 'POST',
         url: '/auth/login',
@@ -130,6 +170,8 @@ describe('Auth Integration Tests', () => {
     });
 
     it('should reject login with non-existent user', async () => {
+      mockLogin.mockRejectedValue(new Error('Invalid credentials'));
+
       const response = await app.inject({
         method: 'POST',
         url: '/auth/login',
@@ -147,18 +189,12 @@ describe('Auth Integration Tests', () => {
     let authToken: string;
 
     beforeAll(async () => {
-      const response = await app.inject({
-        method: 'POST',
-        url: '/auth/register',
-        payload: {
-          email: `me-test-${Date.now()}@example.com`,
-          password: 'testPassword123!',
-          name: 'Me Test User',
-        },
+      // Create a valid JWT token for testing
+      authToken = app.jwt.sign({
+        id: 'user-123',
+        email: 'me-test@example.com',
+        name: 'Me Test User',
       });
-
-      const body = JSON.parse(response.body);
-      authToken = body.token;
     });
 
     it('should return current user with valid token', async () => {

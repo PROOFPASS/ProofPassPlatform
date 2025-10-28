@@ -126,14 +126,21 @@ describe('StellarClient', () => {
     });
 
     it('should handle anchor errors', async () => {
-      // Mock error
+      // Mock loadAccount to throw an error for this test
+      const mockServer = require('@stellar/stellar-sdk').Horizon.Server;
+      mockServer.mockImplementationOnce(() => ({
+        loadAccount: jest.fn().mockRejectedValue(new Error('Account not found')),
+        submitTransaction: jest.fn(),
+        transactions: jest.fn(),
+      }));
+
       const errorClient = new StellarClient({
         network: 'testnet',
-        secretKey: 'SERROR',
-        publicKey: 'GERROR',
+        secretKey: 'STEST123',
+        publicKey: 'GTEST123',
       });
 
-      await expect(errorClient.anchorData('error data')).rejects.toThrow();
+      await expect(errorClient.anchorData('error data')).rejects.toThrow('Failed to anchor data to Stellar');
     });
   });
 

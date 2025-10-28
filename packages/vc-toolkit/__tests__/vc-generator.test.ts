@@ -70,7 +70,7 @@ describe('VC Generator', () => {
 
       expect(signed.proof.jws).toBeDefined();
       expect(typeof signed.proof.jws).toBe('string');
-      expect(signed.proof.jws.length).toBeGreaterThan(0);
+      expect(signed.proof.jws!.length).toBeGreaterThan(0);
     });
 
     it('should produce consistent signatures for same input', () => {
@@ -83,6 +83,7 @@ describe('VC Generator', () => {
       const signed1 = signCredential(vc, 'test-key');
       const signed2 = signCredential(vc, 'test-key');
 
+      expect(signed1.proof.jws).toBeDefined();
       expect(signed1.proof.jws).toBe(signed2.proof.jws);
     });
 
@@ -96,6 +97,8 @@ describe('VC Generator', () => {
       const signed1 = signCredential(vc, 'key1');
       const signed2 = signCredential(vc, 'key2');
 
+      expect(signed1.proof.jws).toBeDefined();
+      expect(signed2.proof.jws).toBeDefined();
       expect(signed1.proof.jws).not.toBe(signed2.proof.jws);
     });
   });
