@@ -41,12 +41,32 @@ proofpass/
 └── scripts/              # Setup & utility scripts
 ```
 
-## Getting Started
+## 🚀 Quick Start (2 Options)
 
-### Prerequisites
+### Option 1: Docker (Recommended - 5 minutes)
 
+```bash
+# 1. Clone repository
+git clone <repository-url>
+cd ProofPassPlatform
+
+# 2. Configure environment
+cp .env.production.example .env.production
+# Edit .env.production with your settings
+
+# 3. Deploy!
+./scripts/deployment/deploy.sh
+```
+
+Your API will be running at `http://localhost:3000` with PostgreSQL and Redis included!
+
+**See [DEPLOY_PORTABLE.md](DEPLOY_PORTABLE.md) for production deployment to any server.**
+
+### Option 2: Local Development
+
+Prerequisites:
 - Node.js 18+
-- pnpm 8+
+- npm 8+
 - PostgreSQL 14+
 - Redis 6+
 
@@ -182,15 +202,33 @@ curl -X POST http://localhost:3000/api/v1/attestations/ATTESTATION_ID/verify
 - `blockchain_transactions` - Blockchain transaction records
 - `attestation_templates` - Pre-defined attestation templates
 
+## 🌐 Deployment Options
+
+ProofPass is designed to be **portable** and run anywhere:
+
+- 🐳 **Docker** - One command deployment
+- ☁️ **Any VPS** - DigitalOcean, Linode, Hetzner (from $5/month)
+- 🏢 **Cloud Platforms** - AWS, Google Cloud, Azure
+- 🏠 **On-premise** - Your own servers
+- 🧪 **Local** - Docker Compose for development
+
+**No vendor lock-in. Deploy anywhere.**
+
+See [DEPLOY_PORTABLE.md](DEPLOY_PORTABLE.md) for complete guide.
+
 ## Development Roadmap
 
-### ✅ Phase 1 - Core Infrastructure (Completed)
-- [x] Monorepo setup
-- [x] Database schema
-- [x] Stellar integration
-- [x] Basic REST API
-- [x] Authentication
-- [x] Attestation CRUD
+### ✅ Phase 1 - Core Infrastructure (COMPLETED)
+- [x] Monorepo setup with npm workspaces
+- [x] Database schema with PostgreSQL
+- [x] Stellar blockchain integration
+- [x] REST API with Fastify + Swagger
+- [x] JWT Authentication + API Keys
+- [x] Attestation CRUD endpoints
+- [x] W3C Verifiable Credentials
+- [x] QR Code generation
+- [x] Docker deployment setup
+- [x] Production-ready scripts
 
 ### 🚧 Phase 2 - W3C Verifiable Credentials (In Progress)
 - [x] VC generation
@@ -231,10 +269,18 @@ Required for production:
 
 ## Scripts
 
-- `pnpm dev` - Start all services in development mode
-- `pnpm build` - Build all packages
-- `pnpm test` - Run tests (coming soon)
-- `pnpm lint` - Lint code (coming soon)
+### Development
+- `npm run build:packages` - Build all TypeScript packages
+- `npm run build:api` - Build API server
+- `npm run migrate` - Run database migrations
+- `npm run setup:stellar` - Create Stellar testnet account
+
+### Deployment (Docker)
+- `./scripts/deployment/deploy.sh` - Deploy to production
+- `./scripts/deployment/backup.sh` - Backup database
+- `./scripts/deployment/ssl-setup.sh` - Setup SSL certificate
+- `docker-compose up -d` - Start local Docker environment
+- `docker-compose -f docker-compose.prod.yml up -d` - Start production
 
 ## Security Considerations
 
