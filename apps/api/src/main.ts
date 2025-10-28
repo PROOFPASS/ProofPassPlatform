@@ -10,6 +10,8 @@ import { connectRedis } from './config/redis';
 import { pool } from './config/database';
 import { attestationRoutes } from './modules/attestations/routes';
 import { authRoutes } from './modules/auth/routes';
+import { passportRoutes } from './modules/passports/routes';
+import { zkpRoutes } from './modules/zkp/routes';
 
 const server = Fastify({
   logger: {
@@ -110,6 +112,8 @@ async function start() {
     // Register routes
     await server.register(authRoutes, { prefix: '/api/v1/auth' });
     await server.register(attestationRoutes, { prefix: '/api/v1/attestations' });
+    await server.register(passportRoutes, { prefix: '/api/v1' });
+    await server.register(zkpRoutes, { prefix: '/api/v1' });
 
     // Connect to Redis
     await connectRedis();

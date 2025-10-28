@@ -1,0 +1,26 @@
+{
+  "name": "@proofpass/zk-toolkit",
+  "version": "0.1.0",
+  "description": "Zero-knowledge proof toolkit for ProofPass Platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "test": "jest --passWithNoTests"
+  },
+  "keywords": [
+    "zkp",
+    "zero-knowledge",
+    "proofs",
+    "privacy"
+  ],
+  "dependencies": {
+    "@proofpass/types": "*",
+    "crypto-js": "^4.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
+}
