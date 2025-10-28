@@ -3,10 +3,21 @@
  * Create consistent test data with sensible defaults
  */
 
-import type { User, Attestation, CreateAttestationDTO, VerifiableCredential } from '@proofpass/types';
+import type {
+  User,
+  Attestation,
+  CreateAttestationDTO,
+  VerifiableCredential,
+  ProductPassport,
+  CreateProductPassportDTO,
+  ZKProof,
+  GenerateZKProofDTO,
+} from '@proofpass/types';
 
 let userCounter = 0;
 let attestationCounter = 0;
+let passportCounter = 0;
+let zkProofCounter = 0;
 
 /**
  * Factory for creating test users
@@ -113,9 +124,107 @@ export const VerifiableCredentialFactory = {
 };
 
 /**
+ * Factory for creating test Product Passports
+ */
+export const ProductPassportFactory = {
+  build(overrides: Partial<ProductPassport> = {}): ProductPassport {
+    passportCounter++;
+    return {
+      id: `passport-${passportCounter}`,
+      product_id: `PRODUCT-${passportCounter}`,
+      name: `Test Product ${passportCounter}`,
+      description: 'Test product passport description',
+      attestation_ids: [`attestation-1`, `attestation-2`],
+      aggregated_credential: VerifiableCredentialFactory.build({
+        type: ['VerifiableCredential', 'ProductPassport'],
+      }),
+      blockchain_network: 'stellar',
+      qr_code: 'data:image/png;base64,test-qr-code',
+      created_at: new Date(),
+      updated_at: new Date(),
+      user_id: `user-${passportCounter}`,
+      ...overrides,
+    };
+  },
+
+  buildMany(count: number, overrides: Partial<ProductPassport> = {}): ProductPassport[] {
+    return Array.from({ length: count }, () => this.build(overrides));
+  },
+};
+
+/**
+ * Factory for creating Product Passport DTOs
+ */
+export const CreateProductPassportDTOFactory = {
+  build(overrides: Partial<CreateProductPassportDTO> = {}): CreateProductPassportDTO {
+    return {
+      product_id: 'TEST-PRODUCT-001',
+      name: 'Test Product',
+      description: 'Test product description',
+      attestation_ids: ['att-id-1', 'att-id-2'],
+      blockchain_network: 'stellar',
+      ...overrides,
+    };
+  },
+};
+
+/**
+ * Factory for creating test ZK Proofs
+ */
+export const ZKProofFactory = {
+  build(overrides: Partial<ZKProof> = {}): ZKProof {
+    zkProofCounter++;
+    return {
+      id: `zkproof-${zkProofCounter}`,
+      attestation_id: `attestation-${zkProofCounter}`,
+      circuit_type: 'threshold',
+      public_inputs: {
+        threshold: 90,
+        commitment: 'abc123def456',
+      },
+      proof: JSON.stringify({
+        type: 'threshold',
+        commitment: 'abc123def456',
+        timestamp: new Date().toISOString(),
+        validityProof: 'proof-hash-here',
+      }),
+      verified: true,
+      created_at: new Date(),
+      user_id: `user-${zkProofCounter}`,
+      ...overrides,
+    };
+  },
+
+  buildMany(count: number, overrides: Partial<ZKProof> = {}): ZKProof[] {
+    return Array.from({ length: count }, () => this.build(overrides));
+  },
+};
+
+/**
+ * Factory for creating ZK Proof generation DTOs
+ */
+export const GenerateZKProofDTOFactory = {
+  build(overrides: Partial<GenerateZKProofDTO> = {}): GenerateZKProofDTO {
+    return {
+      attestation_id: 'att-id-1',
+      circuit_type: 'threshold',
+      private_inputs: {
+        value: 95,
+      },
+      public_inputs: {
+        threshold: 90,
+      },
+      ...overrides,
+    };
+  },
+};
+
+/**
  * Reset counters (useful for test isolation)
  */
 export function resetFactoryCounters(): void {
   userCounter = 0;
   attestationCounter = 0;
+  passportCounter = 0;
+  zkProofCounter = 0;
 }
