@@ -4,6 +4,7 @@ import swagger from '@fastify/swagger';
 import swaggerUI from '@fastify/swagger-ui';
 import jwt from '@fastify/jwt';
 import rateLimit from '@fastify/rate-limit';
+import helmet from '@fastify/helmet';
 import { config } from './config/env';
 import { connectRedis } from './config/redis';
 import { pool } from './config/database';
@@ -28,9 +29,22 @@ const server = Fastify({
 
 async function start() {
   try {
-    // Register plugins
+    // Security: Register helmet for HTTP headers security
+    await server.register(helmet, {
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", 'data:', 'https:'],
+        },
+      },
+    });
+
+    // CORS configuration
     await server.register(cors, {
       origin: config.app.corsOrigin,
+      credentials: true,
     });
 
     await server.register(jwt, {
