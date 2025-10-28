@@ -12,6 +12,15 @@ import { attestationRoutes } from './modules/attestations/routes';
 import { authRoutes } from './modules/auth/routes';
 import { passportRoutes } from './modules/passports/routes';
 import { zkpRoutes } from './modules/zkp/routes';
+import { errorHandler, notFoundHandler } from './middleware/error-handler';
+import {
+  requestSanitizer,
+  addSecurityHeaders,
+  generateRequestId,
+  requestSizeLimiter,
+  validateContentType,
+} from './middleware/security';
+import { rateLimiters } from './middleware/rate-limit';
 
 const server = Fastify({
   logger: {
@@ -23,14 +32,53 @@ const server = Fastify({
             options: {
               translateTime: 'HH:MM:ss Z',
               ignore: 'pid,hostname',
+              colorize: true,
             },
           }
         : undefined,
+    serializers: {
+      req: (req) => ({
+        method: req.method,
+        url: req.url,
+        path: req.routerPath,
+        parameters: req.params,
+        headers: {
+          host: req.headers.host,
+          'user-agent': req.headers['user-agent'],
+          'content-type': req.headers['content-type'],
+        },
+      }),
+      res: (res) => ({
+        statusCode: res.statusCode,
+      }),
+    },
   },
+  requestIdLogLabel: 'requestId',
+  genReqId: generateRequestId,
 });
 
 async function start() {
   try {
+    // Connect to Redis first (needed for rate limiting)
+    await connectRedis();
+    server.log.info('Redis connected successfully');
+
+    // Test database connection
+    await pool.query('SELECT NOW()');
+    server.log.info('Database connected successfully');
+
+    // Security: Add security headers to all responses
+    server.addHook('onRequest', addSecurityHeaders);
+
+    // Security: Request size limiting
+    server.addHook('preValidation', requestSizeLimiter);
+
+    // Security: Content-Type validation
+    server.addHook('preValidation', validateContentType);
+
+    // Security: Input sanitization (after parsing, before handlers)
+    server.addHook('preHandler', requestSanitizer);
+
     // Security: Register helmet for HTTP headers security
     await server.register(helmet, {
       contentSecurityPolicy: {
@@ -41,6 +89,7 @@ async function start() {
           imgSrc: ["'self'", 'data:', 'https:'],
         },
       },
+      global: true,
     });
 
     // CORS configuration
@@ -53,9 +102,15 @@ async function start() {
       secret: config.auth.jwtSecret,
     });
 
+    // Basic rate limiting as fallback (if Redis fails, this still protects)
     await server.register(rateLimit, {
       max: 100,
       timeWindow: '1 minute',
+      addHeaders: {
+        'x-ratelimit-limit': true,
+        'x-ratelimit-remaining': true,
+        'x-ratelimit-reset': true,
+      },
     });
 
     // Swagger documentation
@@ -104,28 +159,65 @@ async function start() {
       },
     });
 
-    // Health check
+    // Health check (no rate limiting)
     server.get('/health', async () => {
-      return { status: 'ok', timestamp: new Date().toISOString() };
+      return {
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        version: '0.1.0',
+      };
     });
 
-    // Register routes
-    await server.register(authRoutes, { prefix: '/api/v1/auth' });
-    await server.register(attestationRoutes, { prefix: '/api/v1/attestations' });
-    await server.register(passportRoutes, { prefix: '/api/v1' });
-    await server.register(zkpRoutes, { prefix: '/api/v1' });
+    // Readiness check (includes DB and Redis)
+    server.get('/ready', async () => {
+      try {
+        await pool.query('SELECT 1');
+        return {
+          status: 'ready',
+          database: 'connected',
+          redis: 'connected',
+          timestamp: new Date().toISOString(),
+        };
+      } catch (error) {
+        server.log.error(error, 'Readiness check failed');
+        throw error;
+      }
+    });
 
-    // Connect to Redis
-    await connectRedis();
+    // Register routes with appropriate rate limiting
+    // Auth routes: stricter rate limiting (5 requests per 15 minutes)
+    await server.register(async (instance) => {
+      instance.addHook('preHandler', rateLimiters.auth);
+      await instance.register(authRoutes, { prefix: '/api/v1/auth' });
+    });
 
-    // Test database connection
-    await pool.query('SELECT NOW()');
-    server.log.info('Database connected successfully');
+    // Attestation routes: user rate limiting (60 requests per minute)
+    await server.register(async (instance) => {
+      instance.addHook('preHandler', rateLimiters.user);
+      await instance.register(attestationRoutes, { prefix: '/api/v1/attestations' });
+    });
+
+    // Passport routes: user rate limiting
+    await server.register(async (instance) => {
+      instance.addHook('preHandler', rateLimiters.user);
+      await instance.register(passportRoutes, { prefix: '/api/v1' });
+    });
+
+    // ZKP routes: expensive operations rate limiting (10 requests per minute)
+    await server.register(async (instance) => {
+      instance.addHook('preHandler', rateLimiters.expensive);
+      await instance.register(zkpRoutes, { prefix: '/api/v1' });
+    });
+
+    // Error handlers (must be registered last)
+    server.setErrorHandler(errorHandler);
+    server.setNotFoundHandler(notFoundHandler);
 
     // Start server
     await server.listen({ port: config.port, host: '0.0.0.0' });
     server.log.info(`Server running on http://localhost:${config.port}`);
     server.log.info(`API Documentation: http://localhost:${config.port}/docs`);
+    server.log.info('Phase 4 security improvements active');
   } catch (err) {
     server.log.error(err);
     process.exit(1);
