@@ -117,7 +117,7 @@ export class StellarClient {
         memo: tx.memo,
         sequence: tx.source_account_sequence,
         sourceAccount: tx.source_account,
-        feeCharged: tx.fee_charged,
+        feeCharged: tx.fee_charged.toString(),
         operationCount: tx.operation_count,
         createdAt: new Date(tx.created_at),
         successful: tx.successful,

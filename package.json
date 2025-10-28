@@ -3,18 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "description": "Platform for creating verifiable attestations and zero-knowledge proofs on blockchain",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "pnpm --parallel --stream dev",
-    "build": "pnpm --recursive --stream build",
-    "test": "pnpm --recursive test",
-    "lint": "pnpm --recursive lint",
-    "clean": "pnpm --recursive clean && rm -rf node_modules",
-    "migrate": "cd apps/api && tsx src/config/migrate.ts",
-    "setup:stellar": "tsx scripts/setup-stellar.ts"
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "build:packages": "npm run build -w packages/types && npm run build -w packages/stellar-sdk && npm run build -w packages/vc-toolkit",
+    "build:api": "npm run build -w apps/api",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "clean": "npm run clean --workspaces --if-present && rm -rf node_modules",
+    "migrate": "cd apps/api && npx tsx src/config/migrate.ts",
+    "setup:stellar": "npx tsx scripts/setup-stellar.ts"
   },
   "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "node": ">=18.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.10.5",

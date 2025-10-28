@@ -10,9 +10,9 @@
     "migrate": "node dist/config/migrate.js"
   },
   "dependencies": {
-    "@proofpass/types": "workspace:*",
-    "@proofpass/stellar-sdk": "workspace:*",
-    "@proofpass/vc-toolkit": "workspace:*",
+    "@proofpass/types": "*",
+    "@proofpass/stellar-sdk": "*",
+    "@proofpass/vc-toolkit": "*",
     "fastify": "^4.25.2",
     "@fastify/cors": "^8.5.0",
     "@fastify/swagger": "^8.13.0",
