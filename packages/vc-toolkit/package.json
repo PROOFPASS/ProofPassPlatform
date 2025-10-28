@@ -1,0 +1,21 @@
+{
+  "name": "@proofpass/vc-toolkit",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@proofpass/types": "workspace:*",
+    "@digitalbazaar/vc": "^6.0.2",
+    "did-jwt": "^7.4.7",
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.5",
+    "@types/uuid": "^9.0.7",
+    "typescript": "^5.3.3"
+  }
+}
