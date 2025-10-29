@@ -24,7 +24,7 @@ ProofPass is designed as a **Digital Public Good** to promote transparency, trus
 - **🤝 Interoperable:** W3C standards ensure compatibility
 - **♻️ Sustainable:** Low-cost deployment ($5-10/month)
 
-**Learn More:** [DPG Submission Document](DPG_SUBMISSION.md)
+**Learn More:** [DPG Submission Document](docs/DPG_SUBMISSION.md)
 
 ---
 
@@ -106,7 +106,7 @@ cp .env.production.example .env.production
 
 Your API will be running at `http://localhost:3000` with PostgreSQL and Redis included!
 
-**See [DEPLOY_PORTABLE.md](DEPLOY_PORTABLE.md) for production deployment to any server.**
+**See [DEPLOY_PORTABLE.md](docs/deployment/DEPLOY_PORTABLE.md) for production deployment to any server.**
 
 ### Option 2: Local Development
 
@@ -282,7 +282,7 @@ ProofPass is designed to be **portable** and run anywhere:
 
 **No vendor lock-in. Deploy anywhere.**
 
-See [DEPLOY_PORTABLE.md](DEPLOY_PORTABLE.md) for complete guide.
+See [DEPLOY_PORTABLE.md](docs/deployment/DEPLOY_PORTABLE.md) for complete guide.
 
 ## 🗺️ Development Roadmap
 
@@ -299,7 +299,7 @@ See [DEPLOY_PORTABLE.md](DEPLOY_PORTABLE.md) for complete guide.
 - [x] Production-ready scripts
 - [x] 56 comprehensive tests (TDD foundation)
 
-**📄 Documentation:** See [PHASE1_COMPLETE.md](PHASE1_COMPLETE.md) for details
+**📄 Documentation:** See [PHASE1_COMPLETE.md](docs/phase-reports/PHASE1_COMPLETE.md) for details
 
 ### ✅ Phase 2 - Product Passports & Zero-Knowledge Proofs (COMPLETE)
 - [x] Product Passport service & routes
@@ -311,7 +311,7 @@ See [DEPLOY_PORTABLE.md](DEPLOY_PORTABLE.md) for complete guide.
 - [x] Proof generation and verification endpoints
 - [x] QR code generation for passports
 
-**📄 Documentation:** See [PHASE2_COMPLETE.md](PHASE2_COMPLETE.md) for details
+**📄 Documentation:** See [PHASE2_COMPLETE.md](docs/phase-reports/PHASE2_COMPLETE.md) for details
 
 ### ✅ Phase 3 - Comprehensive Testing (COMPLETE)
 - [x] Test factories for all entities (DRY test data)
@@ -322,7 +322,7 @@ See [DEPLOY_PORTABLE.md](DEPLOY_PORTABLE.md) for complete guide.
 - [x] All tests passing with fast execution (~3-4s)
 - [x] Maintainable test architecture
 
-**📄 Documentation:** See [PHASE3_COMPLETE.md](PHASE3_COMPLETE.md) for details
+**📄 Documentation:** See [PHASE3_COMPLETE.md](docs/phase-reports/PHASE3_COMPLETE.md) for details
 
 ### ✅ Phase 4 - Security, Architecture & Documentation (COMPLETE)
 - [x] Centralized error handling middleware
@@ -336,7 +336,7 @@ See [DEPLOY_PORTABLE.md](DEPLOY_PORTABLE.md) for complete guide.
 - [x] Comprehensive security documentation (SECURITY.md)
 - [x] API architecture documentation (API_ARCHITECTURE.md)
 
-**📄 Documentation:** See [PHASE4_COMPLETE.md](PHASE4_COMPLETE.md) for details
+**📄 Documentation:** See [PHASE4_COMPLETE.md](docs/phase-reports/PHASE4_COMPLETE.md) for details
 
 ### 📋 Phase 5 - Advanced Features (Future)
 - [ ] WebSocket support for real-time updates
@@ -416,29 +416,42 @@ Content-Security-Policy: default-src 'self'
 | **User** | 60 req/min | Standard authenticated operations |
 | **Expensive** | 10 req/min | ZK proofs, blockchain operations |
 
-**📄 Complete Security Guide:** See [SECURITY.md](SECURITY.md)
+**📄 Complete Security Guide:** See [SECURITY.md](docs/SECURITY.md)
 
 ## 📚 Documentation
 
 ### Core Documentation
 - **[README.md](README.md)** - This file (Quick start, features, API reference)
-- **[SECURITY.md](SECURITY.md)** - Comprehensive security best practices guide
-- **[API_ARCHITECTURE.md](API_ARCHITECTURE.md)** - System design and architecture details
-- **[DEPLOY_PORTABLE.md](DEPLOY_PORTABLE.md)** - Deployment guide for any platform
+- **[SECURITY.md](docs/SECURITY.md)** - Comprehensive security best practices guide
+- **[API_ARCHITECTURE.md](docs/architecture/API_ARCHITECTURE.md)** - System design and architecture
+- **[DPG_SUBMISSION.md](docs/DPG_SUBMISSION.md)** - Digital Public Good submission
+
+### Getting Started
+- **[SETUP.md](docs/deployment/SETUP.md)** - Local development setup
+- **[DEPLOY_PORTABLE.md](docs/deployment/DEPLOY_PORTABLE.md)** - Production deployment guide
+- **[DEPLOYMENT.md](docs/deployment/DEPLOYMENT.md)** - Docker deployment details
+
+### Development Guides
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute to the project
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - Community guidelines
+- **[CODE_QUALITY.md](docs/architecture/CODE_QUALITY.md)** - Code quality standards
+- **[BEST_PRACTICES_IMPLEMENTED.md](docs/architecture/BEST_PRACTICES_IMPLEMENTED.md)** - Best practices guide
+
+### Testing Documentation
+- **[TESTING.md](docs/testing/TESTING.md)** - Quick start testing guide
+- **[MAINTAINABLE_TESTS.md](docs/testing/MAINTAINABLE_TESTS.md)** - Complete testing guide
+- **[TEST_RESULTS.md](docs/testing/TEST_RESULTS.md)** - Latest test results
 
 ### Phase Completion Reports
-- **[PHASE1_COMPLETE.md](PHASE1_COMPLETE.md)** - Core infrastructure implementation
-- **[PHASE2_COMPLETE.md](PHASE2_COMPLETE.md)** - Product Passports and Zero-Knowledge Proofs
-- **[PHASE3_COMPLETE.md](PHASE3_COMPLETE.md)** - Comprehensive testing (111 tests)
-- **[PHASE4_COMPLETE.md](PHASE4_COMPLETE.md)** - Security, architecture & documentation
+- **[PHASE1_COMPLETE.md](docs/phase-reports/PHASE1_COMPLETE.md)** - Core infrastructure
+- **[PHASE2_COMPLETE.md](docs/phase-reports/PHASE2_COMPLETE.md)** - Product Passports & ZK Proofs
+- **[PHASE3_COMPLETE.md](docs/phase-reports/PHASE3_COMPLETE.md)** - Comprehensive testing
+- **[PHASE4_COMPLETE.md](docs/phase-reports/PHASE4_COMPLETE.md)** - Security & documentation
+- **[FINAL_SUMMARY.md](docs/phase-reports/FINAL_SUMMARY.md)** - Complete project summary
 
 ### API Documentation
 - **Interactive Swagger UI:** `http://localhost:3000/docs` (when running)
 - **OpenAPI Specification:** Available via Swagger UI
-
-### Testing Documentation
-- **[MAINTAINABLE_TESTS.md](MAINTAINABLE_TESTS.md)** - Complete testing guide
-- **[TESTING.md](TESTING.md)** - Quick start testing guide
 
 ## 🧪 Testing
 
@@ -515,7 +528,7 @@ We welcome contributions from developers, organizations, and individuals worldwi
 This project is a candidate for recognition as a Digital Public Good by the [Digital Public Goods Alliance](https://digitalpublicgoods.net/).
 
 **Learn More:**
-- [DPG Submission Document](DPG_SUBMISSION.md) - Complete submission details
+- [DPG Submission Document](docs/DPG_SUBMISSION.md) - Complete submission details
 - [UN Sustainable Development Goals](https://sdgs.un.org/) - How ProofPass contributes
 
 ---
