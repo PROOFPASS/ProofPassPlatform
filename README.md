@@ -88,9 +88,25 @@ ProofPassPlatform/
 └── docker-compose.yml            # Docker orchestration
 ```
 
-## 🚀 Quick Start (2 Options)
+## 🚀 Quick Start
 
-### Option 1: Docker (Recommended - 5 minutes)
+### ⚡ Fastest Way (5 Minutes)
+
+```bash
+git clone https://github.com/PROOFPASS/ProofPassPlatform.git
+cd ProofPassPlatform
+docker-compose up -d
+```
+
+Wait 60 seconds, then visit: `http://localhost:3000/docs`
+
+**📖 Full Guide:** [QUICKSTART.md](QUICKSTART.md)
+
+---
+
+## 📦 Deployment Options
+
+### Option 1: Docker (Recommended)
 
 ```bash
 # 1. Clone repository
@@ -428,6 +444,10 @@ Content-Security-Policy: default-src 'self'
 - **[DPG_SUBMISSION.md](docs/DPG_SUBMISSION.md)** - Digital Public Good submission
 
 ### Getting Started
+- **[QUICKSTART.md](QUICKSTART.md)** - ⚡ 5-minute quick start guide
+- **[DEVOPS_GUIDE.md](docs/deployment/DEVOPS_GUIDE.md)** - 📦 Complete DevOps deployment guide
+- **[DEVOPS_CHECKLIST.md](docs/deployment/DEVOPS_CHECKLIST.md)** - ✅ Pre-flight checklist
+- **[TROUBLESHOOTING.md](docs/deployment/TROUBLESHOOTING.md)** - 🔧 Troubleshooting guide
 - **[SETUP.md](docs/deployment/SETUP.md)** - Local development setup
 - **[DEPLOY_PORTABLE.md](docs/deployment/DEPLOY_PORTABLE.md)** - Production deployment guide
 - **[DEPLOYMENT.md](docs/deployment/DEPLOYMENT.md)** - Docker deployment details

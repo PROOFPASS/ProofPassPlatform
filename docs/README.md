@@ -336,6 +336,10 @@ ProofPass is designed as a Digital Public Good to promote global transparency an
 ### By Topic
 
 **Getting Started:**
+- ⚡ Quick Start: [../QUICKSTART.md](../QUICKSTART.md)
+- 📦 DevOps Guide: [deployment/DEVOPS_GUIDE.md](deployment/DEVOPS_GUIDE.md)
+- ✅ Deployment Checklist: [deployment/DEVOPS_CHECKLIST.md](deployment/DEVOPS_CHECKLIST.md)
+- 🔧 Troubleshooting: [deployment/TROUBLESHOOTING.md](deployment/TROUBLESHOOTING.md)
 - Setup: [deployment/SETUP.md](deployment/SETUP.md)
 - Deployment: [deployment/DEPLOY_PORTABLE.md](deployment/DEPLOY_PORTABLE.md)
 
