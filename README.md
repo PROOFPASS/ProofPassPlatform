@@ -38,6 +38,7 @@ ProofPass is designed as a **Digital Public Good** to promote transparency, trus
 - ✅ **Enterprise Security** - Multi-tier rate limiting, input sanitization, centralized error handling
 - ✅ **Comprehensive Testing** - 111 tests with 85-90% coverage
 - ✅ **Production-Ready Documentation** - Security guide, architecture docs, API reference
+- ✅ **Swagger/OpenAPI 3.0** - Interactive API documentation with complete schemas and examples
 
 ## Tech Stack
 
@@ -450,8 +451,9 @@ Content-Security-Policy: default-src 'self'
 - **[FINAL_SUMMARY.md](docs/phase-reports/FINAL_SUMMARY.md)** - Complete project summary
 
 ### API Documentation
+- **[API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)** - Complete API guide with Swagger/OpenAPI
 - **Interactive Swagger UI:** `http://localhost:3000/docs` (when running)
-- **OpenAPI Specification:** Available via Swagger UI
+- **OpenAPI Specification:** Available via Swagger UI at `/documentation/json`
 
 ## 🧪 Testing
 

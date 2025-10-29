@@ -21,6 +21,7 @@ import {
   validateContentType,
 } from './middleware/security';
 import { rateLimiters } from './middleware/rate-limit';
+import { healthSchema, readinessSchema } from './schemas';
 
 const server = Fastify({
   logger: {
@@ -160,28 +161,46 @@ async function start() {
     });
 
     // Health check (no rate limiting)
-    server.get('/health', async () => {
-      return {
-        status: 'ok',
-        timestamp: new Date().toISOString(),
-        version: '0.1.0',
-      };
+    server.get('/health', {
+      schema: {
+        description: 'Basic health check endpoint',
+        tags: ['health'],
+        response: {
+          200: healthSchema,
+        },
+      },
+      handler: async () => {
+        return {
+          status: 'ok',
+          timestamp: new Date().toISOString(),
+          version: '0.1.0',
+        };
+      },
     });
 
     // Readiness check (includes DB and Redis)
-    server.get('/ready', async () => {
-      try {
-        await pool.query('SELECT 1');
-        return {
-          status: 'ready',
-          database: 'connected',
-          redis: 'connected',
-          timestamp: new Date().toISOString(),
-        };
-      } catch (error) {
-        server.log.error(error, 'Readiness check failed');
-        throw error;
-      }
+    server.get('/ready', {
+      schema: {
+        description: 'Readiness check including database and Redis connections',
+        tags: ['health'],
+        response: {
+          200: readinessSchema,
+        },
+      },
+      handler: async () => {
+        try {
+          await pool.query('SELECT 1');
+          return {
+            status: 'ready',
+            database: 'connected',
+            redis: 'connected',
+            timestamp: new Date().toISOString(),
+          };
+        } catch (error) {
+          server.log.error(error, 'Readiness check failed');
+          throw error;
+        }
+      },
     });
 
     // Register routes with appropriate rate limiting

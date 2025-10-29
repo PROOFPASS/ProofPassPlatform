@@ -1,6 +1,13 @@
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { register, login } from './service';
+import {
+  registerBodySchema,
+  loginBodySchema,
+  authResponseSchema,
+  userSchema,
+  errorSchema,
+} from '../../schemas';
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -18,16 +25,12 @@ export async function authRoutes(server: FastifyInstance) {
   // Register
   server.post('/register', {
     schema: {
+      description: 'Register a new user account',
       tags: ['auth'],
-      body: {
-        type: 'object',
-        required: ['email', 'password', 'name'],
-        properties: {
-          email: { type: 'string', format: 'email' },
-          password: { type: 'string', minLength: 8 },
-          name: { type: 'string', minLength: 2 },
-          organization: { type: 'string' },
-        },
+      body: registerBodySchema,
+      response: {
+        201: authResponseSchema,
+        400: errorSchema,
       },
     },
     handler: async (request, reply) => {
@@ -48,14 +51,13 @@ export async function authRoutes(server: FastifyInstance) {
   // Login
   server.post('/login', {
     schema: {
+      description: 'Login with email and password',
       tags: ['auth'],
-      body: {
-        type: 'object',
-        required: ['email', 'password'],
-        properties: {
-          email: { type: 'string', format: 'email' },
-          password: { type: 'string' },
-        },
+      body: loginBodySchema,
+      response: {
+        200: authResponseSchema,
+        401: errorSchema,
+        400: errorSchema,
       },
     },
     handler: async (request, reply) => {
@@ -76,8 +78,13 @@ export async function authRoutes(server: FastifyInstance) {
   // Get current user
   server.get('/me', {
     schema: {
+      description: 'Get current authenticated user information',
       tags: ['auth'],
       security: [{ bearerAuth: [] }],
+      response: {
+        200: userSchema,
+        401: errorSchema,
+      },
     },
     preHandler: async (request, reply) => {
       try {

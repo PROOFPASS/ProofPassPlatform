@@ -341,6 +341,7 @@ ProofPass is designed as a Digital Public Good to promote global transparency an
 
 **Development:**
 - Architecture: [architecture/API_ARCHITECTURE.md](architecture/API_ARCHITECTURE.md)
+- API Reference: [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
 - Code Quality: [architecture/CODE_QUALITY.md](architecture/CODE_QUALITY.md)
 - Testing: [testing/MAINTAINABLE_TESTS.md](testing/MAINTAINABLE_TESTS.md)
 

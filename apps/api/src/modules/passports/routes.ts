@@ -8,6 +8,7 @@ import {
   verifyProductPassport,
   addAttestationToPassport,
 } from './service';
+import { passportSchema, verificationResponseSchema, errorSchema } from '../../schemas';
 
 const createPassportSchema = z.object({
   product_id: z.string().min(1),
@@ -25,25 +26,33 @@ export async function passportRoutes(server: FastifyInstance): Promise<void> {
   // Create product passport
   server.post('/passports', {
     schema: {
+      description: 'Create a new product passport by aggregating multiple attestations',
       tags: ['passports'],
       security: [{ bearerAuth: [] }],
       body: {
         type: 'object',
         required: ['product_id', 'name', 'attestation_ids'],
         properties: {
-          product_id: { type: 'string' },
-          name: { type: 'string' },
-          description: { type: 'string' },
+          product_id: { type: 'string', description: 'Unique product identifier' },
+          name: { type: 'string', description: 'Product name' },
+          description: { type: 'string', description: 'Product description' },
           attestation_ids: {
             type: 'array',
             items: { type: 'string', format: 'uuid' },
             minItems: 1,
+            description: 'Array of attestation IDs to include'
           },
           blockchain_network: {
             type: 'string',
             enum: ['stellar', 'optimism'],
+            description: 'Blockchain network for anchoring'
           },
         },
+      },
+      response: {
+        201: passportSchema,
+        400: errorSchema,
+        401: errorSchema,
       },
     },
     preHandler: async (request, reply) => {
@@ -73,12 +82,19 @@ export async function passportRoutes(server: FastifyInstance): Promise<void> {
   // Get product passport by ID
   server.get('/passports/:id', {
     schema: {
+      description: 'Get a product passport by its ID (public endpoint)',
       tags: ['passports'],
       params: {
         type: 'object',
+        required: ['id'],
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string', format: 'uuid', description: 'Passport ID' },
         },
+      },
+      response: {
+        200: passportSchema,
+        404: errorSchema,
+        500: errorSchema,
       },
     },
     handler: async (request, reply) => {

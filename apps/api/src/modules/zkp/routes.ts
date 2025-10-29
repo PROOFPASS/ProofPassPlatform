@@ -7,6 +7,7 @@ import {
   verifyZKProof,
   getProofsForAttestation,
 } from './service';
+import { zkProofSchema, zkVerificationResponseSchema, errorSchema } from '../../schemas';
 
 const generateProofSchema = z.object({
   attestation_id: z.string().uuid(),
@@ -19,20 +20,27 @@ export async function zkpRoutes(server: FastifyInstance): Promise<void> {
   // Generate ZK proof
   server.post('/zkp/proofs', {
     schema: {
+      description: 'Generate a zero-knowledge proof from an attestation',
       tags: ['zkp'],
       security: [{ bearerAuth: [] }],
       body: {
         type: 'object',
         required: ['attestation_id', 'circuit_type', 'private_inputs', 'public_inputs'],
         properties: {
-          attestation_id: { type: 'string', format: 'uuid' },
+          attestation_id: { type: 'string', format: 'uuid', description: 'Attestation ID to create proof from' },
           circuit_type: {
             type: 'string',
             enum: ['threshold', 'range', 'set_membership'],
+            description: 'Type of ZK circuit to use'
           },
-          private_inputs: { type: 'object' },
-          public_inputs: { type: 'object' },
+          private_inputs: { type: 'object', description: 'Private inputs (not revealed in proof)' },
+          public_inputs: { type: 'object', description: 'Public inputs (revealed in proof)' },
         },
+      },
+      response: {
+        201: zkProofSchema,
+        400: errorSchema,
+        401: errorSchema,
       },
     },
     preHandler: async (request, reply) => {
@@ -124,12 +132,19 @@ export async function zkpRoutes(server: FastifyInstance): Promise<void> {
   // Verify ZK proof
   server.get('/zkp/proofs/:id/verify', {
     schema: {
+      description: 'Verify a zero-knowledge proof (public endpoint)',
       tags: ['zkp'],
       params: {
         type: 'object',
+        required: ['id'],
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string', format: 'uuid', description: 'Proof ID to verify' },
         },
+      },
+      response: {
+        200: zkVerificationResponseSchema,
+        404: errorSchema,
+        500: errorSchema,
       },
     },
     handler: async (request, reply) => {

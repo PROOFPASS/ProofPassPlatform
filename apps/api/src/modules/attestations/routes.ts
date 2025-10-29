@@ -1,6 +1,13 @@
 import { FastifyInstance } from 'fastify';
 import { z } from 'zod';
 import { createAttestation, getAttestation, getAttestations, verifyAttestation } from './service';
+import {
+  createAttestationBodySchema,
+  attestationSchema,
+  attestationListResponseSchema,
+  verificationResponseSchema,
+  errorSchema,
+} from '../../schemas';
 
 const createAttestationSchema = z.object({
   subject: z.string(),
@@ -13,17 +20,15 @@ export async function attestationRoutes(server: FastifyInstance) {
   // Create attestation
   server.post('/', {
     schema: {
+      description: 'Create a new W3C Verifiable Credential attestation and anchor it to the blockchain',
       tags: ['attestations'],
       security: [{ bearerAuth: [] }],
-      body: {
-        type: 'object',
-        required: ['subject', 'type', 'claims'],
-        properties: {
-          subject: { type: 'string' },
-          type: { type: 'string' },
-          claims: { type: 'object' },
-          blockchain_network: { type: 'string', enum: ['stellar', 'optimism'] },
-        },
+      body: createAttestationBodySchema,
+      response: {
+        201: attestationSchema,
+        400: errorSchema,
+        401: errorSchema,
+        500: errorSchema,
       },
     },
     preHandler: async (request, reply) => {
@@ -52,8 +57,14 @@ export async function attestationRoutes(server: FastifyInstance) {
   // Get all attestations for user
   server.get('/', {
     schema: {
+      description: 'Get all attestations created by the authenticated user',
       tags: ['attestations'],
       security: [{ bearerAuth: [] }],
+      response: {
+        200: attestationListResponseSchema,
+        401: errorSchema,
+        500: errorSchema,
+      },
     },
     preHandler: async (request, reply) => {
       try {
@@ -77,13 +88,21 @@ export async function attestationRoutes(server: FastifyInstance) {
   // Get specific attestation
   server.get('/:id', {
     schema: {
+      description: 'Get a specific attestation by ID',
       tags: ['attestations'],
       security: [{ bearerAuth: [] }],
       params: {
         type: 'object',
+        required: ['id'],
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string', format: 'uuid', description: 'Attestation ID' },
         },
+      },
+      response: {
+        200: attestationSchema,
+        401: errorSchema,
+        404: errorSchema,
+        500: errorSchema,
       },
     },
     preHandler: async (request, reply) => {
@@ -113,12 +132,18 @@ export async function attestationRoutes(server: FastifyInstance) {
   // Verify attestation (public endpoint)
   server.post('/:id/verify', {
     schema: {
+      description: 'Verify the authenticity and blockchain anchor of an attestation (public endpoint)',
       tags: ['attestations'],
       params: {
         type: 'object',
+        required: ['id'],
         properties: {
-          id: { type: 'string', format: 'uuid' },
+          id: { type: 'string', format: 'uuid', description: 'Attestation ID to verify' },
         },
+      },
+      response: {
+        200: verificationResponseSchema,
+        500: errorSchema,
       },
     },
     handler: async (request, reply) => {
