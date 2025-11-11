@@ -32,6 +32,10 @@
     "db:seed": "cd apps/api && npx prisma db seed",
     "setup:db": "npm run db:generate && npm run db:migrate",
     "setup:stellar": "npx tsx scripts/setup-stellar.ts",
+    "demo": "scripts/demo-complete.sh",
+    "demo:fast": "DEMO_SPEED=fast scripts/demo-complete.sh",
+    "demo:slow": "DEMO_SPEED=slow scripts/demo-complete.sh",
+    "demo:stellar": "npx tsx scripts/demo-stellar-testnet.ts",
     "prepare": "husky install || true"
   },
   "engines": {

@@ -50,3 +50,5 @@ export enum AttestationType {
   SHIPPING = 'Shipping',
   CUSTOMS_CLEARANCE = 'CustomsClearance',
 }
+
+export {};
