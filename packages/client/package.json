@@ -1,0 +1,33 @@
+{
+  "name": "@proofpass/client",
+  "version": "0.1.0",
+  "description": "Official JavaScript SDK for ProofPass API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "proofpass",
+    "verifiable-credentials",
+    "attestations",
+    "blockchain",
+    "zkp"
+  ],
+  "author": "ProofPass",
+  "license": "LGPL-3.0",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.8",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
+  }
+}

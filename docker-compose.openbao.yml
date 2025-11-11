@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+  openbao:
+    image: openbao/openbao:latest
+    container_name: proofpass-openbao
+    ports:
+      - "8200:8200"
+    environment:
+      OPENBAO_DEV_ROOT_TOKEN_ID: "dev-root-token-proofpass"
+      OPENBAO_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+      OPENBAO_ADDR: "http://0.0.0.0:8200"
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - openbao-data:/openbao/data
+      - openbao-logs:/openbao/logs
+      - ./openbao/config:/openbao/config
+      - ./openbao/policies:/openbao/policies
+    networks:
+      - proofpass-network
+    restart: unless-stopped
+    command: server -dev -dev-root-token-id="dev-root-token-proofpass"
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "--proxy=off", "http://localhost:8200/v1/sys/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  openbao-data:
+    driver: local
+  openbao-logs:
+    driver: local
+
+networks:
+  proofpass-network:
+    driver: bridge

@@ -1,0 +1,36 @@
+services:
+  - type: web
+    name: proofpass-api
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install && npm run build:packages && cd apps/api && npm run build
+    startCommand: node apps/api/dist/main.js
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: DATABASE_HOST
+        sync: false
+      - key: DATABASE_PORT
+        value: 5432
+      - key: DATABASE_NAME
+        sync: false
+      - key: DATABASE_USER
+        sync: false
+      - key: DATABASE_PASSWORD
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: API_KEY_SALT
+        generateValue: true
+      - key: STELLAR_NETWORK
+        value: testnet
+      - key: LOG_LEVEL
+        value: info
+      - key: CORS_ORIGIN
+        value: "*"

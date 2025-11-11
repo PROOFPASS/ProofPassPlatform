@@ -1,0 +1,16 @@
+# OpenBao data and logs
+data/
+logs/
+*.log
+
+# Tokens and secrets
+.env
+*.token
+secrets/
+
+# Snapshots and backups
+*.snap
+backups/
+
+# Audit logs
+audit*.log

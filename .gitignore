@@ -1,0 +1,83 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+*.lcov
+
+# Production
+build/
+dist/
+.next/
+out/
+
+# Misc
+.DS_Store
+*.pem
+
+# Environment files (NEVER commit production secrets!)
+.env
+.env*.local
+.env.production
+.env.docker.local
+*.env.backup
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# TypeScript
+*.tsbuildinfo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Database
+*.db
+*.sqlite
+
+# Zero-knowledge circuits
+*.r1cs
+*.wasm
+*.zkey
+*.sym
+*.ptau
+witness.wtns
+
+# Backups
+*.sql
+*.sql.gz
+*.backup
+backup_*
+backups/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Docker volumes (local data)
+postgres_data/
+redis_data/
+
+# SSL Certificates (use proper cert management)
+*.crt
+*.key
+*.pem
+ssl/
+certs/
+.aider*

@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Demo data (contains user tokens and sensitive info)
+demo-data.json
+
+# Environment variables
+.env
+.env.local
+.env.production.local
+.env.test.local
+
+# TypeScript build
+dist/
+*.tsbuildinfo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs/
+*.log
