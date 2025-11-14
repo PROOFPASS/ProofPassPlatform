@@ -441,14 +441,14 @@ class ProofPassCLI {
 
     // Check Docker containers
     try {
-      const pgCheck = await this.runCommand('docker ps | grep proofpass-postgres > /dev/null 2>&1');
+      const pgCheck = await this.runCommand('docker ps 2>/dev/null | grep proofpass-postgres > /dev/null 2>&1');
       if (pgCheck === 0) {
         this.logSuccess('PostgreSQL running');
       } else {
         this.logInfo('PostgreSQL not running');
       }
 
-      const redisCheck = await this.runCommand('docker ps | grep proofpass-redis > /dev/null 2>&1');
+      const redisCheck = await this.runCommand('docker ps 2>/dev/null | grep proofpass-redis > /dev/null 2>&1');
       if (redisCheck === 0) {
         this.logSuccess('Redis running');
       } else {

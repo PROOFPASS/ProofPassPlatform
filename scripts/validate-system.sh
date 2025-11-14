@@ -7,14 +7,24 @@
 
 set -e
 
-# Colors
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-NC='\033[0m'
-BOLD='\033[1m'
+# Colors (only if output is a terminal)
+if [ -t 1 ]; then
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[1;33m'
+    BLUE='\033[0;34m'
+    CYAN='\033[0;36m'
+    NC='\033[0m'
+    BOLD='\033[1m'
+else
+    RED=''
+    GREEN=''
+    YELLOW=''
+    BLUE=''
+    CYAN=''
+    NC=''
+    BOLD=''
+fi
 
 # Minimum versions
 MIN_NODE_VERSION="20.0.0"
@@ -55,7 +65,8 @@ version_compare() {
 }
 
 show_header() {
-    clear
+    # Only clear if stdin is a terminal
+    [ -t 0 ] && clear
     echo -e "${CYAN}${BOLD}"
     cat << "EOF"
 ╔══════════════════════════════════════════════════════════════╗
@@ -178,7 +189,7 @@ check_docker() {
         fi
 
         # Check if Docker daemon is running
-        if docker info &> /dev/null; then
+        if docker info 2>/dev/null 1>&2; then
             log_success "Docker daemon running"
         else
             log_warning "Docker installed but daemon not running"
