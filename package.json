@@ -67,6 +67,10 @@
     "demo:fast": "DEMO_SPEED=fast scripts/demo-complete.sh",
     "demo:slow": "DEMO_SPEED=slow scripts/demo-complete.sh",
     "demo:stellar": "npx tsx scripts/demo-stellar-testnet.ts",
+    "cli": "npx tsx cli/proofpass.ts",
+    "validate": "scripts/validate-system.sh",
+    "health": "scripts/health-check.sh",
+    "install:wizard": "scripts/install-wizard.sh",
     "prepare": "husky install || true"
   },
   "engines": {
