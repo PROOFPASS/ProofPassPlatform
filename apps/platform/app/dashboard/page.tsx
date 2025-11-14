@@ -2,6 +2,7 @@
 
 import { useSession } from 'next-auth/react';
 import { Building2, CreditCard, Key, TrendingUp } from 'lucide-react';
+import QuickStartWidget from '@/components/onboarding/QuickStartWidget';
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -88,6 +89,8 @@ export default function DashboardPage() {
           );
         })}
       </div>
+
+      <QuickStartWidget />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="overflow-hidden rounded-lg bg-white shadow">

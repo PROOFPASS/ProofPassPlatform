@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components/dashboard/Sidebar';
 import { Header } from '@/components/dashboard/Header';
+import OnboardingModal from '@/components/onboarding/OnboardingModal';
 
 export default function DashboardLayout({
   children,
@@ -17,6 +18,8 @@ export default function DashboardLayout({
           {children}
         </main>
       </div>
+
+      <OnboardingModal />
     </div>
   );
 }
