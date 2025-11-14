@@ -113,6 +113,54 @@ GET  /api/v1/passports/:id
 
 Full API documentation: [API_REFERENCE.md](docs/API_REFERENCE.md)
 
+## CLI Tool
+
+ProofPass includes an interactive CLI for development and testing:
+
+```bash
+# Run the CLI
+npm run cli
+
+# Or use specific commands directly
+npm run cli help        # Show all available commands
+npm run cli validate    # Validate system requirements
+npm run cli health      # Run health checks
+npm run cli install     # Run installation wizard
+```
+
+Available commands:
+- **Getting Started**: `install`, `validate`, `health`
+- **Development**: `dev`, `build`, `test`
+- **Stellar**: `stellar:setup`, `stellar:demo`, `stellar:balance`
+- **Database**: `db:setup`, `db:migrate`, `db:reset`
+- **Utilities**: `docs`, `status`, `help`, `exit`
+
+See [CLI Documentation](cli/README.md) for full details.
+
+## Testing
+
+ProofPass includes comprehensive test coverage:
+
+```bash
+# Run all tests
+npm test
+
+# Run specific test suites
+npm run test:cli        # CLI tool tests
+npm run test:scripts    # Bash script tests
+npm run test:all        # All tests combined
+
+# Test with coverage
+npm run test:coverage
+```
+
+Current test coverage:
+- **CLI Tests**: 10+ test suites covering all commands
+- **Bash Scripts**: 34/34 tests passing (100%)
+- **Integration Tests**: End-to-end workflow validation
+
+See [TESTING.md](TESTING.md) for testing guidelines.
+
 ## Contributing
 
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for:

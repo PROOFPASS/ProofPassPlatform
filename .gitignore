@@ -83,3 +83,5 @@ certs/
 .aider*
 *.log
 scripts-test-*.log
+.archive/
+*test-*.log
