@@ -81,3 +81,5 @@ redis_data/
 ssl/
 certs/
 .aider*
+*.log
+scripts-test-*.log
