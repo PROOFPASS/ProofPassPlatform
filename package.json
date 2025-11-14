@@ -24,12 +24,12 @@
     "url": "https://github.com/PROOFPASS/ProofPassPlatform/issues"
   },
   "author": {
-    "name": "Federico Boiero",
+    "name": "Fernando Boiero",
     "email": "fboiero@frvm.utn.edu.ar"
   },
   "contributors": [
     {
-      "name": "Federico Boiero",
+      "name": "Fernando Boiero",
       "email": "fboiero@frvm.utn.edu.ar"
     }
   ],
@@ -70,6 +70,7 @@
     "demo:fast": "DEMO_SPEED=fast scripts/demo-complete.sh",
     "demo:slow": "DEMO_SPEED=slow scripts/demo-complete.sh",
     "demo:stellar": "npx tsx scripts/demo-stellar-testnet.ts",
+    "demo:recording": "npx tsx scripts/demo-platform-recording.ts",
     "cli": "npx tsx cli/proofpass.ts",
     "validate": "scripts/validate-system.sh",
     "health": "scripts/health-check.sh",
@@ -83,6 +84,7 @@
     "@stellar/stellar-sdk": "^14.3.1",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
+    "@types/qrcode-terminal": "^0.12.2",
     "@typescript-eslint/eslint-plugin": "^6.18.0",
     "@typescript-eslint/parser": "^6.18.0",
     "eslint": "^8.56.0",
@@ -93,6 +95,7 @@
     "jest": "^29.7.0",
     "lint-staged": "^15.2.0",
     "prettier": "^3.1.1",
+    "qrcode-terminal": "^0.12.0",
     "ts-jest": "^29.1.1",
     "tsx": "^4.20.6",
     "typescript": "^5.3.3"
