@@ -9,7 +9,8 @@
  * 4. Show all hashes and evidence
  */
 
-import { Keypair, Networks, TransactionBuilder, Operation, Asset, Memo, Server } from '@stellar/stellar-sdk';
+import { Keypair, Networks, TransactionBuilder, Operation, Asset, Memo } from '@stellar/stellar-sdk';
+import { Horizon } from '@stellar/stellar-sdk';
 import crypto from 'crypto';
 
 // Colors for terminal output
@@ -62,12 +63,12 @@ interface DigitalPassport {
 }
 
 class ProofPassDemo {
-  private stellarServer: Server;
+  private stellarServer: Horizon.Server;
   private sourceKeypair: Keypair;
 
   constructor() {
     // Use Stellar testnet
-    this.stellarServer = new Server('https://horizon-testnet.stellar.org');
+    this.stellarServer = new Horizon.Server('https://horizon-testnet.stellar.org');
 
     // Check for Stellar keys in environment
     const stellarSecret = process.env.STELLAR_SECRET_KEY;
