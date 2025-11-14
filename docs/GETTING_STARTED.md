@@ -100,9 +100,9 @@ npm run demo
 
 | Option | When to Use | Pros | Cons |
 |--------|-------------|------|------|
-| **Development Mode** | Building features | ✅ Hot reload<br>✅ Easy debugging<br>✅ Fast iteration | ❌ Requires local DB |
-| **Docker** | Testing deployment | ✅ Production-like<br>✅ Isolated | ❌ No hot reload<br>❌ Slower |
-| **Quick Demo** | Just exploring | ✅ Fastest<br>✅ No setup | ❌ Limited functionality |
+| **Development Mode** | Building features | Hot reload<br>Easy debugging<br>Fast iteration | Requires local DB |
+| **Docker** | Testing deployment | Production-like<br>Isolated | No hot reload<br>Slower |
+| **Quick Demo** | Just exploring | Fastest<br>No setup | Limited functionality |
 
 ## Detailed Setup Guide
 
@@ -255,7 +255,7 @@ npm run dev
 ```bash
 cd apps/api
 npx prisma studio
-# 🚀 Studio ready on http://localhost:5555
+# Studio ready on http://localhost:5555
 ```
 
 #### Option B: One Command
@@ -468,4 +468,4 @@ Once you have ProofPass running:
 
 ---
 
-**Ready to start developing!** 🚀
+**Ready to start developing!**

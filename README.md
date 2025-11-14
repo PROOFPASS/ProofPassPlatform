@@ -1,60 +1,59 @@
 # ProofPass Platform
 
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+[![Node Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![DPG](https://img.shields.io/badge/Digital%20Public%20Good-Candidate-orange)](docs/DPG_SUBMISSION.md)
 [![W3C](https://img.shields.io/badge/W3C-DID%20Core%201.0-success)](docs/architecture/DID_INTEGRATION.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![Code Style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
-Production-ready platform for **W3C Verifiable Credentials**, **Zero-Knowledge Proofs**, and **Digital Product Passports** using blockchain technology and decentralized identifiers.
+Platform for creating **W3C Verifiable Credentials**, **ZK Proofs**, and **Digital Product Passports** anchored on blockchain.
 
-## What is ProofPass?
+## What is this?
 
-ProofPass provides a complete solution for creating, managing, and verifying digital credentials that are:
+ProofPass lets you create, manage, and verify tamper-proof digital credentials. Built on W3C standards (DID Core 1.0, VC Data Model v1.1) with zero-knowledge proofs for privacy and blockchain anchoring for immutability.
 
-- **Standards-compliant** - W3C DID Core 1.0 and Verifiable Credentials Data Model v1.1
-- **Privacy-preserving** - Zero-knowledge proofs for selective disclosure
-- **Blockchain-anchored** - Immutable audit trail on Stellar, Optimism, and Arbitrum (6 networks)
-- **Enterprise-ready** - Multi-tenant SaaS with rate limiting and usage tracking
+Current blockchain support: Stellar (testnet/mainnet), with Optimism and Arbitrum coming soon.
 
-**Use cases**: Supply chain transparency, product authentication, ESG reporting, regulatory compliance.
+Use it for supply chain tracking, product authentication, credential verification, or anything that needs cryptographic proof.
 
 ## Quick Start
 
-Get started in 3 minutes:
-
 ```bash
-# Clone and install
 git clone https://github.com/PROOFPASS/ProofPassPlatform.git
 cd ProofPassPlatform
 npm install
 
-# Run the demo
+# Run a demo
 cd examples/demo-client
 npm install
 npm run demo
 ```
 
-**New to ProofPass?** Start here: [Getting Started Guide](docs/GETTING_STARTED.md)
+New here? Check the [Getting Started Guide](docs/GETTING_STARTED.md).
 
 ## Documentation
 
 ### Getting Started
-- **[Getting Started Guide](docs/GETTING_STARTED.md)** - Complete setup and quickstart
-- **[Demo Walkthrough](examples/demo-client/README.md)** - End-to-end workflow demo
+- [Quick Start Guide](docs/GETTING_STARTED.md) - Get up and running in 15 minutes
+- [Demo Walkthrough](examples/demo-client/README.md) - End-to-end examples
+- [Development Guide](DEVELOPMENT.md) - Complete developer setup and workflows
 
-### Development & Deployment
-- **[Deployment Guide](docs/DEPLOYMENT.md)** - Production deployment
-- **[API Reference](docs/API_REFERENCE.md)** - Complete API documentation
-- **[Testing Guide](docs/testing/MAINTAINABLE_TESTS.md)** - Testing best practices
+### Technical Documentation
+- [API Reference](docs/API_REFERENCE.md) - Comprehensive API documentation
+- [Technical Architecture](docs/architecture/TECHNICAL_ARCHITECTURE.md) - System design and patterns
+- [Security Policy](SECURITY.md) - Security practices and vulnerability reporting
 
-### Architecture & Security
-- **[Technical Architecture](docs/architecture/TECHNICAL_ARCHITECTURE.md)** - System design
-- **[Security Documentation](docs/SECURITY.md)** - Security best practices
-- **[DID Integration](docs/architecture/DID_INTEGRATION.md)** - W3C DID implementation
+### Deployment & Operations
+- [Production Readiness Guide](PRODUCTION_READINESS.md) - Complete deployment checklist
+- [Deployment Guide](docs/DEPLOYMENT.md) - Step-by-step production setup
 
-### Additional Resources
-- **[Contributing Guidelines](CONTRIBUTING.md)** - How to contribute
-- **[Code of Conduct](docs/guides/CODE_OF_CONDUCT.md)** - Community guidelines
-- **[Documentation Index](docs/README.md)** - Full documentation map
+### Project Information
+- [Contributing Guidelines](CONTRIBUTING.md) - How to contribute to the project
+- [Roadmap](ROADMAP.md) - Future plans and feature timeline
+- [Changelog](CHANGELOG.md) - Version history and changes
+- [Contributors](CONTRIBUTORS.md) - Project contributors
 
 ## Key Features
 
@@ -135,12 +134,22 @@ Learn more: [DPG Submission](docs/DPG_SUBMISSION.md)
 
 This project is licensed under the GNU AGPL-3.0 License - see [LICENSE](LICENSE) for details.
 
+## Production Deployment
+
+Ready to deploy to production? See:
+- [Production Readiness Guide](PRODUCTION_READINESS.md) - Complete deployment checklist
+- [Deployment Documentation](docs/DEPLOYMENT.md) - Step-by-step deployment guide
+- [Security Policy](SECURITY.md) - Security best practices and vulnerability reporting
+
 ## Support
 
 - **Documentation**: [docs/](docs/)
 - **Issues**: [GitHub Issues](https://github.com/PROOFPASS/ProofPassPlatform/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/PROOFPASS/ProofPassPlatform/discussions)
+- **Security**: [SECURITY.md](SECURITY.md)
 
 ---
 
-**Built by the ProofPass team**
+**Developed and maintained by the ProofPass team**
+
+For questions or contributions, see [CONTRIBUTING.md](CONTRIBUTING.md)

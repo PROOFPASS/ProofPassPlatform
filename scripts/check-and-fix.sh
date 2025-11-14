@@ -5,7 +5,7 @@
 
 set -e
 
-echo "🔍 ProofPass - Check and Fix Script"
+echo "[INFO] ProofPass - Check and Fix Script"
 echo "===================================="
 echo ""
 
@@ -19,9 +19,9 @@ NC='\033[0m' # No Color
 echo -n "Checking Node.js... "
 if command -v node &> /dev/null; then
     NODE_VERSION=$(node -v)
-    echo -e "${GREEN}✓${NC} $NODE_VERSION"
+    echo -e "${GREEN}[OK]${NC} $NODE_VERSION"
 else
-    echo -e "${RED}✗ Node.js not found${NC}"
+    echo -e "${RED}[ERROR] Node.js not found${NC}"
     echo "Please install Node.js 20+ from https://nodejs.org"
     exit 1
 fi
@@ -30,9 +30,9 @@ fi
 echo -n "Checking npm... "
 if command -v npm &> /dev/null; then
     NPM_VERSION=$(npm -v)
-    echo -e "${GREEN}✓${NC} $NPM_VERSION"
+    echo -e "${GREEN}[OK]${NC} $NPM_VERSION"
 else
-    echo -e "${RED}✗ npm not found${NC}"
+    echo -e "${RED}[ERROR] npm not found${NC}"
     exit 1
 fi
 
@@ -40,29 +40,29 @@ fi
 echo -n "Checking Docker... "
 if command -v docker &> /dev/null; then
     if docker ps &> /dev/null; then
-        echo -e "${GREEN}✓ Docker is running${NC}"
+        echo -e "${GREEN}[OK] Docker is running${NC}"
     else
-        echo -e "${YELLOW}⚠ Docker is installed but not running${NC}"
+        echo -e "${YELLOW}[WARNING] Docker is installed but not running${NC}"
         echo "Please start Docker Desktop"
     fi
 else
-    echo -e "${YELLOW}⚠ Docker not found (optional)${NC}"
+    echo -e "${YELLOW}[WARNING] Docker not found (optional)${NC}"
 fi
 
 echo ""
-echo "📦 Checking dependencies..."
+echo "[INFO] Checking dependencies..."
 
 # Check if node_modules exists
 if [ ! -d "node_modules" ]; then
     echo "Installing dependencies..."
     npm install
 else
-    echo -e "${GREEN}✓${NC} Dependencies installed"
+    echo -e "${GREEN}[OK]${NC} Dependencies installed"
 fi
 
 # Check if packages are built
 echo ""
-echo "🔨 Checking packages build..."
+echo "[INFO] Checking packages build..."
 
 PACKAGES_TO_BUILD=(
     "packages/types"
@@ -77,7 +77,7 @@ NEEDS_BUILD=false
 
 for pkg in "${PACKAGES_TO_BUILD[@]}"; do
     if [ ! -d "$pkg/dist" ]; then
-        echo -e "${YELLOW}⚠${NC} $pkg needs to be built"
+        echo -e "${YELLOW}[WARNING]${NC} $pkg needs to be built"
         NEEDS_BUILD=true
     fi
 done
@@ -86,21 +86,21 @@ if [ "$NEEDS_BUILD" = true ]; then
     echo ""
     echo "Building packages..."
     npm run build:packages || {
-        echo -e "${RED}✗ Build failed${NC}"
+        echo -e "${RED}[ERROR] Build failed${NC}"
         echo "Try building packages individually:"
         for pkg in "${PACKAGES_TO_BUILD[@]}"; do
             echo "  cd $pkg && npm run build"
         done
         exit 1
     }
-    echo -e "${GREEN}✓${NC} All packages built successfully"
+    echo -e "${GREEN}[OK]${NC} All packages built successfully"
 else
-    echo -e "${GREEN}✓${NC} All packages are built"
+    echo -e "${GREEN}[OK]${NC} All packages are built"
 fi
 
 # Check environment files
 echo ""
-echo "📝 Checking environment files..."
+echo "[INFO] Checking environment files..."
 
 if [ ! -f ".env.docker" ]; then
     echo "Creating .env.docker..."
@@ -133,13 +133,13 @@ STELLAR_SECRET_KEY=
 ADMIN_EMAIL=admin@proofpass.local
 ADMIN_PASSWORD=admin123
 EOF
-    echo -e "${GREEN}✓${NC} Created .env.docker"
+    echo -e "${GREEN}[OK]${NC} Created .env.docker"
 else
-    echo -e "${GREEN}✓${NC} .env.docker exists"
+    echo -e "${GREEN}[OK]${NC} .env.docker exists"
 fi
 
 echo ""
-echo "✅ All checks passed!"
+echo "[SUCCESS] All checks passed!"
 echo ""
 echo "Next steps:"
 echo "  1. Run tests:           ./scripts/run-tests.sh"

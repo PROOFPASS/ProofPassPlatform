@@ -43,7 +43,7 @@ interface ZKProofResponse {
 }
 
 async function main() {
-  console.log(chalk.blue.bold('\n🔐 ProofPass Demo - Step 2: Generate Zero-Knowledge Proof\n'));
+  console.log(chalk.blue.bold('\n[INFO] ProofPass Demo - Step 2: Generate Zero-Knowledge Proof\n'));
 
   try {
     // Step 1: Load demo data from previous step
@@ -54,17 +54,17 @@ async function main() {
       const fileContent = readFileSync(dataPath, 'utf-8');
       demoData = JSON.parse(fileContent);
     } catch (error) {
-      console.error(chalk.red('❌ Error: demo-data.json not found'));
-      console.log(chalk.yellow('\n💡 Tip: Run `npm run 1:create-vc` first\n'));
+      console.error(chalk.red('[ERROR] Error: demo-data.json not found'));
+      console.log(chalk.yellow('\n[TIP] Tip: Run `npm run 1:create-vc` first\n'));
       process.exit(1);
     }
 
-    console.log(chalk.cyan('1️⃣  Loading credential data...'));
+    console.log(chalk.cyan('[1/3] Loading credential data...'));
     console.log(chalk.gray(`   Credential ID: ${demoData.credentialId}`));
     console.log(chalk.gray(`   DID: ${demoData.did}\n`));
 
     // Step 2: Generate Zero-Knowledge Proof
-    console.log(chalk.cyan('2️⃣  Generating zk-SNARK proof...'));
+    console.log(chalk.cyan('[2/3] Generating zk-SNARK proof...'));
     console.log(chalk.gray('   This may take a few seconds...\n'));
 
     const proofRequest = {
@@ -93,8 +93,8 @@ async function main() {
 
     const { id, proof, publicSignals, status, createdAt } = zkpResponse.data;
 
-    console.log(chalk.green('✅ Zero-Knowledge Proof generated successfully!\n'));
-    console.log(chalk.yellow('🔐 Proof Details:'));
+    console.log(chalk.green('[SUCCESS] Zero-Knowledge Proof generated successfully!\n'));
+    console.log(chalk.yellow('[INFO] Proof Details:'));
     console.log(chalk.gray(`   ID: ${id}`));
     console.log(chalk.gray(`   Protocol: ${proof.protocol} (${proof.curve})`));
     console.log(chalk.gray(`   Status: ${status}`));
@@ -102,7 +102,7 @@ async function main() {
     console.log(chalk.gray(`   Public Signals: [${publicSignals.join(', ')}]`));
     console.log(chalk.gray(`   Proof Size: ${JSON.stringify(proof).length} bytes\n`));
 
-    console.log(chalk.magenta('🎯 Proof Properties:'));
+    console.log(chalk.magenta('[INFO] Proof Properties:'));
     console.log(chalk.gray('   ✓ Proves carbon footprint >= 2.0'));
     console.log(chalk.gray('   ✓ Does NOT reveal actual value (2.5)'));
     console.log(chalk.gray('   ✓ Cryptographically verifiable'));
@@ -119,15 +119,15 @@ async function main() {
 
     writeFileSync(dataPath, JSON.stringify(updatedData, null, 2));
 
-    console.log(chalk.green('✅ Proof data saved to: demo-data.json'));
-    console.log(chalk.blue('\n📌 Next step: Run `npm run 3:create-passport` to create a product passport\n'));
+    console.log(chalk.green('[OK] Proof data saved to: demo-data.json'));
+    console.log(chalk.blue('\n[INFO] Next step: Run `npm run 3:create-passport` to create a product passport\n'));
 
   } catch (error: any) {
-    console.error(chalk.red('\n❌ Error:'), error.response?.data?.message || error.message);
+    console.error(chalk.red('\n[ERROR] Error:'), error.response?.data?.message || error.message);
     if (error.response?.status === 401) {
-      console.log(chalk.yellow('\n💡 Tip: Your session may have expired. Run `npm run 1:create-vc` again\n'));
+      console.log(chalk.yellow('\n[TIP] Tip: Your session may have expired. Run `npm run 1:create-vc` again\n'));
     } else if (error.response?.status === 400) {
-      console.log(chalk.yellow('\n💡 Tip: Check that the proof parameters are valid'));
+      console.log(chalk.yellow('\n[TIP] Tip: Check that the proof parameters are valid'));
       console.log(chalk.yellow('   - threshold proofs require: threshold, value, nullifier'));
       console.log(chalk.yellow('   - range proofs require: min, max, value, nullifier'));
       console.log(chalk.yellow('   - membership proofs require: set, value, nullifier\n'));

@@ -5,7 +5,7 @@
 
 set -e
 
-echo "🐳 ProofPass - Docker Test Script"
+echo "[INFO] ProofPass - Docker Test Script"
 echo "=================================="
 echo ""
 
@@ -18,12 +18,12 @@ NC='\033[0m' # No Color
 
 # Check if Docker is running
 if ! docker info > /dev/null 2>&1; then
-    echo -e "${RED}✗ Docker is not running${NC}"
+    echo -e "${RED}[ERROR] Docker is not running${NC}"
     echo "Please start Docker Desktop and try again"
     exit 1
 fi
 
-echo -e "${GREEN}✓ Docker is running${NC}"
+echo -e "${GREEN}[OK] Docker is running${NC}"
 echo ""
 
 # Parse arguments
@@ -43,11 +43,11 @@ build_image() {
     echo ""
 
     if docker build -t "$tag" -f "$dockerfile" "$context"; then
-        echo -e "${GREEN}✓ $name image built successfully${NC}"
+        echo -e "${GREEN}[OK] $name image built successfully${NC}"
         echo "Image size: $(docker images $tag --format "{{.Size}}")"
         return 0
     else
-        echo -e "${RED}✗ Failed to build $name image${NC}"
+        echo -e "${RED}[ERROR] Failed to build $name image${NC}"
         return 1
     fi
 }
@@ -76,7 +76,7 @@ test_image() {
 
     # Check if container is running
     if docker ps | grep -q $CONTAINER_ID; then
-        echo -e "${GREEN}✓ Container is running${NC}"
+        echo -e "${GREEN}[OK] Container is running${NC}"
 
         # Show logs
         echo ""
@@ -88,11 +88,11 @@ test_image() {
         echo "Stopping container..."
         docker stop $CONTAINER_ID > /dev/null
         docker rm $CONTAINER_ID > /dev/null
-        echo -e "${GREEN}✓ Container stopped and removed${NC}"
+        echo -e "${GREEN}[OK] Container stopped and removed${NC}"
 
         return 0
     else
-        echo -e "${RED}✗ Container failed to start${NC}"
+        echo -e "${RED}[ERROR] Container failed to start${NC}"
         docker logs $CONTAINER_ID
         docker rm $CONTAINER_ID > /dev/null 2>&1 || true
         return 1
@@ -135,7 +135,7 @@ echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if [ $FAILED -eq 0 ]; then
-    echo -e "${GREEN}✅ All Docker builds successful!${NC}"
+    echo -e "${GREEN}[SUCCESS] All Docker builds successful!${NC}"
     echo ""
     echo "Next steps:"
     echo "  • Test with docker-compose: docker-compose up"
@@ -143,6 +143,6 @@ if [ $FAILED -eq 0 ]; then
     echo "  • Run locally: docker run -p 3000:3000 proofpass-api:test"
     exit 0
 else
-    echo -e "${RED}❌ Some Docker builds failed${NC}"
+    echo -e "${RED}[FAILED] Some Docker builds failed${NC}"
     exit 1
 fi

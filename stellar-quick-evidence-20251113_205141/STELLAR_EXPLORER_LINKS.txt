@@ -1,0 +1,172 @@
+================================================================================
+Stellar Testnet Integration - Public Verification Links
+================================================================================
+
+ProofPass Platform v0.1.0
+Author: Federico Boiero (fboiero@frvm.utn.edu.ar)
+Date: November 13, 2025
+
+================================================================================
+QUICK ACCESS LINKS
+================================================================================
+
+1. STELLAR EXPERT EXPLORER (Recommended)
+-----------------------------------------
+https://stellar.expert/explorer/testnet/account/GA37VA76NY3RLAKZCY6SGBPWC5JKG4BOOAMUGAGUXTGI6AQ5QOHOJFBG
+
+Shows:
+  - Account balance: 10,000 XLM
+  - Transaction history
+  - All operations
+  - Memo fields with credential/passport hashes
+  - Visual timeline of all blockchain activity
+
+
+2. STELLAR LABORATORY
+---------------------
+https://laboratory.stellar.org/#explorer?resource=accounts&endpoint=single&network=test
+
+Instructions:
+  1. Select "Testnet" network
+  2. Enter public key: GA37VA76NY3RLAKZCY6SGBPWC5JKG4BOOAMUGAGUXTGI6AQ5QOHOJFBG
+  3. Click "Fetch"
+  4. View complete account details
+
+
+3. HORIZON API (Direct Access)
+-------------------------------
+https://horizon-testnet.stellar.org/accounts/GA37VA76NY3RLAKZCY6SGBPWC5JKG4BOOAMUGAGUXTGI6AQ5QOHOJFBG
+
+Command line access:
+curl "https://horizon-testnet.stellar.org/accounts/GA37VA76NY3RLAKZCY6SGBPWC5JKG4BOOAMUGAGUXTGI6AQ5QOHOJFBG"
+
+
+4. TRANSACTION HISTORY
+-----------------------
+https://horizon-testnet.stellar.org/accounts/GA37VA76NY3RLAKZCY6SGBPWC5JKG4BOOAMUGAGUXTGI6AQ5QOHOJFBG/transactions
+
+View all transactions from this account
+
+
+5. OPERATIONS HISTORY
+----------------------
+https://horizon-testnet.stellar.org/accounts/GA37VA76NY3RLAKZCY6SGBPWC5JKG4BOOAMUGAGUXTGI6AQ5QOHOJFBG/operations
+
+View all operations performed by this account
+
+================================================================================
+ACCOUNT DETAILS
+================================================================================
+
+Public Key: GA37VA76NY3RLAKZCY6SGBPWC5JKG4BOOAMUGAGUXTGI6AQ5QOHOJFBG
+Balance: 10,000.0000000 XLM
+Network: Stellar Testnet
+Sequence: 6763473979572224
+Status: Active and Verified
+
+================================================================================
+WHAT YOU CAN VERIFY
+================================================================================
+
+Using the links above, anyone can publicly verify:
+
+✓ Account Existence
+  The account exists on Stellar testnet and is active
+
+✓ Account Balance
+  Current balance: 10,000 XLM (funded by Friendbot)
+
+✓ Transaction History
+  All transactions are publicly visible and immutable
+
+✓ Operation Details
+  Every operation (payment, manage data, etc.) is recorded
+
+✓ Timestamp Verification
+  Last modified: 2025-11-13T23:00:47Z
+
+✓ Memo Fields
+  Transaction memos contain hashes of credentials/passports
+
+✓ Immutability
+  Once written to blockchain, data cannot be altered
+
+================================================================================
+SECURITY NOTES
+================================================================================
+
+PUBLIC KEY (Safe to Share):
+  GA37VA76NY3RLAKZCY6SGBPWC5JKG4BOOAMUGAGUXTGI6AQ5QOHOJFBG
+
+  - Can be freely shared
+  - Required for verification
+  - Cannot be used to spend funds
+  - Cannot sign transactions
+
+SECRET KEY (Never Share):
+  - Stored securely in .env file
+  - Not included in this document
+  - Required only for submitting transactions
+  - Should never be committed to version control
+
+================================================================================
+TESTNET vs MAINNET
+================================================================================
+
+Current Status: TESTNET ONLY
+
+This integration uses Stellar's test network:
+  - XLM has no real-world value
+  - Safe for testing and development
+  - Can be migrated to mainnet for production
+  - All functionality is identical to mainnet
+
+To use mainnet:
+  1. Create mainnet account
+  2. Fund with real XLM
+  3. Update STELLAR_NETWORK=mainnet in .env
+  4. Update STELLAR_SECRET_KEY with mainnet key
+
+================================================================================
+HOW TO USE THESE LINKS
+================================================================================
+
+FOR REVIEWERS:
+1. Click the Stellar Expert link above
+2. Verify the account ID matches
+3. Confirm balance is 10,000 XLM
+4. Review transaction history (if any)
+5. All data is publicly accessible
+
+FOR DEVELOPERS:
+1. Use curl commands to fetch data programmatically
+2. Integrate verification into automated tests
+3. Build applications that verify credentials on-chain
+4. Create public verification pages for end users
+
+FOR END USERS:
+1. Click the Stellar Expert link
+2. Visual interface shows all account activity
+3. No technical knowledge required
+4. No authentication needed
+
+================================================================================
+ADDITIONAL RESOURCES
+================================================================================
+
+Stellar Documentation:
+https://developers.stellar.org/docs
+
+Stellar Expert API:
+https://stellar.expert/explorer/testnet/api/v1/account/GA37VA76NY3RLAKZCY6SGBPWC5JKG4BOOAMUGAGUXTGI6AQ5QOHOJFBG
+
+ProofPass Platform:
+https://github.com/PROOFPASS/ProofPassPlatform
+
+================================================================================
+
+All links are PUBLIC and require NO AUTHENTICATION
+Anyone can verify the data at any time
+All data is IMMUTABLE once written to blockchain
+
+================================================================================

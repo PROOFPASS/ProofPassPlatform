@@ -292,7 +292,7 @@ Create `deploy.sh` for easier deployments:
 
 set -e
 
-echo "🚀 Starting deployment..."
+echo "Starting deployment..."
 
 # Pull latest changes
 git pull origin main
@@ -307,25 +307,25 @@ docker-compose -f docker-compose.production.yml down
 docker-compose -f docker-compose.production.yml up -d
 
 # Wait for services to be healthy
-echo "⏳ Waiting for services to be healthy..."
+echo "Waiting for services to be healthy..."
 sleep 10
 
 # Check health
 if curl -f https://api.proofpass.co/health > /dev/null 2>&1; then
-  echo "✅ API is healthy"
+  echo "[OK] API is healthy"
 else
-  echo "❌ API health check failed"
+  echo "[ERROR] API health check failed"
   exit 1
 fi
 
 if curl -f https://platform.proofpass.co > /dev/null 2>&1; then
-  echo "✅ Platform is healthy"
+  echo "[OK] Platform is healthy"
 else
-  echo "❌ Platform health check failed"
+  echo "[ERROR] Platform health check failed"
   exit 1
 fi
 
-echo "✅ Deployment successful!"
+echo "[SUCCESS] Deployment successful!"
 ```
 
 Make it executable:

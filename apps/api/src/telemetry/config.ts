@@ -91,7 +91,7 @@ export function initializeTelemetry(config: Partial<TelemetryConfig> = {}): Node
     const prometheusExporter = new PrometheusExporter({
       port: telemetryConfig.prometheusPort,
     }, () => {
-      console.log(`📊 Prometheus metrics available at http://localhost:${telemetryConfig.prometheusPort}/metrics`);
+      console.log(`[METRICS] Prometheus metrics available at http://localhost:${telemetryConfig.prometheusPort}/metrics`);
     });
 
     metricReaders.push(
@@ -113,7 +113,7 @@ export function initializeTelemetry(config: Partial<TelemetryConfig> = {}): Node
   // Start SDK
   sdk.start();
 
-  console.log('✅ OpenTelemetry initialized successfully');
+  console.log('[OK] OpenTelemetry initialized successfully');
   console.log(`   Service: ${telemetryConfig.serviceName}`);
   console.log(`   Version: ${telemetryConfig.serviceVersion}`);
   console.log(`   Environment: ${telemetryConfig.environment}`);
@@ -127,7 +127,7 @@ export function initializeTelemetry(config: Partial<TelemetryConfig> = {}): Node
   // Graceful shutdown
   process.on('SIGTERM', async () => {
     await sdk?.shutdown();
-    console.log('🔌 OpenTelemetry shut down successfully');
+    console.log('[SHUTDOWN] OpenTelemetry shut down successfully');
   });
 
   return sdk;

@@ -1,6 +1,6 @@
 # ProofPass Platform - Referencia Rápida
 
-## 🚀 Comandos Más Usados
+## Comandos Más Usados
 
 ### Desarrollo Local
 ```bash
@@ -60,7 +60,7 @@ npm run build:api
 npm run build
 ```
 
-## 📂 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 ProofPassPlatform/
@@ -80,7 +80,7 @@ ProofPassPlatform/
 └── examples/          # Ejemplos y demos
 ```
 
-## 🔑 Archivos Importantes
+## Archivos Importantes
 
 | Archivo | Propósito |
 |---------|-----------|
@@ -93,7 +93,7 @@ ProofPassPlatform/
 | `.env.docker` | Configuración para Docker |
 | `docker-compose.yml` | Orquestación de servicios |
 
-## 🌐 URLs y Puertos
+## URLs y Puertos
 
 | Servicio | Puerto | URL |
 |----------|--------|-----|
@@ -104,7 +104,7 @@ ProofPassPlatform/
 | Prisma Studio | 5555 | http://localhost:5555 |
 | API Swagger | 3000 | http://localhost:3000/documentation |
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Todos los tests
@@ -122,7 +122,7 @@ npm run test:coverage
 npm run test:watch
 ```
 
-## 🐳 Docker Commands
+## Docker Commands
 
 ```bash
 # Build imagen API
@@ -150,7 +150,7 @@ docker-compose restart api
 docker-compose down -v
 ```
 
-## 📦 Dependencias Principales
+## Dependencias Principales
 
 ### API
 - **Fastify** 4.25.2 - Framework web
@@ -171,7 +171,7 @@ docker-compose down -v
 - **@proofpass/zk-toolkit** - ZK proofs
 - **@proofpass/blockchain** - Multi-chain
 
-## 🔧 Troubleshooting Rápido
+## Troubleshooting Rápido
 
 ### Docker no inicia
 ```bash
@@ -209,7 +209,7 @@ lsof -i :3000
 kill -9 <PID>
 ```
 
-## 📊 CI/CD
+## CI/CD
 
 ### GitHub Actions
 - **Trigger**: Push/PR a main o develop
@@ -226,7 +226,7 @@ kill -9 <PID>
 - **Tags**: latest, {sha}
 - **Limpieza**: Mantiene 2 versiones
 
-## 🔐 Variables de Entorno
+## Variables de Entorno
 
 ### API (.env)
 ```bash
@@ -243,7 +243,7 @@ NEXTAUTH_URL=http://localhost:3001
 NEXTAUTH_SECRET=...
 ```
 
-## 📚 Documentación Completa
+## Documentación Completa
 
 - **Getting Started**: `docs/GETTING_STARTED.md`
 - **Deployment**: `docs/DEPLOYMENT.md`
@@ -252,7 +252,7 @@ NEXTAUTH_SECRET=...
 - **Security**: `docs/SECURITY.md`
 - **Architecture**: `docs/architecture/`
 
-## 🎯 Flujos de Trabajo Comunes
+## Flujos de Trabajo Comunes
 
 ### Nuevo Feature
 ```bash
@@ -285,7 +285,7 @@ NEXTAUTH_SECRET=...
 6. # Ver logs
 ```
 
-## 💡 Tips
+## Tips
 
 - Ejecuta `check-and-fix.sh` antes de empezar
 - Usa `test:watch` durante desarrollo
@@ -293,7 +293,7 @@ NEXTAUTH_SECRET=...
 - Usa Prisma Studio para ver la DB
 - Ejecuta tests antes de commits
 
-## 🆘 Ayuda
+## Ayuda
 
 - **Scripts**: `scripts/README.md`
 - **Testing**: `TESTING_AND_DOCKER_SETUP.md`

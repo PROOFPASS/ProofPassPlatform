@@ -2,7 +2,38 @@
   "name": "proofpass-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "Platform for creating verifiable attestations and zero-knowledge proofs on blockchain",
+  "description": "Production-grade platform for creating W3C Verifiable Credentials, zero-knowledge proofs, and digital product passports anchored on blockchain",
+  "keywords": [
+    "verifiable-credentials",
+    "w3c",
+    "blockchain",
+    "zero-knowledge-proofs",
+    "digital-product-passport",
+    "stellar",
+    "attestation",
+    "decentralized-identity",
+    "did",
+    "cryptography"
+  ],
+  "homepage": "https://github.com/PROOFPASS/ProofPassPlatform#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PROOFPASS/ProofPassPlatform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/PROOFPASS/ProofPassPlatform/issues"
+  },
+  "author": {
+    "name": "Federico Boiero",
+    "email": "fboiero@frvm.utn.edu.ar"
+  },
+  "contributors": [
+    {
+      "name": "Federico Boiero",
+      "email": "fboiero@frvm.utn.edu.ar"
+    }
+  ],
+  "license": "AGPL-3.0",
   "workspaces": [
     "apps/*",
     "packages/*"

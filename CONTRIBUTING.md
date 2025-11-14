@@ -24,7 +24,7 @@ This project and everyone participating in it is governed by our [Code of Conduc
 
 ## How Can I Contribute?
 
-### 🐛 Reporting Bugs
+### Reporting Bugs
 
 Before creating bug reports, please check the existing issues to avoid duplicates.
 
@@ -54,7 +54,7 @@ Before creating bug reports, please check the existing issues to avoid duplicate
 - Redis: 7.2.0
 ```
 
-### 💡 Suggesting Enhancements
+### Suggesting Enhancements
 
 Enhancement suggestions are tracked as GitHub issues. When creating an enhancement suggestion:
 
@@ -63,7 +63,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 - Explain why this enhancement would be useful to most ProofPass users
 - List any similar features in other projects (if applicable)
 
-### 📝 Improving Documentation
+### Improving Documentation
 
 Documentation improvements are always welcome! This includes:
 - Fixing typos or clarifying existing docs
@@ -72,7 +72,7 @@ Documentation improvements are always welcome! This includes:
 - Creating tutorials or guides
 - Improving code comments
 
-### 🔧 Code Contributions
+### Code Contributions
 
 We welcome code contributions! See the sections below for technical details.
 
@@ -506,7 +506,7 @@ Don't hesitate to ask! We're here to help:
 - Comment on relevant issues
 - Email the maintainers
 
-**Thank you for contributing to ProofPass! 🎉**
+**Thank you for contributing to ProofPass!**
 
 ---
 

@@ -30,11 +30,11 @@ async function runMigrations() {
 
     for (const migration of migrations) {
       if (executedMigrations.has(migration)) {
-        console.log(`⏭️  Skipping ${migration} (already executed)`);
+        console.log(`[SKIP] ${migration} (already executed)`);
         continue;
       }
 
-      console.log(`▶️  Running ${migration}...`);
+      console.log(`[RUN] ${migration}...`);
 
       const migrationPath = join(__dirname, 'migrations', migration);
       const sql = readFileSync(migrationPath, 'utf-8');
@@ -42,12 +42,12 @@ async function runMigrations() {
       await client.query(sql);
       await client.query('INSERT INTO migrations (name) VALUES ($1)', [migration]);
 
-      console.log(`✅ Completed ${migration}`);
+      console.log(`[OK] Completed ${migration}`);
     }
 
-    console.log('✨ All migrations completed successfully!');
+    console.log('[SUCCESS] All migrations completed successfully!');
   } catch (error) {
-    console.error('❌ Migration failed:', error);
+    console.error('[ERROR] Migration failed:', error);
     throw error;
   } finally {
     client.release();

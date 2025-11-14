@@ -5,7 +5,7 @@
 
 set -e
 
-echo "🚀 ProofPass Platform - Quick Start"
+echo "[START] ProofPass Platform - Quick Start"
 echo "===================================="
 echo ""
 
@@ -18,26 +18,26 @@ NC='\033[0m' # No Color
 # Check Node.js version
 NODE_VERSION=$(node -v | cut -d'v' -f2 | cut -d'.' -f1)
 if [ "$NODE_VERSION" -lt 18 ]; then
-  echo -e "${RED}❌ Error: Se requiere Node.js >= 18${NC}"
+  echo -e "${RED}[ERROR] Error: Se requiere Node.js >= 18${NC}"
   echo "Tu versión: $(node -v)"
   exit 1
 fi
 
-echo -e "${GREEN}✓${NC} Node.js $(node -v)"
+echo -e "${GREEN}[OK]${NC} Node.js $(node -v)"
 
 # Step 1: Install dependencies
 echo ""
-echo "📦 Instalando dependencias..."
+echo "[INFO] Instalando dependencias..."
 npm install
 
 # Step 2: Build packages
 echo ""
-echo "🔨 Compilando packages..."
+echo "[INFO] Compilando packages..."
 npm run build:packages
 
 # Step 3: Check for PostgreSQL
 echo ""
-echo "🐘 Verificando PostgreSQL..."
+echo "[INFO] Verificando PostgreSQL..."
 
 if command -v docker &> /dev/null; then
   echo "   Docker encontrado. ¿Quieres usar PostgreSQL con Docker? (y/n)"
@@ -63,7 +63,7 @@ if command -v docker &> /dev/null; then
       sleep 5
     fi
 
-    echo -e "${GREEN}✓${NC} PostgreSQL corriendo en Docker"
+    echo -e "${GREEN}[OK]${NC} PostgreSQL corriendo en Docker"
     DATABASE_URL="postgresql://proofpass:dev_password_123@localhost:5432/proofpass"
   else
     echo "   Asegúrate de que PostgreSQL esté corriendo localmente"
@@ -77,7 +77,7 @@ fi
 
 # Step 4: Setup .env files
 echo ""
-echo "⚙️  Configurando archivos .env..."
+echo "[INFO] Configurando archivos .env..."
 
 # API .env
 if [ ! -f "apps/api/.env" ]; then
@@ -97,21 +97,21 @@ NODE_ENV="development"
 # STELLAR_SECRET_KEY="SXXXXXX..."
 # ETH_PRIVATE_KEY="0x..."
 EOF
-  echo -e "${GREEN}✓${NC} apps/api/.env creado"
+  echo -e "${GREEN}[OK]${NC} apps/api/.env creado"
 else
-  echo -e "${YELLOW}!${NC} apps/api/.env ya existe (no se sobrescribió)"
+  echo -e "${YELLOW}[WARNING]${NC} apps/api/.env ya existe (no se sobrescribió)"
 fi
 
 # Blockchain .env
 if [ ! -f "packages/blockchain/.env" ]; then
   echo "   Creando packages/blockchain/.env..."
   cp packages/blockchain/.env.example packages/blockchain/.env
-  echo -e "${GREEN}✓${NC} packages/blockchain/.env creado"
+  echo -e "${GREEN}[OK]${NC} packages/blockchain/.env creado"
 fi
 
 # Step 5: Setup database
 echo ""
-echo "🗄️  Configurando base de datos..."
+echo "[INFO] Configurando base de datos..."
 cd apps/api
 
 # Generate Prisma client
@@ -122,13 +122,13 @@ npx prisma generate
 echo "   Ejecutando migraciones..."
 npx prisma migrate dev --name init
 
-echo -e "${GREEN}✓${NC} Base de datos configurada"
+echo -e "${GREEN}[OK]${NC} Base de datos configurada"
 
 cd ../..
 
 # Step 6: Summary
 echo ""
-echo "✅ Setup completado!"
+echo "[SUCCESS] Setup completado!"
 echo ""
 echo "Para iniciar el proyecto, usa:"
 echo ""
@@ -147,7 +147,7 @@ echo "  Platform: http://localhost:3001"
 echo "  DB UI:    http://localhost:5555"
 echo ""
 echo "Documentación:"
-echo "  📖 Setup local completo: LOCAL_DEVELOPMENT.md"
-echo "  🔗 Testing blockchain:   packages/blockchain/TESTING.md"
+echo "  Setup local completo: LOCAL_DEVELOPMENT.md"
+echo "  Testing blockchain:   packages/blockchain/TESTING.md"
 echo ""
-echo "¡Listo para desarrollar! 🎉"
+echo "¡Listo para desarrollar!"

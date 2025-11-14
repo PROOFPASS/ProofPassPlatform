@@ -39,28 +39,28 @@ interface VCResponse {
 }
 
 async function main() {
-  console.log(chalk.blue.bold('\n🔐 ProofPass Demo - Step 1: Create Verifiable Credential\n'));
+  console.log(chalk.blue.bold('\n[INFO] ProofPass Demo - Step 1: Create Verifiable Credential\n'));
 
   // Validate environment variables
   if (!USER_EMAIL || !USER_PASSWORD) {
-    console.error(chalk.red('❌ Error: Missing USER_EMAIL or USER_PASSWORD in .env file'));
+    console.error(chalk.red('[ERROR] Error: Missing USER_EMAIL or USER_PASSWORD in .env file'));
     process.exit(1);
   }
 
   try {
     // Step 1: Authenticate
-    console.log(chalk.cyan('1️⃣  Authenticating...'));
+    console.log(chalk.cyan('[1/3] Authenticating...'));
     const authResponse = await axios.post<AuthResponse>(`${API_URL}/api/v1/auth/login`, {
       email: USER_EMAIL,
       password: USER_PASSWORD,
     });
 
     const { accessToken, user } = authResponse.data;
-    console.log(chalk.green(`✅ Authenticated as: ${user.email}`));
+    console.log(chalk.green(`[OK] Authenticated as: ${user.email}`));
     console.log(chalk.gray(`   User ID: ${user.id}\n`));
 
     // Step 2: Create Verifiable Credential
-    console.log(chalk.cyan('2️⃣  Creating Verifiable Credential...'));
+    console.log(chalk.cyan('[2/3] Creating Verifiable Credential...'));
 
     const credentialData = {
       type: ['VerifiableCredential', 'ProductCredential'],
@@ -96,8 +96,8 @@ async function main() {
 
     const { id, credential, did, status, createdAt } = vcResponse.data;
 
-    console.log(chalk.green('✅ Verifiable Credential created successfully!\n'));
-    console.log(chalk.yellow('📄 Credential Details:'));
+    console.log(chalk.green('[SUCCESS] Verifiable Credential created successfully!\n'));
+    console.log(chalk.yellow('[INFO] Credential Details:'));
     console.log(chalk.gray(`   ID: ${id}`));
     console.log(chalk.gray(`   DID: ${did}`));
     console.log(chalk.gray(`   Status: ${status}`));
@@ -116,13 +116,13 @@ async function main() {
     const dataPath = join(__dirname, 'demo-data.json');
     writeFileSync(dataPath, JSON.stringify(demoData, null, 2));
 
-    console.log(chalk.green('✅ Demo data saved to: demo-data.json'));
-    console.log(chalk.blue('\n📌 Next step: Run `npm run 2:generate-zkp` to create a zero-knowledge proof\n'));
+    console.log(chalk.green('[OK] Demo data saved to: demo-data.json'));
+    console.log(chalk.blue('\n[INFO] Next step: Run `npm run 2:generate-zkp` to create a zero-knowledge proof\n'));
 
   } catch (error: any) {
-    console.error(chalk.red('\n❌ Error:'), error.response?.data?.message || error.message);
+    console.error(chalk.red('\n[ERROR] Error:'), error.response?.data?.message || error.message);
     if (error.response?.status === 401) {
-      console.log(chalk.yellow('\n💡 Tip: Make sure your USER_EMAIL and USER_PASSWORD are correct in .env'));
+      console.log(chalk.yellow('\n[TIP] Tip: Make sure your USER_EMAIL and USER_PASSWORD are correct in .env'));
       console.log(chalk.yellow('   If you don\'t have an account, register at: POST /api/v1/auth/register\n'));
     }
     process.exit(1);

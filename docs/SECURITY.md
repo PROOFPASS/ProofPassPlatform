@@ -54,13 +54,13 @@ ProofPass implements a defense-in-depth security strategy with multiple layers o
 
 ### Key Security Features
 
-✅ **Defense in Depth:** Multiple security layers
-✅ **Fail Secure:** Errors default to deny access
-✅ **Least Privilege:** Users only access their resources
-✅ **Input Validation:** All inputs validated and sanitized
-✅ **Rate Limiting:** Multi-tier protection against abuse
-✅ **Audit Logging:** All security events logged
-✅ **Secure Defaults:** Security-first configuration
+- **Defense in Depth:** Multiple security layers
+- **Fail Secure:** Errors default to deny access
+- **Least Privilege:** Users only access their resources
+- **Input Validation:** All inputs validated and sanitized
+- **Rate Limiting:** Multi-tier protection against abuse
+- **Audit Logging:** All security events logged
+- **Secure Defaults:** Security-first configuration
 
 ---
 
@@ -81,10 +81,10 @@ ProofPass implements a defense-in-depth security strategy with multiple layers o
 ```
 
 **Security Measures:**
-- ✅ Tokens expire after 24 hours
-- ✅ Secret key stored in environment variables
-- ✅ Tokens signed with HS256 algorithm
-- ✅ No sensitive data in token payload
+- Tokens expire after 24 hours
+- Secret key stored in environment variables
+- Tokens signed with HS256 algorithm
+- No sensitive data in token payload
 
 **Usage:**
 ```typescript
@@ -108,10 +108,10 @@ Example: a1b2c3d4e5f6...(64 chars total)
 ```
 
 **Security Measures:**
-- ✅ Keys are hashed with salt before storage (SHA-256)
-- ✅ Format validation on every request
-- ✅ Rotation mechanism (manual for MVP)
-- ✅ Rate limited separately from user requests
+- Keys are hashed with salt before storage (SHA-256)
+- Format validation on every request
+- Rotation mechanism (manual for MVP)
+- Rate limited separately from user requests
 
 **Best Practices:**
 1. **Never commit API keys to version control**
@@ -138,10 +138,10 @@ const CreateAttestationSchema = z.object({
 ```
 
 **Benefits:**
-- ✅ Type-safe input validation
-- ✅ Automatic TypeScript type inference
-- ✅ Clear error messages
-- ✅ Runtime type checking
+- Type-safe input validation
+- Automatic TypeScript type inference
+- Clear error messages
+- Runtime type checking
 
 ### Input Sanitization
 
@@ -258,11 +258,11 @@ InternalError        // 500 - Server error
 ```
 
 **Security Considerations:**
-- ✅ Never expose stack traces in production
-- ✅ Log all errors with context for investigation
-- ✅ Generic messages for internal errors
-- ✅ Detailed validation errors for client debugging
-- ✅ Request ID for error correlation
+- Never expose stack traces in production
+- Log all errors with context for investigation
+- Generic messages for internal errors
+- Detailed validation errors for client debugging
+- Request ID for error correlation
 
 **What Gets Logged:**
 ```typescript
@@ -324,23 +324,23 @@ img-src 'self' data: https:;
 
 **Parameterized Queries:**
 ```typescript
-// ✅ SAFE - Always use parameterized queries
+// SAFE - Always use parameterized queries
 const result = await query(
   'SELECT * FROM attestations WHERE user_id = $1 AND type = $2',
   [userId, type]
 );
 
-// ❌ UNSAFE - Never concatenate user input
+// UNSAFE - Never concatenate user input
 const result = await query(
   `SELECT * FROM attestations WHERE user_id = '${userId}'`
 );
 ```
 
 **Additional Protection:**
-- ✅ Input validation before queries
-- ✅ SQL injection pattern detection
-- ✅ Least privilege database user
-- ✅ Connection pooling with limits
+- Input validation before queries
+- SQL injection pattern detection
+- Least privilege database user
+- Connection pooling with limits
 
 ### Password Security
 
@@ -455,14 +455,14 @@ return hash === key_hash;
 ```
 
 **What to Log:**
-- ✅ All authentication attempts (success/failure)
-- ✅ Authorization failures
-- ✅ Rate limit violations
-- ✅ Input validation errors
-- ✅ Blockchain transactions
-- ✅ Critical errors
-- ❌ Passwords or sensitive data
-- ❌ Full API keys (log only last 4 chars)
+- All authentication attempts (success/failure)
+- Authorization failures
+- Rate limit violations
+- Input validation errors
+- Blockchain transactions
+- Critical errors
+- NEVER log passwords or sensitive data
+- NEVER log full API keys (log only last 4 chars)
 
 **Log Retention:**
 - Development: 7 days
@@ -505,30 +505,30 @@ STELLAR_SECRET_KEY=<stellar-secret-key>
 
 **Best Practices:**
 ```dockerfile
-# ✅ Use specific versions
+# Use specific versions
 FROM node:18.18.0-alpine
 
-# ✅ Run as non-root user
+# Run as non-root user
 USER node
 
-# ✅ Minimize attack surface
+# Minimize attack surface
 RUN apk --no-cache add dumb-init
 
-# ✅ Health checks
+# Health checks
 HEALTHCHECK --interval=30s CMD node healthcheck.js
 ```
 
 **docker-compose.yml:**
 ```yaml
-# ✅ Network isolation
+# Network isolation
 networks:
   internal:
     driver: bridge
 
-# ✅ Read-only root filesystem
+# Read-only root filesystem
 read_only: true
 
-# ✅ Resource limits
+# Resource limits
 deploy:
   resources:
     limits:
@@ -646,13 +646,13 @@ server {
 ## Additional Resources
 
 **OWASP Top 10 Compliance:**
-- ✅ A01:2021 - Broken Access Control
-- ✅ A02:2021 - Cryptographic Failures
-- ✅ A03:2021 - Injection
-- ✅ A04:2021 - Insecure Design
-- ✅ A05:2021 - Security Misconfiguration
-- ✅ A07:2021 - Identification and Authentication Failures
-- ✅ A09:2021 - Security Logging and Monitoring Failures
+- A01:2021 - Broken Access Control
+- A02:2021 - Cryptographic Failures
+- A03:2021 - Injection
+- A04:2021 - Insecure Design
+- A05:2021 - Security Misconfiguration
+- A07:2021 - Identification and Authentication Failures
+- A09:2021 - Security Logging and Monitoring Failures
 
 **References:**
 - [OWASP API Security Top 10](https://owasp.org/www-project-api-security/)

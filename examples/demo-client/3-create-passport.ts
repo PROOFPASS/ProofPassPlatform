@@ -52,7 +52,7 @@ interface PassportResponse {
 }
 
 async function main() {
-  console.log(chalk.blue.bold('\n🔐 ProofPass Demo - Step 3: Create Product Passport\n'));
+  console.log(chalk.blue.bold('\n[INFO] ProofPass Demo - Step 3: Create Product Passport\n'));
 
   try {
     // Step 1: Load demo data from previous steps
@@ -63,25 +63,25 @@ async function main() {
       const fileContent = readFileSync(dataPath, 'utf-8');
       demoData = JSON.parse(fileContent);
     } catch (error) {
-      console.error(chalk.red('❌ Error: demo-data.json not found'));
-      console.log(chalk.yellow('\n💡 Tip: Run steps 1 and 2 first:'));
+      console.error(chalk.red('[ERROR] Error: demo-data.json not found'));
+      console.log(chalk.yellow('\n[TIP] Tip: Run steps 1 and 2 first:'));
       console.log(chalk.yellow('   npm run 1:create-vc'));
       console.log(chalk.yellow('   npm run 2:generate-zkp\n'));
       process.exit(1);
     }
 
     if (!demoData.zkProofId) {
-      console.error(chalk.red('❌ Error: ZK Proof not found in demo data'));
-      console.log(chalk.yellow('\n💡 Tip: Run `npm run 2:generate-zkp` first\n'));
+      console.error(chalk.red('[ERROR] Error: ZK Proof not found in demo data'));
+      console.log(chalk.yellow('\n[TIP] Tip: Run `npm run 2:generate-zkp` first\n'));
       process.exit(1);
     }
 
-    console.log(chalk.cyan('1️⃣  Loading previous data...'));
+    console.log(chalk.cyan('[1/4] Loading previous data...'));
     console.log(chalk.gray(`   Credential ID: ${demoData.credentialId}`));
     console.log(chalk.gray(`   ZK Proof ID: ${demoData.zkProofId}\n`));
 
     // Step 2: Get or create passport
-    console.log(chalk.cyan('2️⃣  Getting user passport...'));
+    console.log(chalk.cyan('[2/4] Getting user passport...'));
 
     let passport: PassportResponse;
 
@@ -96,7 +96,7 @@ async function main() {
         }
       );
       passport = getResponse.data;
-      console.log(chalk.green(`✅ Found existing passport: ${passport.id}\n`));
+      console.log(chalk.green(`[OK] Found existing passport: ${passport.id}\n`));
     } catch (error: any) {
       if (error.response?.status === 404) {
         // Create new passport
@@ -119,14 +119,14 @@ async function main() {
           }
         );
         passport = createResponse.data;
-        console.log(chalk.green(`✅ Created new passport: ${passport.id}\n`));
+        console.log(chalk.green(`[OK] Created new passport: ${passport.id}\n`));
       } else {
         throw error;
       }
     }
 
     // Step 3: Add credential to passport
-    console.log(chalk.cyan('3️⃣  Adding credential to passport...'));
+    console.log(chalk.cyan('[3/4] Adding credential to passport...'));
 
     const addCredentialResponse = await axios.post(
       `${API_URL}/api/v1/passports/${passport.id}/credentials`,
@@ -141,7 +141,7 @@ async function main() {
       }
     );
 
-    console.log(chalk.green('✅ Credential added to passport!\n'));
+    console.log(chalk.green('[OK] Credential added to passport!\n'));
 
     // Step 4: Get updated passport
     const updatedPassportResponse = await axios.get<PassportResponse>(
@@ -156,7 +156,7 @@ async function main() {
     const updatedPassport = updatedPassportResponse.data;
 
     // Display passport details
-    console.log(chalk.yellow('📋 Passport Details:'));
+    console.log(chalk.yellow('[INFO] Passport Details:'));
     console.log(chalk.gray(`   ID: ${updatedPassport.id}`));
     console.log(chalk.gray(`   Status: ${updatedPassport.status}`));
     console.log(chalk.gray(`   Title: ${updatedPassport.metadata.title}`));
@@ -166,7 +166,7 @@ async function main() {
     console.log(chalk.gray(`   Created: ${new Date(updatedPassport.createdAt).toLocaleString()}\n`));
 
     if (updatedPassport.credentials.length > 0) {
-      console.log(chalk.yellow('📄 Credentials in Passport:'));
+      console.log(chalk.yellow('[INFO] Credentials in Passport:'));
       updatedPassport.credentials.forEach((cred, index) => {
         console.log(chalk.gray(`   ${index + 1}. ${cred.id}`));
         console.log(chalk.gray(`      Type: ${cred.type.join(', ')}`));
@@ -185,10 +185,10 @@ async function main() {
 
     writeFileSync(dataPath, JSON.stringify(updatedData, null, 2));
 
-    console.log(chalk.green('✅ Passport data saved to: demo-data.json'));
-    console.log(chalk.blue('\n📌 Next step: Run `npm run 4:verify-all` to verify all components\n'));
+    console.log(chalk.green('[OK] Passport data saved to: demo-data.json'));
+    console.log(chalk.blue('\n[INFO] Next step: Run `npm run 4:verify-all` to verify all components\n'));
 
-    console.log(chalk.magenta('🎯 What you can do with this passport:'));
+    console.log(chalk.magenta('[INFO] What you can do with this passport:'));
     console.log(chalk.gray('   ✓ Share it via QR code'));
     console.log(chalk.gray('   ✓ Verify credentials independently'));
     console.log(chalk.gray('   ✓ Add more credentials over time'));
@@ -196,11 +196,11 @@ async function main() {
     console.log(chalk.gray('   ✓ Present to verifiers\n'));
 
   } catch (error: any) {
-    console.error(chalk.red('\n❌ Error:'), error.response?.data?.message || error.message);
+    console.error(chalk.red('\n[ERROR] Error:'), error.response?.data?.message || error.message);
     if (error.response?.status === 401) {
-      console.log(chalk.yellow('\n💡 Tip: Your session may have expired. Run `npm run 1:create-vc` again\n'));
+      console.log(chalk.yellow('\n[TIP] Tip: Your session may have expired. Run `npm run 1:create-vc` again\n'));
     } else if (error.response?.status === 404) {
-      console.log(chalk.yellow('\n💡 Tip: The credential or passport may not exist'));
+      console.log(chalk.yellow('\n[TIP] Tip: The credential or passport may not exist'));
       console.log(chalk.yellow('   Try running the previous steps again\n'));
     }
     process.exit(1);
