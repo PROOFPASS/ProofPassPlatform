@@ -189,15 +189,30 @@ export const ageVerificationTemplate: AttestationTemplate = {
   defaultExpiration: 30 * 24 * 60 * 60 // 30 days
 };
 
+// Import extended templates
+import { supplyChainTemplates } from './supply-chain-templates';
+import { productPassportTemplate } from './product-passport-template';
+import { healthCertificationTemplates } from './health-certification-templates';
+
 /**
  * All templates registry
  */
 export const templates: Record<string, AttestationTemplate> = {
+  // Core templates
   identity: identityTemplate,
   education: educationTemplate,
   employment: employmentTemplate,
   license: licenseTemplate,
   'age-verification': ageVerificationTemplate,
+
+  // Supply chain templates
+  ...supplyChainTemplates,
+
+  // Product passport
+  'product-passport': productPassportTemplate,
+
+  // Health and certification templates
+  ...healthCertificationTemplates,
 };
 
 /**
@@ -277,3 +292,18 @@ export type EducationClaims = z.infer<typeof educationSchema>;
 export type EmploymentClaims = z.infer<typeof employmentSchema>;
 export type LicenseClaims = z.infer<typeof licenseSchema>;
 export type AgeVerificationClaims = z.infer<typeof ageVerificationSchema>;
+
+// Re-export supply chain templates and types
+export * from './supply-chain-templates';
+
+// Re-export product passport template and types
+export * from './product-passport-template';
+
+// Re-export health and certification templates and types
+export * from './health-certification-templates';
+
+// Re-export batch creation utilities
+export * from './batch-creation';
+
+// Re-export VC integration helpers
+export * from './vc-integration';
