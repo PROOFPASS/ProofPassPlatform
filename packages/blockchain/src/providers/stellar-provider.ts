@@ -3,7 +3,6 @@
  */
 
 import * as StellarSdk from '@stellar/stellar-sdk';
-import { createHash } from 'crypto';
 import { BlockchainProvider } from '../base-provider';
 import {
   BlockchainNetwork,

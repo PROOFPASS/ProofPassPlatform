@@ -4,7 +4,7 @@
  */
 
 import type { FastifyRequest, FastifyReply, FastifyInstance } from 'fastify';
-import { trace, context, SpanStatusCode } from '@opentelemetry/api';
+import { trace, context, SpanStatusCode, Span } from '@opentelemetry/api';
 import { recordHttpRequest } from './metrics';
 
 const tracer = trace.getTracer('proofpass-api-http');
@@ -38,7 +38,7 @@ export function telemetryMiddleware(
       return;
     }
 
-    let span;
+    let span: Span | undefined;
 
     // Start tracing span
     if (config.enableTracing) {
@@ -58,55 +58,12 @@ export function telemetryMiddleware(
       });
     }
 
-    // Hook para registrar cuando la respuesta termine
-    reply.addHook('onSend', async (_request, reply, payload) => {
-      const duration = Date.now() - startTime;
-      const statusCode = reply.statusCode;
-
-      // Record metrics
-      if (config.enableMetrics) {
-        const requestSize = request.headers['content-length']
-          ? parseInt(request.headers['content-length'], 10)
-          : undefined;
-
-        const responseSize = payload ? Buffer.byteLength(payload.toString()) : undefined;
-
-        recordHttpRequest(request.method, route, statusCode, duration, requestSize, responseSize);
-      }
-
-      // Update span with response data
-      if (span) {
-        span.setAttributes({
-          'http.status_code': statusCode,
-          'http.response_content_length': reply.getHeader('content-length') || 0,
-        });
-
-        // Set span status based on HTTP status code
-        if (statusCode >= 400) {
-          span.setStatus({
-            code: SpanStatusCode.ERROR,
-            message: `HTTP ${statusCode}`,
-          });
-        } else {
-          span.setStatus({ code: SpanStatusCode.OK });
-        }
-
-        span.end();
-      }
-
-      return payload;
-    });
-
-    // Hook para manejar errores
-    reply.addHook('onError', async (_request, _reply, error) => {
-      if (span) {
-        span.recordException(error);
-        span.setStatus({
-          code: SpanStatusCode.ERROR,
-          message: error.message,
-        });
-      }
-    });
+    // Store span reference for use in response handling
+    // Note: In a real implementation, you'd use request.telemetry.span
+    (request as any)._telemetrySpan = span;
+    (request as any)._telemetryStartTime = startTime;
+    (request as any)._telemetryConfig = config;
+    (request as any)._telemetryRoute = route;
   };
 }
 
@@ -117,7 +74,66 @@ export async function telemetryPlugin(
   fastify: FastifyInstance,
   options: Partial<TelemetryMiddlewareOptions> = {}
 ): Promise<void> {
+  const config = { ...defaultOptions, ...options };
+
   fastify.addHook('onRequest', telemetryMiddleware(options));
+
+  // Hook para registrar cuando la respuesta termine
+  fastify.addHook('onSend', async (request: FastifyRequest, reply: FastifyReply, payload: unknown) => {
+    const span = (request as any)._telemetrySpan as Span | undefined;
+    const startTime = (request as any)._telemetryStartTime as number | undefined;
+    const route = (request as any)._telemetryRoute as string | undefined;
+
+    if (!startTime || !route) return payload;
+
+    const duration = Date.now() - startTime;
+    const statusCode = reply.statusCode;
+
+    // Record metrics
+    if (config.enableMetrics) {
+      const requestSize = request.headers['content-length']
+        ? parseInt(request.headers['content-length'], 10)
+        : undefined;
+
+      const responseSize = payload ? Buffer.byteLength(String(payload)) : undefined;
+
+      recordHttpRequest(request.method, route, statusCode, duration, requestSize, responseSize);
+    }
+
+    // Update span with response data
+    if (span) {
+      span.setAttributes({
+        'http.status_code': statusCode,
+        'http.response_content_length': reply.getHeader('content-length') || 0,
+      });
+
+      // Set span status based on HTTP status code
+      if (statusCode >= 400) {
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: `HTTP ${statusCode}`,
+        });
+      } else {
+        span.setStatus({ code: SpanStatusCode.OK });
+      }
+
+      span.end();
+    }
+
+    return payload;
+  });
+
+  // Hook para manejar errores
+  fastify.addHook('onError', async (request: FastifyRequest, _reply: FastifyReply, error: Error) => {
+    const span = (request as any)._telemetrySpan as Span | undefined;
+    if (span) {
+      span.recordException(error);
+      span.setStatus({
+        code: SpanStatusCode.ERROR,
+        message: error.message,
+      });
+    }
+  });
 
   // Agregar contexto de telemetría al request
   fastify.decorateRequest('telemetry', {

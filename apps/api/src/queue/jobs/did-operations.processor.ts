@@ -7,6 +7,8 @@ import type { Job } from 'bullmq';
 import type { DIDOperationJobData, DIDOperationJobResult } from '../types';
 import { recordDIDOperation } from '../../telemetry/metrics';
 import { addSpanEvent, withSpan } from '../../telemetry/middleware';
+import { queueManager } from '../queue-manager';
+import { QueueName } from '../config';
 
 /**
  * Process DID operation job
@@ -80,22 +82,25 @@ export async function processDIDOperation(
 
       // If callback URL is provided, trigger webhook
       if (job.data.callbackUrl) {
-        await job.queue.add(
-          'webhook',
-          {
-            url: job.data.callbackUrl,
-            method: 'POST',
-            payload: {
+        const webhookQueue = queueManager.getQueue(QueueName.WEBHOOKS);
+        if (webhookQueue) {
+          await webhookQueue.add(
+            'webhook',
+            {
+              url: job.data.callbackUrl,
+              method: 'POST',
+              payload: {
+                event: `did.${operation}`,
+                did,
+                operation,
+                completedAt: new Date().toISOString(),
+              },
               event: `did.${operation}`,
-              did,
-              operation,
-              completedAt: new Date().toISOString(),
+              organizationId,
             },
-            event: `did.${operation}`,
-            organizationId,
-          },
-          { priority: 5 }
-        );
+            { priority: 5 }
+          );
+        }
       }
 
       return {

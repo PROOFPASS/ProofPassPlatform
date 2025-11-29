@@ -6,20 +6,24 @@
 import { StellarProvider } from '../src/providers/stellar-provider';
 import * as StellarSdk from '@stellar/stellar-sdk';
 
-// Mock Stellar SDK
+// Mock Stellar SDK - all mock functions must be created inside the factory
 jest.mock('@stellar/stellar-sdk', () => {
+  // Create mocks inside factory to avoid hoisting issues
+  const mockPublicKey = jest.fn(() => 'GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+  const mockLoadAccount = jest.fn();
+  const mockSubmitTransaction = jest.fn();
+  const mockCall = jest.fn();
+  const mockTransaction = jest.fn(() => ({ call: mockCall }));
+  const mockTransactions = jest.fn(() => ({ transaction: mockTransaction }));
+
   const mockKeypair = {
-    publicKey: jest.fn(() => 'GXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'),
+    publicKey: mockPublicKey,
   };
 
   const mockServer = {
-    loadAccount: jest.fn(),
-    submitTransaction: jest.fn(),
-    transactions: jest.fn(() => ({
-      transaction: jest.fn(() => ({
-        call: jest.fn(),
-      })),
-    })),
+    loadAccount: mockLoadAccount,
+    submitTransaction: mockSubmitTransaction,
+    transactions: mockTransactions,
   };
 
   return {
@@ -49,19 +53,29 @@ jest.mock('@stellar/stellar-sdk', () => {
       hash: jest.fn((buffer) => `memo_${buffer.toString('hex')}`),
     },
     BASE_FEE: '100',
+    // Expose mock functions for tests
+    __mocks: {
+      mockCall,
+      mockLoadAccount,
+      mockSubmitTransaction,
+      mockPublicKey,
+    },
   };
 });
 
+// Access the mock functions after the mock is set up
+const getMocks = () => (StellarSdk as any).__mocks;
+
 describe('StellarProvider', () => {
   let provider: StellarProvider;
-  let mockServer: any;
-  let mockKeypair: any;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    const mocks = getMocks();
+    mocks.mockCall.mockReset();
+    mocks.mockLoadAccount.mockReset();
+    mocks.mockSubmitTransaction.mockReset();
     provider = new StellarProvider('stellar-testnet', 'SCXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-    mockServer = (StellarSdk.Horizon.Server as jest.Mock).mock.results[0]?.value;
-    mockKeypair = (StellarSdk.Keypair.fromSecret as jest.Mock).mock.results[0]?.value;
   });
 
   describe('Constructor', () => {
@@ -78,19 +92,20 @@ describe('StellarProvider', () => {
 
   describe('anchorData', () => {
     it('debe anclar datos correctamente', async () => {
+      const mocks = getMocks();
       const mockAccount = {
         sequenceNumber: jest.fn(() => '123'),
       };
 
-      mockServer.loadAccount.mockResolvedValue(mockAccount);
-      mockServer.submitTransaction.mockResolvedValue({
+      mocks.mockLoadAccount.mockResolvedValue(mockAccount);
+      mocks.mockSubmitTransaction.mockResolvedValue({
         hash: 'stellar_tx_hash_123',
         ledger: 12345,
       });
 
       const result = await provider.anchorData('abc123def456', { source: 'test' });
 
-      expect(mockServer.loadAccount).toHaveBeenCalledWith(mockKeypair.publicKey());
+      expect(mocks.mockLoadAccount).toHaveBeenCalledWith(mocks.mockPublicKey());
       expect(StellarSdk.TransactionBuilder).toHaveBeenCalled();
       expect(StellarSdk.Operation.manageData).toHaveBeenCalledWith({
         name: 'proofpass',
@@ -107,7 +122,8 @@ describe('StellarProvider', () => {
     });
 
     it('debe lanzar error si falla el anclaje', async () => {
-      mockServer.loadAccount.mockRejectedValue(new Error('Account not found'));
+      const mocks = getMocks();
+      mocks.mockLoadAccount.mockRejectedValue(new Error('Account not found'));
 
       await expect(provider.anchorData('abc123')).rejects.toThrow('Failed to anchor data on Stellar');
     });
@@ -115,20 +131,21 @@ describe('StellarProvider', () => {
 
   describe('batchAnchorData', () => {
     it('debe anclar múltiples hashes (hasta 100)', async () => {
+      const mocks = getMocks();
       const hashes = Array.from({ length: 50 }, (_, i) => `hash${i}`);
       const mockAccount = {
         sequenceNumber: jest.fn(() => '123'),
       };
 
-      mockServer.loadAccount.mockResolvedValue(mockAccount);
-      mockServer.submitTransaction.mockResolvedValue({
+      mocks.mockLoadAccount.mockResolvedValue(mockAccount);
+      mocks.mockSubmitTransaction.mockResolvedValue({
         hash: 'stellar_batch_hash',
         ledger: 12346,
       });
 
       const result = await provider.batchAnchorData(hashes, { batch: true });
 
-      expect(mockServer.loadAccount).toHaveBeenCalled();
+      expect(mocks.mockLoadAccount).toHaveBeenCalled();
       expect(result).toMatchObject({
         txHash: 'stellar_batch_hash',
         ledger: 12346,
@@ -146,13 +163,14 @@ describe('StellarProvider', () => {
     });
 
     it('debe limitar a 100 operaciones por transacción', async () => {
+      const mocks = getMocks();
       const hashes = Array.from({ length: 150 }, (_, i) => `hash${i}`);
       const mockAccount = {
         sequenceNumber: jest.fn(() => '123'),
       };
 
-      mockServer.loadAccount.mockResolvedValue(mockAccount);
-      mockServer.submitTransaction.mockResolvedValue({
+      mocks.mockLoadAccount.mockResolvedValue(mockAccount);
+      mocks.mockSubmitTransaction.mockResolvedValue({
         hash: 'stellar_batch_hash',
         ledger: 12346,
       });
@@ -171,7 +189,8 @@ describe('StellarProvider', () => {
     });
 
     it('debe lanzar error si batch anchor falla', async () => {
-      mockServer.loadAccount.mockRejectedValue(new Error('Network error'));
+      const mocks = getMocks();
+      mocks.mockLoadAccount.mockRejectedValue(new Error('Network error'));
 
       await expect(provider.batchAnchorData(['hash1', 'hash2'])).rejects.toThrow(
         'Failed to batch anchor on Stellar'
@@ -181,6 +200,7 @@ describe('StellarProvider', () => {
 
   describe('getTransactionStatus', () => {
     it('debe retornar status de transacción confirmada', async () => {
+      const mocks = getMocks();
       const mockTx = {
         hash: 'stellar_tx_hash',
         successful: true,
@@ -189,7 +209,7 @@ describe('StellarProvider', () => {
         fee_charged: '100',
       };
 
-      mockServer.transactions().transaction().call.mockResolvedValue(mockTx);
+      mocks.mockCall.mockResolvedValue(mockTx);
 
       const result = await provider.getTransactionStatus('stellar_tx_hash');
 
@@ -203,9 +223,10 @@ describe('StellarProvider', () => {
     });
 
     it('debe retornar not confirmed si transacción no existe (404)', async () => {
+      const mocks = getMocks();
       const error: any = new Error('Not found');
       error.response = { status: 404 };
-      mockServer.transactions().transaction().call.mockRejectedValue(error);
+      mocks.mockCall.mockRejectedValue(error);
 
       const result = await provider.getTransactionStatus('not_found');
 
@@ -217,7 +238,8 @@ describe('StellarProvider', () => {
     });
 
     it('debe lanzar error para otros errores', async () => {
-      mockServer.transactions().transaction().call.mockRejectedValue(new Error('Network error'));
+      const mocks = getMocks();
+      mocks.mockCall.mockRejectedValue(new Error('Network error'));
 
       await expect(provider.getTransactionStatus('error_tx')).rejects.toThrow(
         'Failed to get transaction status'
@@ -227,33 +249,37 @@ describe('StellarProvider', () => {
 
   describe('verifyAnchor', () => {
     it('debe verificar anchor correctamente', async () => {
+      const mocks = getMocks();
+      // The memo should match the first 32 chars of the dataHash when converted from base64
+      const dataHash = 'abc123def456789012345678901234567890';
       const mockTx = {
         hash: 'stellar_tx_hash',
         successful: true,
-        memo: Buffer.from('abc123def456'.slice(0, 32), 'hex').toString('base64'),
+        memo: Buffer.from(dataHash.slice(0, 32), 'hex').toString('base64'),
         created_at: '2024-01-01T00:00:00Z',
       };
 
-      mockServer.transactions().transaction().call.mockResolvedValue(mockTx);
+      mocks.mockCall.mockResolvedValue(mockTx);
 
-      const result = await provider.verifyAnchor('stellar_tx_hash', 'abc123def456');
+      const result = await provider.verifyAnchor('stellar_tx_hash', dataHash);
 
       expect(result).toMatchObject({
         valid: true,
         txHash: 'stellar_tx_hash',
         network: 'stellar-testnet',
-        dataHash: 'abc123def456',
+        dataHash: dataHash,
       });
     });
 
     it('debe retornar invalid si transacción no fue exitosa', async () => {
+      const mocks = getMocks();
       const mockTx = {
         hash: 'stellar_tx_hash',
         successful: false,
         created_at: '2024-01-01T00:00:00Z',
       };
 
-      mockServer.transactions().transaction().call.mockResolvedValue(mockTx);
+      mocks.mockCall.mockResolvedValue(mockTx);
 
       const result = await provider.verifyAnchor('stellar_tx_hash', 'abc123');
 
@@ -266,22 +292,24 @@ describe('StellarProvider', () => {
     });
 
     it('debe retornar invalid si el memo no coincide', async () => {
+      const mocks = getMocks();
       const mockTx = {
         hash: 'stellar_tx_hash',
         successful: true,
-        memo: Buffer.from('wronghash'.slice(0, 32), 'hex').toString('base64'),
+        memo: Buffer.from('00000000000000000000000000000000', 'hex').toString('base64'),
         created_at: '2024-01-01T00:00:00Z',
       };
 
-      mockServer.transactions().transaction().call.mockResolvedValue(mockTx);
+      mocks.mockCall.mockResolvedValue(mockTx);
 
-      const result = await provider.verifyAnchor('stellar_tx_hash', 'correcthash');
+      const result = await provider.verifyAnchor('stellar_tx_hash', 'ffffffffffffffffffffffffffffffff');
 
       expect(result.valid).toBe(false);
     });
 
     it('debe manejar errores y retornar invalid', async () => {
-      mockServer.transactions().transaction().call.mockRejectedValue(new Error('Error'));
+      const mocks = getMocks();
+      mocks.mockCall.mockRejectedValue(new Error('Error'));
 
       const result = await provider.verifyAnchor('error_tx', 'hash');
 
@@ -296,6 +324,7 @@ describe('StellarProvider', () => {
 
   describe('getBalance', () => {
     it('debe retornar el balance nativo', async () => {
+      const mocks = getMocks();
       const mockAccount = {
         balances: [
           { asset_type: 'native', balance: '1000.5000000' },
@@ -303,7 +332,7 @@ describe('StellarProvider', () => {
         ],
       };
 
-      mockServer.loadAccount.mockResolvedValue(mockAccount);
+      mocks.mockLoadAccount.mockResolvedValue(mockAccount);
 
       const balance = await provider.getBalance();
 
@@ -311,13 +340,14 @@ describe('StellarProvider', () => {
     });
 
     it('debe retornar 0 si no hay balance nativo', async () => {
+      const mocks = getMocks();
       const mockAccount = {
         balances: [
           { asset_type: 'credit_alphanum4', balance: '500' },
         ],
       };
 
-      mockServer.loadAccount.mockResolvedValue(mockAccount);
+      mocks.mockLoadAccount.mockResolvedValue(mockAccount);
 
       const balance = await provider.getBalance();
 

@@ -154,7 +154,7 @@ export async function getBalance(network?: BlockchainNetwork): Promise<{
 
   return {
     balance,
-    network: provider.network,
+    network: provider.getNetwork(),
   };
 }
 
@@ -172,7 +172,7 @@ export async function estimateFee(
 
   return {
     fee,
-    network: provider.network,
+    network: provider.getNetwork(),
   };
 }
 

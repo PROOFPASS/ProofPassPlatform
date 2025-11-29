@@ -7,9 +7,12 @@ import * as vcSigner from '../src/vc-signer-ed25519';
 import * as ed25519Crypto from '../src/ed25519-crypto';
 import type { VerifiableCredential } from '@proofpass/types';
 
+// Type for credentials before signing (without id/proof)
+type UnsignedCredential = Omit<VerifiableCredential, 'id' | 'proof'>;
+
 describe('VC Signer Ed25519', () => {
   let keyPair: ed25519Crypto.KeyPair;
-  let testCredential: VerifiableCredential;
+  let testCredential: UnsignedCredential;
 
   beforeAll(async () => {
     keyPair = await ed25519Crypto.generateKeyPair();
@@ -29,7 +32,7 @@ describe('VC Signer Ed25519', () => {
   describe('signCredentialEd25519', () => {
     it('debe firmar credential con Uint8Array secret key', async () => {
       const signed = await vcSigner.signCredentialEd25519({
-        credential: testCredential,
+        credential: testCredential as unknown as VerifiableCredential,
         secretKey: keyPair.secretKey,
       });
 
@@ -46,7 +49,7 @@ describe('VC Signer Ed25519', () => {
       const secretHex = ed25519Crypto.secretKeyToHex(keyPair.secretKey);
 
       const signed = await vcSigner.signCredentialEd25519({
-        credential: testCredential,
+        credential: testCredential as unknown as VerifiableCredential,
         secretKey: secretHex,
       });
 
@@ -56,7 +59,7 @@ describe('VC Signer Ed25519', () => {
 
     it('debe setear el issuer como DID derivado de la clave', async () => {
       const signed = await vcSigner.signCredentialEd25519({
-        credential: testCredential,
+        credential: testCredential as unknown as VerifiableCredential,
         secretKey: keyPair.secretKey,
       });
 
@@ -67,7 +70,7 @@ describe('VC Signer Ed25519', () => {
       const customVM = 'did:example:123#key-1';
 
       const signed = await vcSigner.signCredentialEd25519({
-        credential: testCredential,
+        credential: testCredential as unknown as VerifiableCredential,
         secretKey: keyPair.secretKey,
         verificationMethod: customVM,
       });
@@ -77,7 +80,7 @@ describe('VC Signer Ed25519', () => {
 
     it('debe derivar verificationMethod del DID si no se proporciona', async () => {
       const signed = await vcSigner.signCredentialEd25519({
-        credential: testCredential,
+        credential: testCredential as unknown as VerifiableCredential,
         secretKey: keyPair.secretKey,
       });
 
@@ -95,7 +98,7 @@ describe('VC Signer Ed25519', () => {
       };
 
       const signed = await vcSigner.signCredentialEd25519({
-        credential: credWithProof,
+        credential: credWithProof as unknown as VerifiableCredential,
         secretKey: keyPair.secretKey,
       });
 
@@ -104,13 +107,14 @@ describe('VC Signer Ed25519', () => {
     });
 
     it('debe crear signature determinística para mismo credential', async () => {
+      const fixedDateCred = { ...testCredential, issuanceDate: '2024-01-01T00:00:00Z' } as unknown as VerifiableCredential;
       const signed1 = await vcSigner.signCredentialEd25519({
-        credential: { ...testCredential, issuanceDate: '2024-01-01T00:00:00Z' },
+        credential: fixedDateCred,
         secretKey: keyPair.secretKey,
       });
 
       const signed2 = await vcSigner.signCredentialEd25519({
-        credential: { ...testCredential, issuanceDate: '2024-01-01T00:00:00Z' },
+        credential: fixedDateCred,
         secretKey: keyPair.secretKey,
       });
 
@@ -124,7 +128,7 @@ describe('VC Signer Ed25519', () => {
 
     beforeAll(async () => {
       signedCredential = await vcSigner.signCredentialEd25519({
-        credential: testCredential,
+        credential: testCredential as unknown as VerifiableCredential,
         secretKey: keyPair.secretKey,
       });
     });
@@ -162,7 +166,7 @@ describe('VC Signer Ed25519', () => {
       const credWithoutProof = { ...signedCredential, proof: undefined };
 
       const result = await vcSigner.verifyCredentialEd25519({
-        credential: credWithoutProof,
+        credential: credWithoutProof as any,
       });
 
       expect(result.verified).toBe(false);
@@ -272,7 +276,7 @@ describe('VC Signer Ed25519', () => {
 
   describe('hashCredentialForAnchor', () => {
     it('debe crear hash SHA-256 del credential', () => {
-      const hash = vcSigner.hashCredentialForAnchor(testCredential);
+      const hash = vcSigner.hashCredentialForAnchor(testCredential as unknown as VerifiableCredential);
 
       expect(typeof hash).toBe('string');
       expect(hash).toMatch(/^[0-9a-f]{64}$/);
@@ -280,29 +284,31 @@ describe('VC Signer Ed25519', () => {
     });
 
     it('debe crear hash determinístico para mismo credential', () => {
-      const hash1 = vcSigner.hashCredentialForAnchor(testCredential);
-      const hash2 = vcSigner.hashCredentialForAnchor(testCredential);
+      const cred = testCredential as unknown as VerifiableCredential;
+      const hash1 = vcSigner.hashCredentialForAnchor(cred);
+      const hash2 = vcSigner.hashCredentialForAnchor(cred);
 
       expect(hash1).toBe(hash2);
     });
 
     it('debe crear hashes diferentes para credentials diferentes', () => {
+      const cred1 = testCredential as unknown as VerifiableCredential;
       const cred2 = {
         ...testCredential,
         credentialSubject: {
           id: 'did:example:different',
           name: 'Different Subject',
         },
-      };
+      } as unknown as VerifiableCredential;
 
-      const hash1 = vcSigner.hashCredentialForAnchor(testCredential);
+      const hash1 = vcSigner.hashCredentialForAnchor(cred1);
       const hash2 = vcSigner.hashCredentialForAnchor(cred2);
 
       expect(hash1).not.toBe(hash2);
     });
 
     it('debe incluir proof en el hash', async () => {
-      const unsigned = { ...testCredential };
+      const unsigned = { ...testCredential } as unknown as VerifiableCredential;
       const signed = await vcSigner.signCredentialEd25519({
         credential: unsigned,
         secretKey: keyPair.secretKey,
@@ -320,8 +326,8 @@ describe('VC Signer Ed25519', () => {
       // 1. Generate new keypair
       const kp = await ed25519Crypto.generateKeyPair();
 
-      // 2. Create credential
-      const credential: VerifiableCredential = {
+      // 2. Create credential (without id/proof - will be added during signing)
+      const credential = {
         '@context': ['https://www.w3.org/2018/credentials/v1'],
         type: ['VerifiableCredential', 'TestCredential'],
         issuer: 'placeholder',
@@ -330,7 +336,7 @@ describe('VC Signer Ed25519', () => {
           id: 'did:example:alice',
           achievement: 'Completed testing course',
         },
-      };
+      } as unknown as VerifiableCredential;
 
       // 3. Sign credential
       const signed = await vcSigner.signCredentialEd25519({
@@ -358,7 +364,7 @@ describe('VC Signer Ed25519', () => {
 
       // 2. Sign with hex secret key
       const signed = await vcSigner.signCredentialEd25519({
-        credential: testCredential,
+        credential: testCredential as unknown as VerifiableCredential,
         secretKey: secretHex,
       });
 
@@ -374,7 +380,7 @@ describe('VC Signer Ed25519', () => {
     it('debe detectar modificación después de firma', async () => {
       // 1. Sign
       const signed = await vcSigner.signCredentialEd25519({
-        credential: testCredential,
+        credential: testCredential as unknown as VerifiableCredential,
         secretKey: keyPair.secretKey,
       });
 
@@ -428,12 +434,12 @@ describe('VC Signer Ed25519', () => {
       };
 
       const signed1 = await vcSigner.signCredentialEd25519({
-        credential: cred1,
+        credential: cred1 as unknown as VerifiableCredential,
         secretKey: keyPair.secretKey,
       });
 
       const signed2 = await vcSigner.signCredentialEd25519({
-        credential: cred2 as any,
+        credential: cred2 as unknown as VerifiableCredential,
         secretKey: keyPair.secretKey,
       });
 

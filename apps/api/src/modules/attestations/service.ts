@@ -5,7 +5,7 @@ import {
   createCredential,
   issueVC,
   verifyVC,
-  hashCredential,
+  importDIDKeyPair,
 } from '@proofpass/vc-toolkit';
 import { config } from '../../config/env';
 import QRCode from 'qrcode';
@@ -81,8 +81,12 @@ export async function createAttestation(
   userId: string
 ): Promise<Attestation> {
   // Get user's DID from DID Manager (reuses existing DID or creates primary one)
-  const { did: userDID, keyPair: issuerKeyPair } = await getDIDForSigning(userId);
+  const { did: userDID, keyPair: rawKeyPair } = await getDIDForSigning(userId);
   const issuerDID = userDID.did;
+
+  // Convert the raw key pair to DIDKeyPair format for vc-toolkit
+  const privateKeyHex = Buffer.from(rawKeyPair.secretKey).toString('hex');
+  const issuerKeyPair = importDIDKeyPair(privateKeyHex);
 
   // Create W3C-compliant Verifiable Credential
   const credential = createCredential({
@@ -90,7 +94,6 @@ export async function createAttestation(
     subjectDID: data.subject,
     credentialSubject: data.claims,
     type: [data.type],
-    expirationDate: data.expirationDate, // Optional expiration
   });
 
   // Issue and sign the credential as a JWT (W3C standard)
@@ -110,6 +113,10 @@ export async function createAttestation(
   };
   const qrCode = await QRCode.toDataURL(JSON.stringify(qrData));
 
+  // Default to stellar-testnet if not specified
+  const defaultNetwork: BCNetwork = 'stellar-testnet';
+  const networkToUse = data.blockchain_network || defaultNetwork;
+
   // Insert into database (initially without blockchain hash)
   const result = await query(
     `INSERT INTO attestations
@@ -124,7 +131,7 @@ export async function createAttestation(
       JSON.stringify(data.claims),
       new Date().toISOString(),
       vcJWT, // Store as JWT string (W3C standard format)
-      data.blockchain_network || 'stellar',
+      networkToUse,
       qrCode,
       'pending',
       userId,
@@ -134,9 +141,8 @@ export async function createAttestation(
   const attestation = result.rows[0];
 
   // Anchor to blockchain asynchronously (supports Stellar, Optimism, Arbitrum)
-  const networkToAnchor = (data.blockchain_network || 'stellar') as BCNetwork;
-  anchorToBlockchain(attestation.id, vcJWT, networkToAnchor).catch((err) => {
-    console.error(`Failed to anchor to ${networkToAnchor}:`, err);
+  anchorToBlockchain(attestation.id, vcJWT, networkToUse as BCNetwork).catch((err) => {
+    console.error(`Failed to anchor to ${networkToUse}:`, err);
   });
 
   return mapDBRowToAttestation(attestation);
@@ -150,7 +156,9 @@ async function anchorToBlockchain(
   try {
     const manager = getBlockchainManager();
     const provider = manager.getProvider(network);
-    const credentialHash = hashCredential(credential);
+    // Hash the credential JWT string for blockchain anchoring
+    const crypto = require('crypto');
+    const credentialHash = crypto.createHash('sha256').update(credential).digest('hex');
 
     // Anchor to blockchain (Stellar, Optimism, or Arbitrum)
     const result = await provider.anchorData(credentialHash);
@@ -232,8 +240,11 @@ export async function verifyAttestation(attestationId: string): Promise<{
   const attestation = mapDBRowToAttestation(result.rows[0]);
   const errors: string[] = [];
 
+  // Get the raw credential string (JWT) from the database row
+  const credentialJWT: string = result.rows[0].credential;
+
   // Verify W3C Verifiable Credential JWT
-  const vcVerification = await verifyVC(attestation.credential);
+  const vcVerification = await verifyVC(credentialJWT);
 
   if (!vcVerification.verified) {
     errors.push(vcVerification.error || 'VC verification failed');
@@ -246,13 +257,15 @@ export async function verifyAttestation(attestationId: string): Promise<{
     try {
       const manager = getBlockchainManager();
       const provider = manager.getProvider(attestation.blockchain_network as BCNetwork);
-      const credentialHash = hashCredential(attestation.credential);
+      // Hash the JWT string directly for blockchain verification
+      const crypto = require('crypto');
+      const credentialHash = crypto.createHash('sha256').update(credentialJWT).digest('hex');
 
       const verificationResult = await provider.verifyAnchor(
         attestation.blockchain_tx_hash,
         credentialHash
       );
-      blockchainVerified = verificationResult.verified;
+      blockchainVerified = verificationResult.valid;
     } catch (error) {
       console.error(`Blockchain verification error on ${attestation.blockchain_network}:`, error);
     }

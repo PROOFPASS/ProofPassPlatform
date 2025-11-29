@@ -182,8 +182,11 @@ export async function verifyZKProof(proofId: string): Promise<{
     throw new Error('Proof not found');
   }
 
-  // Parse public inputs to get publicSignals
-  const publicInputsData = JSON.parse(zkProof.public_inputs);
+  // Parse public inputs to get publicSignals (handle both string and object)
+  const publicInputsData =
+    typeof zkProof.public_inputs === 'string'
+      ? JSON.parse(zkProof.public_inputs)
+      : zkProof.public_inputs;
   const publicSignals = publicInputsData.publicSignals;
 
   // Verify the proof using circuit-specific verification

@@ -57,6 +57,18 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
+    metadata: [
+      {name: 'keywords', content: 'verifiable credentials, zero knowledge proofs, blockchain, W3C, DID, digital identity, supply chain, product passports'},
+      {name: 'twitter:card', content: 'summary_large_image'},
+      {property: 'og:type', content: 'website'},
+    ],
+    announcementBar: {
+      id: 'stellar_live',
+      content: 'Stellar blockchain integration is now live! <a href="/ProofPassPlatform/docs/getting-started">Get Started</a>',
+      backgroundColor: '#25c2a0',
+      textColor: '#fff',
+      isCloseable: true,
+    },
     navbar: {
       title: 'ProofPass',
       logo: {
@@ -68,7 +80,17 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Documentation',
+          label: 'Docs',
+        },
+        {
+          to: '/docs/api-reference',
+          label: 'API',
+          position: 'left',
+        },
+        {
+          to: '/docs/getting-started',
+          label: 'Quick Start',
+          position: 'left',
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
@@ -82,7 +104,7 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Documentation',
           items: [
             {
               label: 'Getting Started',
@@ -94,7 +116,32 @@ const config: Config = {
             },
             {
               label: 'Architecture',
-              to: '/docs/architecture',
+              to: '/docs/api-architecture',
+            },
+            {
+              label: 'Security',
+              to: '/docs/security',
+            },
+          ],
+        },
+        {
+          title: 'Technology',
+          items: [
+            {
+              label: 'API Architecture',
+              to: '/docs/api-architecture',
+            },
+            {
+              label: 'SaaS Architecture',
+              to: '/docs/saas-architecture',
+            },
+            {
+              label: 'DevOps Guide',
+              to: '/docs/devops-guide',
+            },
+            {
+              label: 'Docker & Testing',
+              to: '/docs/docker-testing',
             },
           ],
         },
@@ -106,17 +153,17 @@ const config: Config = {
               href: 'https://github.com/PROOFPASS/ProofPassPlatform',
             },
             {
-              label: 'Code of Conduct',
-              to: '/docs/code-of-conduct',
-            },
-            {
               label: 'Contributing',
               to: '/docs/contributing',
+            },
+            {
+              label: 'Code of Conduct',
+              to: '/docs/code-of-conduct',
             },
           ],
         },
         {
-          title: 'More',
+          title: 'About',
           items: [
             {
               label: 'Blog',
@@ -127,13 +174,13 @@ const config: Config = {
               to: '/docs/dpg-submission',
             },
             {
-              label: 'Security',
-              to: '/docs/security',
+              label: 'Pricing Plans',
+              to: '/docs/pricing-plans',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} ProofPass Platform. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} ProofPass Platform. A Digital Public Good. Open Source (AGPL-3.0).`,
     },
     prism: {
       theme: prismThemes.github,

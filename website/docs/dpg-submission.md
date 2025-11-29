@@ -858,7 +858,7 @@ For questions about this DPG submission:
 
 **Document Version:** 1.0.0
 **Last Updated:** October 28, 2024
-**Author:** Federico Boiero <fboiero@frvm.utn.edu.ar>
+**Author:** Federico Boiero (`fboiero@frvm.utn.edu.ar`)
 **Status:** Ready for DPGA Submission
 
 ---

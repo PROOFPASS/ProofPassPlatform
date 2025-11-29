@@ -36,6 +36,12 @@ import { healthSchema, readinessSchema } from './schemas';
 
 export async function buildApp(): Promise<FastifyInstance> {
   const server = Fastify({
+    ajv: {
+      customOptions: {
+        // Allow OpenAPI 'example' keyword in schemas (used for documentation)
+        strict: false,
+      },
+    },
     logger: process.env.NODE_ENV === 'test' ? false : {
       level: config.app.logLevel,
       transport:

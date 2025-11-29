@@ -62,7 +62,7 @@ export const AttestationFactory = {
       },
       issued_at: new Date(),
       credential: VerifiableCredentialFactory.build(),
-      blockchain_network: 'stellar',
+      blockchain_network: 'stellar-testnet',
       status: 'pending',
       created_at: new Date(),
       updated_at: new Date(),
@@ -90,7 +90,7 @@ export const CreateAttestationDTOFactory = {
         score: 95,
         inspector: 'Jane Doe',
       },
-      blockchain_network: 'stellar',
+      blockchain_network: 'stellar-testnet',
       ...overrides,
     };
   },
@@ -138,7 +138,7 @@ export const ProductPassportFactory = {
       aggregated_credential: VerifiableCredentialFactory.build({
         type: ['VerifiableCredential', 'ProductPassport'],
       }),
-      blockchain_network: 'stellar',
+      blockchain_network: 'stellar-testnet',
       qr_code: 'data:image/png;base64,test-qr-code',
       created_at: new Date(),
       updated_at: new Date(),
@@ -162,7 +162,7 @@ export const CreateProductPassportDTOFactory = {
       name: 'Test Product',
       description: 'Test product description',
       attestation_ids: ['att-id-1', 'att-id-2'],
-      blockchain_network: 'stellar',
+      blockchain_network: 'stellar-testnet',
       ...overrides,
     };
   },

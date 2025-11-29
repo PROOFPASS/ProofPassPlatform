@@ -1,7 +1,9 @@
+import { BlockchainNetwork } from './attestation';
+
 export interface BlockchainTransaction {
   id: string;
   tx_hash: string;
-  network: 'stellar' | 'optimism';
+  network: BlockchainNetwork;
   type: 'attestation' | 'passport';
   reference_id: string; // attestation_id or passport_id
   status: 'pending' | 'confirmed' | 'failed';

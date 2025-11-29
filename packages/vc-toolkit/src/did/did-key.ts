@@ -61,10 +61,11 @@ export function parseDIDKey(did: string): Uint8Array {
     throw new Error('Invalid did:key format');
   }
 
-  // Extract the multibase-encoded key (after 'did:key:')
-  const keyPart = did.substring(8); // Skip 'did:key:'
+  // Extract the multibase-encoded key (after 'did:key:z')
+  // The 'z' prefix indicates base58btc encoding, so we skip it
+  const keyPart = did.substring(9); // Skip 'did:key:z'
 
-  // Decode base58 (the 'z' prefix indicates base58btc encoding)
+  // Decode base58
   const decoded = decodeBase58(keyPart);
 
   // Remove multicodec prefix (0xed01 for Ed25519)

@@ -1,4 +1,5 @@
 import { VerifiableCredential } from './verifiable-credential';
+import { BlockchainNetwork } from './attestation';
 
 export interface ProductPassport {
   id: string;
@@ -8,7 +9,7 @@ export interface ProductPassport {
   attestation_ids: string[]; // References to attestations
   aggregated_credential: VerifiableCredential;
   blockchain_tx_hash?: string;
-  blockchain_network: 'stellar' | 'optimism';
+  blockchain_network: BlockchainNetwork;
   qr_code?: string;
   created_at: Date;
   updated_at: Date;
@@ -20,7 +21,7 @@ export interface CreateProductPassportDTO {
   name: string;
   description?: string;
   attestation_ids: string[];
-  blockchain_network?: 'stellar' | 'optimism';
+  blockchain_network?: BlockchainNetwork;
 }
 
 export interface PassportVerificationResult {

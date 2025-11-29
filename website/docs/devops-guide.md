@@ -1665,10 +1665,10 @@ Antes de lanzar a producción, verificar:
 3. L3 Engineering: engineering@tudominio.com
 
 **Proveedores:**
-- Hosting: <nombre_proveedor>
+- Hosting: `<nombre_proveedor>`
 - SSL: Let's Encrypt
 - Monitoring: Grafana Cloud (opcional)
-- Backup Storage: <S3/GCS/Azure>
+- Backup Storage: `<S3/GCS/Azure>`
 
 ---
 

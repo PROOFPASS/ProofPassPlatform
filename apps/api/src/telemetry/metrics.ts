@@ -203,7 +203,7 @@ export function recordVCVerified(success: boolean, verifierDid?: string): void {
   }
 }
 
-export function recordDIDOperation(operation: 'create' | 'resolve' | 'update', method: string): void {
+export function recordDIDOperation(operation: 'create' | 'resolve' | 'update' | 'deactivate', method: string): void {
   const metrics = getMetrics();
   metrics.didOperationsTotal.add(1, {
     operation,

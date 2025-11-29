@@ -205,8 +205,24 @@ export async function verifyRangeProof(
 }
 
 /**
+ * Convert a value to a field element for use in circuits
+ * Uses SHA-256 hash truncated to fit within the bn128 field
+ * Handles various input types (string, number, object)
+ */
+function valueToFieldElement(val: unknown): string {
+  if (typeof val === 'number' || typeof val === 'bigint') {
+    return val.toString();
+  }
+  // For other types, hash the JSON string to get a field element
+  const str = typeof val === 'string' ? val : JSON.stringify(val);
+  const hash = crypto.createHash('sha256').update(str).digest('hex');
+  // Take first 31 bytes (62 hex chars) to stay within bn128 field size
+  return BigInt('0x' + hash.slice(0, 62)).toString();
+}
+
+/**
  * Generate a set membership proof using real zk-SNARKs
- * Proves that: value is in the set
+ * Proves that: value is in the set (using pre-hashed comparison)
  */
 export async function generateSetMembershipProof(
   inputs: SetMembershipProofInputs
@@ -214,17 +230,16 @@ export async function generateSetMembershipProof(
   const { value, set } = inputs;
 
   // Validate inputs
-  const valueInSet = set.some((item) => JSON.stringify(item) === JSON.stringify(value));
+  const valueInSet = set.some((item: unknown) => JSON.stringify(item) === JSON.stringify(value));
   if (!valueInSet) {
     throw new Error('Invalid proof: value not in set');
   }
 
-  // Hash each set element using Poseidon (for consistency with circuit)
-  // For simplicity, we'll use SHA-256 here and convert to field element
-  const setHashes = set.map((item) => {
-    const hash = crypto.createHash('sha256').update(JSON.stringify(item)).digest('hex');
-    return hexToFieldElement(hash.slice(0, 32)); // Take first 32 chars
-  });
+  // Convert value to field element (hash)
+  const valueHash = valueToFieldElement(value);
+
+  // Hash each set element using the same method
+  const setHashes = set.map((item: unknown) => valueToFieldElement(item));
 
   // Pad set to max size (10)
   const maxSetSize = 10;
@@ -232,16 +247,13 @@ export async function generateSetMembershipProof(
     setHashes.push('0');
   }
 
-  // Hash the value
-  const valueHash = crypto.createHash('sha256').update(JSON.stringify(value)).digest('hex');
-  const valueFieldElement = hexToFieldElement(valueHash.slice(0, 32));
-
   // Generate random nullifier
   const nullifier = generateNullifier();
 
   // Prepare circuit inputs
+  // Circuit v2 expects pre-hashed valueHash
   const circuitInputs = {
-    value: valueFieldElement,
+    valueHash,
     setHashes,
     nullifier: hexToFieldElement(nullifier),
   };

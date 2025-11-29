@@ -53,12 +53,20 @@ export async function createDIDWeb(options: DIDWebOptions): Promise<{
 
 /**
  * Build did:web identifier from domain and path
+ * Per spec, colons must be percent-encoded as %3A except when used as separators
  */
 export function buildDIDWeb(domain: string, path?: string[]): string {
+  // Encode colons in domain (ports) as %3A per did:web spec
+  const encodedDomain = domain.replace(/:/g, '%3A');
+
   if (path && path.length > 0) {
-    return `did:web:${domain}:${path.join(':')}`;
+    // Encode special characters in path segments
+    const encodedPath = path.map((p) =>
+      p.replace(/:/g, '%3A').replace(/\//g, '%2F')
+    );
+    return `did:web:${encodedDomain}:${encodedPath.join(':')}`;
   }
-  return `did:web:${domain}`;
+  return `did:web:${encodedDomain}`;
 }
 
 /**
@@ -73,8 +81,9 @@ export function didWebToUrl(did: string): string {
   const identifier = did.substring(8);
   const parts = identifier.split(':');
 
-  const domain = parts[0];
-  const path = parts.slice(1);
+  // Decode URL-encoded characters (e.g., %3A -> :)
+  const domain = decodeURIComponent(parts[0]);
+  const path = parts.slice(1).map((p) => decodeURIComponent(p));
 
   if (path.length === 0) {
     // Root level: https://example.com/.well-known/did.json
@@ -91,6 +100,9 @@ export function didWebToUrl(did: string): string {
 export function createDIDDocument(did: string, keyPair: DIDKeyPair): DIDDocument {
   const keyId = `${did}#key-1`;
 
+  // Use multibase format with 'z' prefix for base58btc encoding
+  const publicKeyMultibase = `z${keyPair.publicKeyBase58}`;
+
   return {
     '@context': [
       'https://www.w3.org/ns/did/v1',
@@ -102,7 +114,7 @@ export function createDIDDocument(did: string, keyPair: DIDKeyPair): DIDDocument
         id: keyId,
         type: 'Ed25519VerificationKey2020',
         controller: did,
-        publicKeyBase58: keyPair.publicKeyBase58,
+        publicKeyMultibase,
       },
     ],
     authentication: [keyId],

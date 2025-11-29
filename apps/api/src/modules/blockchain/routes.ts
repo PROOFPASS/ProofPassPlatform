@@ -285,7 +285,7 @@ export async function blockchainRoutes(server: FastifyInstance) {
         request.log.info({
           txHash: result.txHash,
           network: result.network,
-          count: result.count
+          anchored: result.anchored
         }, 'Batch data anchored to blockchain');
 
         return reply.code(201).send(result);
@@ -376,7 +376,7 @@ export async function blockchainRoutes(server: FastifyInstance) {
         const result = await verifyAnchor(data.txHash, dataHash, data.network);
 
         return reply.send({
-          valid: result.verified,
+          valid: result.valid,
           txHash: data.txHash,
           network: result.network,
           dataHash,

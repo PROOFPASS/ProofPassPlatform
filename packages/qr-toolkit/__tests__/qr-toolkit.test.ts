@@ -17,7 +17,12 @@ import QRCode from 'qrcode';
 
 // Mock QRCode library
 jest.mock('qrcode');
-const mockedQRCode = QRCode as jest.Mocked<typeof QRCode>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockedToDataURL = QRCode.toDataURL as jest.Mock<any>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockedToString = QRCode.toString as jest.Mock<any>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const mockedToBuffer = QRCode.toBuffer as jest.Mock<any>;
 
 describe('ProofPass QR Toolkit', () => {
   const testCredentialId = 'cred-123-test';
@@ -83,8 +88,8 @@ describe('ProofPass QR Toolkit', () => {
 
   describe('generateQRCode', () => {
     beforeEach(() => {
-      mockedQRCode.toDataURL.mockResolvedValue('data:image/png;base64,mockdata');
-      mockedQRCode.toString.mockResolvedValue('<svg>mock</svg>');
+      mockedToDataURL.mockResolvedValue('data:image/png;base64,mockdata');
+      mockedToString.mockResolvedValue('<svg>mock</svg>');
     });
 
     it('debe generar QR code con opciones por defecto', async () => {
@@ -95,7 +100,7 @@ describe('ProofPass QR Toolkit', () => {
       expect(result.dataURL).toBe('data:image/png;base64,mockdata');
       expect(result.svg).toBe('<svg>mock</svg>');
 
-      expect(mockedQRCode.toDataURL).toHaveBeenCalledWith(
+      expect(mockedToDataURL).toHaveBeenCalledWith(
         result.url,
         expect.objectContaining({
           width: 300,
@@ -122,7 +127,7 @@ describe('ProofPass QR Toolkit', () => {
       expect(result.format).toBe('openid4vc');
       expect(result.url).toContain('openid-vc://');
 
-      expect(mockedQRCode.toDataURL).toHaveBeenCalledWith(
+      expect(mockedToDataURL).toHaveBeenCalledWith(
         result.url,
         expect.objectContaining({
           width: 500,
@@ -156,7 +161,7 @@ describe('ProofPass QR Toolkit', () => {
     it('debe generar SVG correctamente', async () => {
       const result = await generateQRCode(testCredentialId);
 
-      expect(mockedQRCode.toString).toHaveBeenCalledWith(
+      expect(mockedToString).toHaveBeenCalledWith(
         result.url,
         expect.objectContaining({
           type: 'svg',
@@ -170,7 +175,7 @@ describe('ProofPass QR Toolkit', () => {
       for (const level of levels) {
         await generateQRCode(testCredentialId, { errorCorrectionLevel: level });
 
-        expect(mockedQRCode.toDataURL).toHaveBeenCalledWith(
+        expect(mockedToDataURL).toHaveBeenCalledWith(
           expect.any(String),
           expect.objectContaining({
             errorCorrectionLevel: level,
@@ -182,7 +187,7 @@ describe('ProofPass QR Toolkit', () => {
 
   describe('generateQRBuffer', () => {
     beforeEach(() => {
-      mockedQRCode.toBuffer.mockResolvedValue(Buffer.from('mockbuffer'));
+      mockedToBuffer.mockResolvedValue(Buffer.from('mockbuffer'));
     });
 
     it('debe generar buffer con opciones por defecto', async () => {
@@ -191,7 +196,7 @@ describe('ProofPass QR Toolkit', () => {
       expect(buffer).toBeInstanceOf(Buffer);
       expect(buffer.toString()).toBe('mockbuffer');
 
-      expect(mockedQRCode.toBuffer).toHaveBeenCalledWith(
+      expect(mockedToBuffer).toHaveBeenCalledWith(
         'https://api.proofpass.com/credentials/cred-123-test/verify',
         expect.objectContaining({
           width: 300,
@@ -212,7 +217,7 @@ describe('ProofPass QR Toolkit', () => {
 
       await generateQRBuffer(testCredentialId, options);
 
-      expect(mockedQRCode.toBuffer).toHaveBeenCalledWith(
+      expect(mockedToBuffer).toHaveBeenCalledWith(
         expect.stringContaining('openid-vc://'),
         expect.objectContaining({
           width: 600,
@@ -227,15 +232,15 @@ describe('ProofPass QR Toolkit', () => {
 
       for (const format of formats) {
         await generateQRBuffer(testCredentialId, { format });
-        expect(mockedQRCode.toBuffer).toHaveBeenCalled();
+        expect(mockedToBuffer).toHaveBeenCalled();
       }
     });
   });
 
   describe('generateMultiFormatQRCodes', () => {
     beforeEach(() => {
-      mockedQRCode.toDataURL.mockResolvedValue('data:image/png;base64,mockdata');
-      mockedQRCode.toString.mockResolvedValue('<svg>mock</svg>');
+      mockedToDataURL.mockResolvedValue('data:image/png;base64,mockdata');
+      mockedToString.mockResolvedValue('<svg>mock</svg>');
     });
 
     it('debe generar QR codes en formatos por defecto', async () => {
@@ -410,9 +415,9 @@ describe('ProofPass QR Toolkit', () => {
 
   describe('Flujo end-to-end completo', () => {
     beforeEach(() => {
-      mockedQRCode.toDataURL.mockResolvedValue('data:image/png;base64,mockdata');
-      mockedQRCode.toString.mockResolvedValue('<svg>mock</svg>');
-      mockedQRCode.toBuffer.mockResolvedValue(Buffer.from('mockbuffer'));
+      mockedToDataURL.mockResolvedValue('data:image/png;base64,mockdata');
+      mockedToString.mockResolvedValue('<svg>mock</svg>');
+      mockedToBuffer.mockResolvedValue(Buffer.from('mockbuffer'));
     });
 
     it('debe completar flujo: generate URL -> generate QR -> parse URL', async () => {

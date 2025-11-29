@@ -101,7 +101,9 @@ export function encodeStatusList(statusList: Uint8Array): string {
  */
 export function decodeStatusList(encodedList: string): Uint8Array {
   const compressed = Buffer.from(encodedList, 'base64');
-  return gunzipSync(compressed);
+  const decompressed = gunzipSync(compressed);
+  // Convert Buffer to Uint8Array for consistent type
+  return new Uint8Array(decompressed);
 }
 
 /**

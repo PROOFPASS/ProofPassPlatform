@@ -2,7 +2,7 @@
 
 **Version:** 1.0.0
 **Last Updated:** November 9, 2024
-**Author:** Federico Boiero <fboiero@frvm.utn.edu.ar>
+**Author:** Federico Boiero (`fboiero@frvm.utn.edu.ar`)
 
 ---
 
@@ -1425,6 +1425,6 @@ jobs:
 
 **Document Version:** 1.0.0
 **Last Updated:** November 9, 2024
-**Author:** Federico Boiero <fboiero@frvm.utn.edu.ar>
+**Author:** Federico Boiero (`fboiero@frvm.utn.edu.ar`)
 
 **ProofPass Platform** - A Digital Public Good for Trust and Transparency

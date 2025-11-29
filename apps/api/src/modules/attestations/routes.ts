@@ -8,6 +8,7 @@ import {
   verificationResponseSchema,
   errorSchema,
 } from '../../schemas';
+import type { CreateAttestationDTO } from '@proofpass/types';
 
 const createAttestationSchema = z.object({
   subject: z.string(),
@@ -47,7 +48,7 @@ export async function attestationRoutes(server: FastifyInstance) {
     },
     handler: async (request, reply) => {
       try {
-        const data = createAttestationSchema.parse(request.body);
+        const data = createAttestationSchema.parse(request.body) as CreateAttestationDTO;
         const user = request.user as any;
         const attestation = await createAttestation(data, user.id);
 

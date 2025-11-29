@@ -4,39 +4,36 @@ include "circomlib/circuits/comparators.circom";
 include "circomlib/circuits/poseidon.circom";
 
 /*
- * SetMembershipProof Circuit
+ * SetMembershipProof Circuit (v2 - Pre-hashed)
  *
- * Proves that a private value is a member of a predefined set
+ * Proves that a private value hash is a member of a predefined set of hashes
  * without revealing which specific member it is.
  *
+ * This version accepts pre-computed hashes, allowing flexibility in how
+ * values are hashed outside the circuit (e.g., using SHA-256 to field element).
+ *
  * Public Inputs:
- *   - setSize: Size of the set (max 10 for this implementation)
  *   - setHashes[10]: Hashes of the valid set members
  *
  * Private Inputs:
- *   - value: The actual value (kept secret)
+ *   - valueHash: Hash of the actual value (kept secret)
  *   - nullifier: Random value for uniqueness
  *
  * Outputs:
- *   - nullifierHash: Unique identifier
- *   - valid: 1 if value is in set, 0 otherwise
+ *   - nullifierHash: Unique identifier for the proof
+ *   - valid: 1 if valueHash is in setHashes, 0 otherwise
  */
 template SetMembershipProof(maxSetSize) {
     // Private inputs
-    signal input value;
+    signal input valueHash;  // Pre-computed hash of the value
     signal input nullifier;
 
-    // Public inputs
+    // Public inputs - the set of valid hashes
     signal input setHashes[maxSetSize];
 
     // Public outputs
     signal output nullifierHash;
     signal output valid;
-
-    // Hash the input value
-    component valueHasher = Poseidon(1);
-    valueHasher.inputs[0] <== value;
-    signal valueHash <== valueHasher.out;
 
     // Check membership: at least one hash must match
     signal matchResults[maxSetSize];
@@ -64,13 +61,13 @@ template SetMembershipProof(maxSetSize) {
     // Output validity
     valid <== isValid.out;
 
-    // Generate nullifier hash
+    // Generate nullifier hash using Poseidon
     component nullifierHasher = Poseidon(2);
-    nullifierHasher.inputs[0] <== value;
+    nullifierHasher.inputs[0] <== valueHash;
     nullifierHasher.inputs[1] <== nullifier;
     nullifierHash <== nullifierHasher.out;
 
-    // Ensure the proof is valid
+    // Constraint: the proof must be valid
     valid === 1;
 }
 

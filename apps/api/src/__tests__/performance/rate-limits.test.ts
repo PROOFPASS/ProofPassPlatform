@@ -43,7 +43,7 @@ describe('Rate Limit Performance & Accuracy', () => {
       const concurrentRequests = 100;
       const apiKey = 'pk_live_accuracy_test';
 
-      let requestCount = 0;
+      const requestCount = 0;
 
       mockDBResponse([{
         id: 'key-accuracy',
@@ -235,7 +235,7 @@ describe('Rate Limit Performance & Accuracy', () => {
             request
               .get('/api/v1/blockchain/status')
               .set('X-API-Key', org1Key)
-              .then(r => ({ org: 1, response: r }))
+              .then((r: supertest.Response) => ({ org: 1, response: r }))
           );
         } else {
           // Org 2 requests
@@ -253,7 +253,7 @@ describe('Rate Limit Performance & Accuracy', () => {
             request
               .get('/api/v1/blockchain/status')
               .set('X-API-Key', org2Key)
-              .then(r => ({ org: 2, response: r }))
+              .then((r: supertest.Response) => ({ org: 2, response: r }))
           );
         }
       }

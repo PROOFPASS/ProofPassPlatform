@@ -662,6 +662,6 @@ server {
 ---
 
 **Document Version:** 1.0.0
-**Author:** fboiero <fboiero@frvm.utn.edu.ar>
+**Author:** fboiero (`fboiero@frvm.utn.edu.ar`)
 **Last Review:** October 28, 2024
 **Next Review:** January 28, 2025

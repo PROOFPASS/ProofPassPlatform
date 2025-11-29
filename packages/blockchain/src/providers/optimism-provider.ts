@@ -3,7 +3,6 @@
  */
 
 import { ethers } from 'ethers';
-import { createHash } from 'crypto';
 import { BlockchainProvider } from '../base-provider';
 import {
   BlockchainNetwork,

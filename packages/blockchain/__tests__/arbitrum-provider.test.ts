@@ -40,8 +40,8 @@ describe('ArbitrumProvider', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     provider = new ArbitrumProvider('arbitrum-sepolia', '0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef');
-    mockWallet = (ethers.Wallet as jest.Mock).mock.results[0]?.value;
-    mockJsonRpcProvider = (ethers.JsonRpcProvider as jest.Mock).mock.results[0]?.value;
+    mockWallet = (ethers.Wallet as unknown as jest.Mock).mock.results[0]?.value;
+    mockJsonRpcProvider = (ethers.JsonRpcProvider as unknown as jest.Mock).mock.results[0]?.value;
   });
 
   describe('Constructor', () => {

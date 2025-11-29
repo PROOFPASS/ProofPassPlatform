@@ -15,6 +15,9 @@ import {
 } from './service';
 import { requireAdmin } from '../../../middleware/rbac';
 
+// Cast middleware to any to avoid Fastify's strict type inference issues with custom preHandlers
+const adminPreHandler = requireAdmin as any;
+
 export async function adminOrganizationRoutes(server: FastifyInstance) {
   // Create organization
   server.post('/organizations', {
@@ -49,7 +52,7 @@ export async function adminOrganizationRoutes(server: FastifyInstance) {
         }
       }
     },
-    preHandler: requireAdmin,
+    preHandler: adminPreHandler,
     handler: async (request, reply) => {
       try {
         const org = await createOrganization(request.body as any);
@@ -86,7 +89,7 @@ export async function adminOrganizationRoutes(server: FastifyInstance) {
         }
       }
     },
-    preHandler: requireAdmin,
+    preHandler: adminPreHandler,
     handler: async (request) => {
       const result = await listOrganizations(request.query as any);
       return result;
@@ -107,7 +110,7 @@ export async function adminOrganizationRoutes(server: FastifyInstance) {
         }
       }
     },
-    preHandler: requireAdmin,
+    preHandler: adminPreHandler,
     handler: async (request, reply) => {
       const { id } = request.params as { id: string };
       const org = await getOrganization(id);
@@ -148,7 +151,7 @@ export async function adminOrganizationRoutes(server: FastifyInstance) {
         }
       }
     },
-    preHandler: requireAdmin,
+    preHandler: adminPreHandler,
     handler: async (request, reply) => {
       try {
         const { id } = request.params as { id: string };
@@ -183,7 +186,7 @@ export async function adminOrganizationRoutes(server: FastifyInstance) {
         }
       }
     },
-    preHandler: requireAdmin,
+    preHandler: adminPreHandler,
     handler: async (request, reply) => {
       try {
         const { id } = request.params as { id: string };
@@ -224,7 +227,7 @@ export async function adminOrganizationRoutes(server: FastifyInstance) {
         }
       }
     },
-    preHandler: requireAdmin,
+    preHandler: adminPreHandler,
     handler: async (request, reply) => {
       try {
         const { id } = request.params as { id: string };
@@ -253,7 +256,7 @@ export async function adminOrganizationRoutes(server: FastifyInstance) {
         }
       }
     },
-    preHandler: requireAdmin,
+    preHandler: adminPreHandler,
     handler: async (request) => {
       const { id } = request.params as { id: string };
       const usage = await getOrganizationUsage(id);
@@ -275,7 +278,7 @@ export async function adminOrganizationRoutes(server: FastifyInstance) {
         }
       }
     },
-    preHandler: requireAdmin,
+    preHandler: adminPreHandler,
     handler: async (request, reply) => {
       try {
         const { id } = request.params as { id: string };

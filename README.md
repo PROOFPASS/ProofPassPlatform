@@ -4,7 +4,7 @@
 [![Node Version](https://img.shields.io/badge/node-%3E%3D20.0.0-brightgreen)](https://nodejs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
 [![DPG](https://img.shields.io/badge/Digital%20Public%20Good-Candidate-orange)](docs/DPG_SUBMISSION.md)
-[![W3C](https://img.shields.io/badge/W3C-DID%20Core%201.0-success)](docs/architecture/DID_INTEGRATION.md)
+[![W3C](https://img.shields.io/badge/W3C-DID%20Core%201.0-success)](https://www.w3.org/TR/did-core/)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 [![Code Style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 
@@ -25,13 +25,23 @@ git clone https://github.com/PROOFPASS/ProofPassPlatform.git
 cd ProofPassPlatform
 npm install
 
-# Run a demo
-cd examples/demo-client
-npm install
-npm run demo
+# Interactive setup wizard
+node setup.js
 ```
 
-New here? Check the [Getting Started Guide](docs/GETTING_STARTED.md).
+**Or jump directly to what you need:**
+
+```bash
+# See a quick demo (2 min, no dependencies)
+node scripts/demo-standalone.js
+
+# Run a use case example
+node examples/use-cases/1-product-certification.js
+node examples/use-cases/2-age-verification.js
+node examples/use-cases/3-supply-chain.js
+```
+
+New here? Run `node setup.js` and choose your path.
 
 ## Documentation
 
@@ -71,6 +81,18 @@ New here? Check the [Getting Started Guide](docs/GETTING_STARTED.md).
 **Blockchain**: Stellar, Optimism, Arbitrum SDKs
 **Standards**: W3C DID Core 1.0, VC Data Model v1.1, JWT/JWS
 
+## Use Cases
+
+Real-world examples that work out of the box:
+
+| Use Case | Command | Description |
+|----------|---------|-------------|
+| **Product Certification** | `node examples/use-cases/1-product-certification.js` | Certify products with W3C credentials + ZK proofs |
+| **Age Verification** | `node examples/use-cases/2-age-verification.js` | Prove age ≥18 without revealing exact age |
+| **Supply Chain** | `node examples/use-cases/3-supply-chain.js` | Full traceability with Digital Product Passport |
+
+See [examples/use-cases/](examples/use-cases/) for detailed documentation.
+
 ## Project Structure
 
 ```
@@ -80,11 +102,15 @@ ProofPassPlatform/
 │   └── platform/         # Admin Dashboard (Next.js)
 ├── packages/
 │   ├── vc-toolkit/       # W3C Verifiable Credentials
-│   ├── zk-toolkit/       # Zero-knowledge proofs
+│   ├── zk-toolkit/       # Zero-knowledge proofs (Groth16)
 │   ├── blockchain/       # Multi-blockchain integration
 │   └── types/            # Shared TypeScript types
 ├── examples/
-│   └── demo-client/      # Complete demo walkthrough
+│   ├── use-cases/        # Real-world use case examples
+│   └── demo-client/      # API integration demo
+├── scripts/
+│   └── demo-standalone.js  # Quick demo (no dependencies)
+├── setup.js              # Interactive setup wizard
 └── docs/                 # Documentation
 ```
 

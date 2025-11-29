@@ -7,6 +7,8 @@ import type { Job } from 'bullmq';
 import type { VCIssuanceJobData, VCIssuanceJobResult } from '../types';
 import { recordVCIssued } from '../../telemetry/metrics';
 import { addSpanEvent, withSpan } from '../../telemetry/middleware';
+import { queueManager } from '../queue-manager';
+import { QueueName } from '../config';
 
 /**
  * Process VC issuance job
@@ -32,9 +34,9 @@ export async function processVCIssuance(
 
       // Create credential payload
       const credential = createCredential({
-        issuer: issuerDid,
-        subject: subjectDid,
-        credentialTypes: ['VerifiableCredential', credentialType],
+        issuerDID: issuerDid,
+        subjectDID: subjectDid,
+        type: ['VerifiableCredential', credentialType],
         credentialSubject: {
           id: subjectDid,
           ...claims,
@@ -46,8 +48,10 @@ export async function processVCIssuance(
 
       // Issue VC as JWT
       // Note: In production, you'd load the private key securely from OpenBao/KMS
-      const privateKey = Buffer.from(process.env.ISSUER_PRIVATE_KEY || '', 'hex');
-      const vcJwt = await issueVC(credential, issuerDid, privateKey);
+      const { importDIDKeyPair } = await import('@proofpass/vc-toolkit');
+      const privateKeyHex = process.env.ISSUER_PRIVATE_KEY || '';
+      const issuerKeyPair = importDIDKeyPair(privateKeyHex);
+      const vcJwt = await issueVC({ credential, issuerKeyPair });
 
       job.updateProgress(80);
 
@@ -64,22 +68,25 @@ export async function processVCIssuance(
 
       // If callback URL is provided, trigger webhook
       if (job.data.callbackUrl) {
-        await job.queue.add(
-          'webhook',
-          {
-            url: job.data.callbackUrl,
-            method: 'POST',
-            payload: {
+        const webhookQueue = queueManager.getQueue(QueueName.WEBHOOKS);
+        if (webhookQueue) {
+          await webhookQueue.add(
+            'webhook',
+            {
+              url: job.data.callbackUrl,
+              method: 'POST',
+              payload: {
+                event: 'vc.issued',
+                credentialId,
+                vcJwt,
+                issuedAt: new Date().toISOString(),
+              },
               event: 'vc.issued',
-              credentialId,
-              vcJwt,
-              issuedAt: new Date().toISOString(),
+              organizationId,
             },
-            event: 'vc.issued',
-            organizationId,
-          },
-          { priority: 5 }
-        );
+            { priority: 5 }
+          );
+        }
       }
 
       return {

@@ -7,9 +7,27 @@ import { BlockchainManager } from '../src/blockchain-manager';
 import { BlockchainNetwork } from '../src/types';
 
 // Mock de los providers
-jest.mock('../src/providers/optimism-provider');
-jest.mock('../src/providers/arbitrum-provider');
-jest.mock('../src/providers/stellar-provider');
+jest.mock('../src/providers/optimism-provider', () => {
+  return {
+    OptimismProvider: jest.fn().mockImplementation((network: string) => ({
+      getNetwork: () => network,
+    })),
+  };
+});
+jest.mock('../src/providers/arbitrum-provider', () => {
+  return {
+    ArbitrumProvider: jest.fn().mockImplementation((network: string) => ({
+      getNetwork: () => network,
+    })),
+  };
+});
+jest.mock('../src/providers/stellar-provider', () => {
+  return {
+    StellarProvider: jest.fn().mockImplementation((network: string) => ({
+      getNetwork: () => network,
+    })),
+  };
+});
 
 describe('BlockchainManager', () => {
   let manager: BlockchainManager;

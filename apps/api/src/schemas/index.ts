@@ -279,3 +279,103 @@ export const zkVerificationResponseSchema = {
     },
   },
 };
+
+// Blockchain schemas
+export const anchorDataBodySchema = {
+  type: 'object',
+  required: ['data'],
+  properties: {
+    data: { type: 'string', description: 'Data to anchor on blockchain' },
+    network: {
+      type: 'string',
+      enum: ['stellar-testnet', 'stellar-mainnet', 'optimism', 'optimism-sepolia', 'arbitrum', 'arbitrum-sepolia'],
+      description: 'Blockchain network to use'
+    },
+  },
+};
+
+export const anchorDataResponseSchema = {
+  type: 'object',
+  properties: {
+    txHash: { type: 'string', description: 'Transaction hash' },
+    network: { type: 'string', description: 'Blockchain network used' },
+    dataHash: { type: 'string', description: 'Hash of the anchored data' },
+    fee: { type: 'string', description: 'Transaction fee' },
+  },
+};
+
+export const transactionInfoSchema = {
+  type: 'object',
+  properties: {
+    txHash: { type: 'string', description: 'Transaction hash' },
+    status: { type: 'string', enum: ['pending', 'confirmed', 'failed'], description: 'Transaction status' },
+    network: { type: 'string', description: 'Blockchain network' },
+    blockNumber: { type: 'number', description: 'Block number' },
+    timestamp: { type: 'string', format: 'date-time', description: 'Transaction timestamp' },
+    fee: { type: 'string', description: 'Transaction fee' },
+  },
+};
+
+export const transactionHistoryResponseSchema = {
+  type: 'object',
+  properties: {
+    transactions: {
+      type: 'array',
+      items: transactionInfoSchema,
+      description: 'List of transactions'
+    },
+    total: { type: 'number', description: 'Total number of transactions' },
+  },
+};
+
+export const verifyAnchorBodySchema = {
+  type: 'object',
+  required: ['txHash', 'data'],
+  properties: {
+    txHash: { type: 'string', description: 'Transaction hash to verify' },
+    data: { type: 'string', description: 'Original data to verify against' },
+    network: {
+      type: 'string',
+      enum: ['stellar-testnet', 'stellar-mainnet', 'optimism', 'optimism-sepolia', 'arbitrum', 'arbitrum-sepolia'],
+      description: 'Blockchain network'
+    },
+  },
+};
+
+export const verifyAnchorResponseSchema = {
+  type: 'object',
+  properties: {
+    valid: { type: 'boolean', description: 'Whether the data matches the anchored hash' },
+    txHash: { type: 'string', description: 'Transaction hash' },
+    network: { type: 'string', description: 'Blockchain network' },
+    dataHash: { type: 'string', description: 'Hash of the data' },
+  },
+};
+
+export const balanceResponseSchema = {
+  type: 'object',
+  properties: {
+    balance: { type: 'string', description: 'Current balance' },
+    network: { type: 'string', description: 'Blockchain network' },
+    address: { type: 'string', description: 'Wallet address' },
+  },
+};
+
+export const blockchainInfoResponseSchema = {
+  type: 'object',
+  properties: {
+    networks: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          network: { type: 'string', description: 'Network name' },
+          status: { type: 'string', description: 'Network status' },
+          balance: { type: 'string', description: 'Wallet balance' },
+        },
+      },
+      description: 'Available blockchain networks'
+    },
+    defaultNetwork: { type: 'string', description: 'Default network for operations' },
+  },
+};

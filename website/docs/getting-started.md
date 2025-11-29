@@ -76,7 +76,7 @@ docker --version
 
 ### Option 3: Quick Demo
 
-Just want to see it work? Run the demo:
+Just want to see it work? Run the standalone demo (no API required):
 
 ```bash
 # 1. Clone and install
@@ -84,25 +84,32 @@ git clone https://github.com/PROOFPASS/ProofPassPlatform.git
 cd ProofPassPlatform
 npm install
 
-# 2. Run demo
+# 2. Run standalone demo (no external dependencies)
+node scripts/demo-standalone.js
+
+# This will demonstrate:
+# - DID Creation (did:key with Ed25519)
+# - Verifiable Credential issuance and verification
+# - Zero-Knowledge Proofs (Groth16 zk-SNARKs)
+# - Status List management
+# - Digital Product Passport creation
+```
+
+**Alternative:** Full demo with API (requires running API):
+
+```bash
 cd examples/demo-client
 npm install
 npm run demo
-
-# This will:
-# - Create a Verifiable Credential
-# - Generate a zero-knowledge proof
-# - Create a Product Passport
-# - Verify all components
 ```
 
 ## Which Option Should I Choose?
 
 | Option | When to Use | Pros | Cons |
 |--------|-------------|------|------|
-| **Development Mode** | Building features | ✅ Hot reload<br>✅ Easy debugging<br>✅ Fast iteration | ❌ Requires local DB |
-| **Docker** | Testing deployment | ✅ Production-like<br>✅ Isolated | ❌ No hot reload<br>❌ Slower |
-| **Quick Demo** | Just exploring | ✅ Fastest<br>✅ No setup | ❌ Limited functionality |
+| **Development Mode** | Building features | Hot reload, Easy debugging, Fast iteration | Requires local DB |
+| **Docker** | Testing deployment | Production-like, Isolated | No hot reload, Slower |
+| **Quick Demo** | Just exploring | Fastest, No setup | Limited functionality |
 
 ## Detailed Setup Guide
 
@@ -258,16 +265,18 @@ npx prisma studio
 # 🚀 Studio ready on http://localhost:5555
 ```
 
-#### Option B: One Command
+#### Option B: Using Concurrently
 
 ```bash
-# From project root
-npm run dev:all
+# From project root - start all services
+npm run dev
 
-# This starts:
-# - API on port 3000
-# - Platform on port 3001
-# - Prisma Studio on port 5555
+# Or start specific services
+npm run dev:api      # API on port 3000
+npm run dev:platform # Platform on port 3001
+
+# Open Prisma Studio separately
+cd apps/api && npx prisma studio
 ```
 
 ### 7. Verify Setup

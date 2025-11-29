@@ -34,15 +34,11 @@ describe('did:key Implementation', () => {
 
     it('should include multicodec prefix in DID (0xed01 for Ed25519)', async () => {
       const keyPair = await generateDIDKey();
+      // parseDIDKey extracts the public key (without multicodec prefix)
       const publicKeyBytes = parseDIDKey(keyPair.did);
 
-      // First two bytes should be multicodec prefix for Ed25519
-      expect(publicKeyBytes[0]).toBe(0xed);
-      expect(publicKeyBytes[1]).toBe(0x01);
-
-      // Remaining bytes should match public key
-      const extractedPublicKey = publicKeyBytes.slice(2);
-      expect(extractedPublicKey).toEqual(keyPair.publicKey);
+      // parseDIDKey returns the 32-byte public key
+      expect(publicKeyBytes).toEqual(keyPair.publicKey);
     });
   });
 
@@ -52,8 +48,8 @@ describe('did:key Implementation', () => {
       const parsedKey = parseDIDKey(keyPair.did);
 
       expect(parsedKey).toBeInstanceOf(Uint8Array);
-      // Should include multicodec prefix + public key
-      expect(parsedKey.length).toBe(34); // 2 bytes prefix + 32 bytes key
+      // Should return just the 32-byte public key (multicodec prefix stripped)
+      expect(parsedKey.length).toBe(32);
     });
 
     it('should throw error for invalid DID format', () => {
@@ -66,13 +62,8 @@ describe('did:key Implementation', () => {
       const keyPair = await generateDIDKey();
       const parsed = parseDIDKey(keyPair.did);
 
-      // Verify multicodec prefix
-      expect(parsed[0]).toBe(0xed);
-      expect(parsed[1]).toBe(0x01);
-
-      // Verify public key extraction
-      const extractedPubKey = parsed.slice(2);
-      expect(extractedPubKey).toEqual(keyPair.publicKey);
+      // parseDIDKey returns the public key (prefix already stripped)
+      expect(parsed).toEqual(keyPair.publicKey);
     });
   });
 
@@ -82,16 +73,13 @@ describe('did:key Implementation', () => {
       const keyPair = await generateDIDKey();
 
       // Parse
-      const multicodecKey = parseDIDKey(keyPair.did);
+      const publicKey = parseDIDKey(keyPair.did);
 
       // Verify structure
-      expect(multicodecKey.length).toBe(34);
-      expect(multicodecKey[0]).toBe(0xed);
-      expect(multicodecKey[1]).toBe(0x01);
+      expect(publicKey.length).toBe(32);
 
       // Verify public key matches
-      const extractedPubKey = multicodecKey.slice(2);
-      expect(extractedPubKey).toEqual(keyPair.publicKey);
+      expect(publicKey).toEqual(keyPair.publicKey);
     });
 
     it('should maintain consistency across multiple operations', async () => {
@@ -107,10 +95,10 @@ describe('did:key Implementation', () => {
       const uniqueDids = new Set(dids);
       expect(uniqueDids.size).toBe(iterations);
 
-      // All should be parseable
+      // All should be parseable and return correct public key
       keyPairs.forEach((kp) => {
         const parsed = parseDIDKey(kp.did);
-        expect(parsed.slice(2)).toEqual(kp.publicKey);
+        expect(parsed).toEqual(kp.publicKey);
       });
     });
   });

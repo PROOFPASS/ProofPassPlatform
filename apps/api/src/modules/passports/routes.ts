@@ -15,7 +15,16 @@ const createPassportSchema = z.object({
   name: z.string().min(1),
   description: z.string().optional(),
   attestation_ids: z.array(z.string().uuid()).min(1),
-  blockchain_network: z.enum(['stellar', 'optimism']).optional(),
+  blockchain_network: z
+    .enum([
+      'stellar-testnet',
+      'stellar-mainnet',
+      'optimism',
+      'optimism-sepolia',
+      'arbitrum',
+      'arbitrum-sepolia',
+    ])
+    .optional(),
 });
 
 const addAttestationSchema = z.object({
@@ -44,7 +53,14 @@ export async function passportRoutes(server: FastifyInstance): Promise<void> {
           },
           blockchain_network: {
             type: 'string',
-            enum: ['stellar', 'optimism'],
+            enum: [
+              'stellar-testnet',
+              'stellar-mainnet',
+              'optimism',
+              'optimism-sepolia',
+              'arbitrum',
+              'arbitrum-sepolia',
+            ],
             description: 'Blockchain network for anchoring'
           },
         },

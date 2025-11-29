@@ -1,7 +1,13 @@
 import { VerifiableCredential } from './verifiable-credential';
 
 export type AttestationStatus = 'pending' | 'anchored' | 'revoked';
-export type BlockchainNetwork = 'stellar' | 'optimism';
+export type BlockchainNetwork =
+  | 'stellar-testnet'
+  | 'stellar-mainnet'
+  | 'optimism'
+  | 'optimism-sepolia'
+  | 'arbitrum'
+  | 'arbitrum-sepolia';
 
 export interface Attestation {
   id: string;

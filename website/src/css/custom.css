@@ -1,23 +1,39 @@
 /**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
+ * ProofPass Platform - Custom CSS
+ * Modern, professional styling for the documentation website
  */
 
-/* You can override the default Infima variables here. */
+/* Primary color palette - Teal/Green accent */
 :root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+
   --ifm-code-font-size: 95%;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+
+  /* Custom variables */
+  --pp-background-dark: #1a1a2e;
+  --pp-background-darker: #16213e;
+  --pp-accent-gradient: linear-gradient(135deg, #25c2a0 0%, #0f9b8e 100%);
+
+  /* Typography */
+  --ifm-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --ifm-heading-font-weight: 700;
+
+  /* Spacing */
+  --ifm-navbar-height: 4rem;
+
+  /* Borders */
+  --ifm-global-radius: 0.5rem;
 }
 
-/* For readability concerns, you should choose a lighter palette in dark mode. */
+/* Dark mode palette */
 [data-theme='dark'] {
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
@@ -27,4 +43,184 @@
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+
+  --ifm-background-color: #1a1a2e;
+  --ifm-background-surface-color: #1e1e3f;
+}
+
+/* Navbar styling */
+.navbar {
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.navbar__title {
+  font-weight: 700;
+  font-size: 1.25rem;
+}
+
+.navbar__link {
+  font-weight: 500;
+}
+
+.navbar__link--active {
+  color: var(--ifm-color-primary);
+}
+
+/* Button improvements */
+.button {
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.button--primary {
+  background: var(--pp-accent-gradient);
+  border: none;
+}
+
+.button--primary:hover {
+  background: linear-gradient(135deg, #1fa588 0%, #0d8a7e 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 194, 160, 0.3);
+}
+
+.button--secondary {
+  background: transparent;
+  border: 2px solid var(--ifm-color-primary);
+  color: var(--ifm-color-primary);
+}
+
+.button--secondary:hover {
+  background: var(--ifm-color-primary);
+  color: white;
+}
+
+/* Code blocks */
+pre {
+  border-radius: 8px;
+}
+
+code {
+  border-radius: 4px;
+}
+
+/* Footer styling */
+.footer {
+  background: var(--pp-background-dark);
+}
+
+.footer__title {
+  color: white;
+  font-weight: 600;
+}
+
+.footer__link-item {
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s;
+}
+
+.footer__link-item:hover {
+  color: var(--ifm-color-primary);
+}
+
+/* Documentation page improvements */
+.markdown h1:first-child {
+  font-size: 2.5rem;
+}
+
+.markdown h2 {
+  margin-top: 2.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+/* Table of contents */
+.table-of-contents__link--active {
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+/* Admonitions */
+.admonition {
+  border-radius: 8px;
+}
+
+/* Sidebar */
+.menu__link {
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.menu__link--active {
+  background: rgba(37, 194, 160, 0.1);
+  color: var(--ifm-color-primary);
+  font-weight: 600;
+}
+
+/* Pagination */
+.pagination-nav__link {
+  border-radius: 8px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pagination-nav__link:hover {
+  border-color: var(--ifm-color-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Search */
+.DocSearch-Button {
+  border-radius: 8px !important;
+}
+
+/* Cards and boxes */
+.card {
+  border-radius: 12px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(37, 194, 160, 0.3);
+}
+
+/* Focus states for accessibility */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--ifm-color-primary);
+  outline-offset: 2px;
+}
+
+/* Blog improvements */
+.blog-post-item {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--ifm-color-emphasis-200);
+}
+
+/* Mobile improvements */
+@media screen and (max-width: 996px) {
+  .navbar__toggle {
+    color: var(--ifm-navbar-link-color);
+  }
+}
+
+/* Print styles */
+@media print {
+  .navbar,
+  .footer,
+  .pagination-nav {
+    display: none;
+  }
 }

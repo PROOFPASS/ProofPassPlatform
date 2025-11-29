@@ -223,7 +223,7 @@ kill -9 <PID>
 ### Container Registry
 - **Registry**: ghcr.io/proofpass/proofpassplatform
 - **Images**: api, platform
-- **Tags**: latest, {sha}
+- **Tags**: latest, `{sha}`
 - **Limpieza**: Mantiene 2 versiones
 
 ## 🔐 Variables de Entorno

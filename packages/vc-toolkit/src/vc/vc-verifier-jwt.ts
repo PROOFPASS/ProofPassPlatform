@@ -3,9 +3,10 @@
  *
  * Verifies Verifiable Credentials using did-jwt-vc.
  * Supports automatic DID resolution for signature verification.
+ * Falls back to native verification for did:key DIDs when external resolvers fail.
  */
 
-import { resolveDID } from '../did-resolver';
+import { resolveDID, decodeMultibaseKey, extractEd25519PublicKey } from '../did-resolver';
 
 export interface VerificationResult {
   verified: boolean;
@@ -28,16 +29,16 @@ export interface VerificationResult {
  */
 export async function verifyVC(vcJwt: string): Promise<VerificationResult> {
   try {
-    // Import did-jwt-vc dynamically
+    // First try to use did-jwt-vc for verification
     const { verifyCredential } = await import('did-jwt-vc');
     const { Resolver } = await import('did-resolver');
-    const { getResolver: getKeyResolver } = await import('key-did-resolver');
-    const { getResolver: getWebResolver } = await import('web-did-resolver');
+    const keyDidResolver = await import('key-did-resolver');
+    const webDidResolver = await import('web-did-resolver');
 
     // Create universal DID resolver
     const resolver = new Resolver({
-      ...getKeyResolver(),
-      ...getWebResolver(),
+      ...keyDidResolver.getResolver(),
+      ...webDidResolver.getResolver(),
     });
 
     // Verify the credential
@@ -52,16 +53,16 @@ export async function verifyVC(vcJwt: string): Promise<VerificationResult> {
       expirationDate: verificationResult.verifiableCredential.expirationDate,
     };
   } catch (error) {
-    // Fallback verification
-    console.warn('did-jwt-vc not available, using fallback verification');
-    return verifyVCFallback(vcJwt);
+    // Fall back to native verification for did:key DIDs
+    return verifyVCNative(vcJwt, error);
   }
 }
 
 /**
- * Fallback verification (temporary, until libraries are installed)
+ * Native verification using internal DID resolver and Ed25519 verification
+ * This works without external ESM modules and is more Jest-friendly
  */
-async function verifyVCFallback(vcJwt: string): Promise<VerificationResult> {
+async function verifyVCNative(vcJwt: string, originalError: unknown): Promise<VerificationResult> {
   try {
     // Parse JWT
     const parts = vcJwt.split('.');
@@ -69,7 +70,9 @@ async function verifyVCFallback(vcJwt: string): Promise<VerificationResult> {
       throw new Error('Invalid JWT format');
     }
 
-    const payload = JSON.parse(Buffer.from(parts[1], 'base64url').toString('utf-8'));
+    const [headerB64, payloadB64, signatureB64] = parts;
+    const header = JSON.parse(Buffer.from(headerB64, 'base64url').toString('utf-8'));
+    const payload = JSON.parse(Buffer.from(payloadB64, 'base64url').toString('utf-8'));
 
     // Basic checks
     if (!payload.iss) {
@@ -82,30 +85,87 @@ async function verifyVCFallback(vcJwt: string): Promise<VerificationResult> {
 
     // Check expiration
     if (payload.exp && payload.exp < Math.floor(Date.now() / 1000)) {
-      throw new Error('Credential has expired');
+      return {
+        verified: false,
+        issuer: payload.iss,
+        subject: payload.sub || payload.vc?.credentialSubject?.id || '',
+        credentialSubject: payload.vc?.credentialSubject || {},
+        error: 'Credential has expired',
+      };
     }
 
-    // Try to resolve issuer DID
-    const issuerDIDResult = await resolveDID(payload.iss);
-    if (!issuerDIDResult.didDocument) {
-      throw new Error(`Cannot resolve issuer DID: ${payload.iss}`);
+    // For did:key, we can verify the signature natively
+    if (payload.iss.startsWith('did:key:') && header.alg === 'EdDSA') {
+      const verified = await verifyEdDSASignature(vcJwt, payload.iss);
+
+      if (verified) {
+        return {
+          verified: true,
+          issuer: payload.iss,
+          subject: payload.sub || payload.vc?.credentialSubject?.id || '',
+          credentialSubject: payload.vc?.credentialSubject || {},
+          issuanceDate: payload.nbf ? new Date(payload.nbf * 1000).toISOString() : undefined,
+          expirationDate: payload.exp ? new Date(payload.exp * 1000).toISOString() : undefined,
+        };
+      }
     }
 
+    // Return with original error if native verification fails
     return {
-      verified: false, // Mark as unverified since we're using fallback
+      verified: false,
       issuer: payload.iss,
-      subject: payload.sub || payload.vc.credentialSubject.id,
-      credentialSubject: payload.vc.credentialSubject,
-      error: 'Using fallback verification (did-jwt-vc not installed)',
+      subject: payload.sub || payload.vc?.credentialSubject?.id || '',
+      credentialSubject: payload.vc?.credentialSubject || {},
+      error: originalError instanceof Error ? originalError.message : 'Verification failed',
     };
-  } catch (error) {
+  } catch (parseError) {
     return {
       verified: false,
       issuer: '',
       subject: '',
-      credentialSubject: null,
-      error: error instanceof Error ? error.message : 'Verification failed',
+      credentialSubject: {},
+      error: parseError instanceof Error ? parseError.message : 'Verification failed',
     };
+  }
+}
+
+/**
+ * Verify EdDSA (Ed25519) signature for did:key DIDs
+ */
+async function verifyEdDSASignature(vcJwt: string, issuerDid: string): Promise<boolean> {
+  try {
+    const parts = vcJwt.split('.');
+    if (parts.length !== 3) return false;
+
+    const [headerB64, payloadB64, signatureB64] = parts;
+
+    // Resolve the DID to get the public key
+    const resolution = await resolveDID(issuerDid);
+    if (!resolution.didDocument || resolution.didResolutionMetadata.error) {
+      return false;
+    }
+
+    // Get the public key from the DID document
+    const verificationMethod = resolution.didDocument.verificationMethod[0];
+    if (!verificationMethod || !verificationMethod.publicKeyMultibase) {
+      return false;
+    }
+
+    // Decode the multibase public key and extract Ed25519 key
+    const multicodecKey = decodeMultibaseKey(verificationMethod.publicKeyMultibase);
+    const publicKey = extractEd25519PublicKey(multicodecKey);
+
+    // Get the message (header.payload) and signature
+    const message = `${headerB64}.${payloadB64}`;
+    const signature = Buffer.from(signatureB64, 'base64url');
+
+    // Verify using @noble/curves/ed25519
+    const { ed25519 } = await import('@noble/curves/ed25519');
+    const messageBytes = new TextEncoder().encode(message);
+
+    return ed25519.verify(signature, messageBytes, publicKey);
+  } catch {
+    return false;
   }
 }
 

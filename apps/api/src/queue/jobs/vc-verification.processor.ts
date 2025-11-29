@@ -7,6 +7,8 @@ import type { Job } from 'bullmq';
 import type { VCVerificationJobData, VCVerificationJobResult } from '../types';
 import { recordVCVerified } from '../../telemetry/metrics';
 import { addSpanEvent, withSpan } from '../../telemetry/middleware';
+import { queueManager } from '../queue-manager';
+import { QueueName } from '../config';
 
 /**
  * Process VC verification job
@@ -35,7 +37,7 @@ export async function processVCVerification(
 
       if (verificationResult.verified) {
         // Extract claims if verification succeeded
-        const claims = extractClaims(vcJwt);
+        const claims = extractClaims(verificationResult);
 
         // Record metrics
         recordVCVerified(true, verifierDid);
@@ -43,67 +45,73 @@ export async function processVCVerification(
         job.updateProgress(100);
         addSpanEvent('vc-verification-succeeded', {
           'issuer.did': verificationResult.issuer,
-          'subject.did': verificationResult.payload?.sub,
+          'subject.did': verificationResult.subject,
         });
 
         // If callback URL is provided, trigger webhook
         if (job.data.callbackUrl) {
-          await job.queue.add(
-            'webhook',
-            {
-              url: job.data.callbackUrl,
-              method: 'POST',
-              payload: {
+          const webhookQueue = queueManager.getQueue(QueueName.WEBHOOKS);
+          if (webhookQueue) {
+            await webhookQueue.add(
+              'webhook',
+              {
+                url: job.data.callbackUrl,
+                method: 'POST',
+                payload: {
+                  event: 'vc.verified',
+                  valid: true,
+                  claims,
+                  issuer: verificationResult.issuer,
+                  verifiedAt: new Date().toISOString(),
+                },
                 event: 'vc.verified',
-                valid: true,
-                claims,
-                issuer: verificationResult.issuer,
-                verifiedAt: new Date().toISOString(),
+                organizationId,
               },
-              event: 'vc.verified',
-              organizationId,
-            },
-            { priority: 5 }
-          );
+              { priority: 5 }
+            );
+          }
         }
 
         return {
           valid: true,
           claims,
           issuer: verificationResult.issuer,
-          subject: verificationResult.payload?.sub,
+          subject: verificationResult.subject,
         };
       } else {
         // Verification failed
         recordVCVerified(false, verifierDid);
 
         addSpanEvent('vc-verification-failed', {
-          'error': 'Verification failed',
+          'error': verificationResult.error || 'Verification failed',
         });
 
         // Trigger failure webhook if callback URL provided
         if (job.data.callbackUrl) {
-          await job.queue.add(
-            'webhook',
-            {
-              url: job.data.callbackUrl,
-              method: 'POST',
-              payload: {
+          const webhookQueue = queueManager.getQueue(QueueName.WEBHOOKS);
+          if (webhookQueue) {
+            await webhookQueue.add(
+              'webhook',
+              {
+                url: job.data.callbackUrl,
+                method: 'POST',
+                payload: {
+                  event: 'vc.verification_failed',
+                  valid: false,
+                  error: verificationResult.error || 'Verification failed',
+                  verifiedAt: new Date().toISOString(),
+                },
                 event: 'vc.verification_failed',
-                valid: false,
-                error: 'Verification failed',
-                verifiedAt: new Date().toISOString(),
+                organizationId,
               },
-              event: 'vc.verification_failed',
-              organizationId,
-            },
-            { priority: 5 }
-          );
+              { priority: 5 }
+            );
+          }
         }
 
         return {
           valid: false,
-          error: 'Verification failed',
+          error: verificationResult.error || 'Verification failed',
         };
       }
     } catch (error) {

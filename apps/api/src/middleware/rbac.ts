@@ -8,14 +8,15 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 
 export type UserRole = 'user' | 'admin' | 'superadmin';
 
-export interface AuthenticatedRequest extends FastifyRequest {
-  user?: {
-    id: string;
-    email: string;
-    role: UserRole;
-    [key: string]: any;
-  };
+export interface AuthenticatedUser {
+  id: string;
+  email: string;
+  role: UserRole;
+  [key: string]: unknown;
 }
+
+// Use FastifyRequest directly and cast user property when needed
+export type AuthenticatedRequest = FastifyRequest;
 
 /**
  * Role hierarchy for permission checking
@@ -46,7 +47,7 @@ export function requireRole(requiredRole: UserRole) {
       // Verify JWT first
       await request.jwtVerify();
 
-      const user = request.user;
+      const user = request.user as AuthenticatedUser | undefined;
 
       if (!user) {
         return reply.code(401).send({
@@ -103,7 +104,8 @@ export async function requireAuth(request: AuthenticatedRequest, reply: FastifyR
   try {
     await request.jwtVerify();
 
-    if (!request.user) {
+    const user = request.user as AuthenticatedUser | undefined;
+    if (!user) {
       return reply.code(401).send({
         error: 'Unauthorized',
         message: 'Authentication required'
@@ -126,7 +128,7 @@ export function checkOwnershipOrAdmin(
   request: AuthenticatedRequest,
   resourceUserId: string
 ): boolean {
-  const user = request.user;
+  const user = request.user as AuthenticatedUser | undefined;
 
   if (!user) {
     return false;

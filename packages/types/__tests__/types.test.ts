@@ -31,7 +31,7 @@ describe('Types Package', () => {
         claims: { result: 'pass' },
         issued_at: new Date(),
         credential: {} as VerifiableCredential,
-        blockchain_network: 'stellar',
+        blockchain_network: 'stellar-testnet',
         status: 'anchored',
         created_at: new Date(),
         updated_at: new Date(),
@@ -51,7 +51,7 @@ describe('Types Package', () => {
           result: 'pass',
           score: 95,
         },
-        blockchain_network: 'stellar',
+        blockchain_network: 'stellar-testnet',
       };
 
       expect(dto).toBeDefined();
@@ -91,7 +91,7 @@ describe('Types Package', () => {
         name: 'Test Product',
         attestation_ids: ['att-1', 'att-2'],
         aggregated_credential: {} as VerifiableCredential,
-        blockchain_network: 'stellar',
+        blockchain_network: 'stellar-testnet',
         created_at: new Date(),
         updated_at: new Date(),
         user_id: 'user-123',

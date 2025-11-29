@@ -178,7 +178,7 @@ export function generateSetMembershipProof(
   const { value, set } = inputs;
 
   // Verify the statement
-  const isValid = set.some((item) =>
+  const isValid = set.some((item: unknown) =>
     JSON.stringify(item) === JSON.stringify(value)
   );
 

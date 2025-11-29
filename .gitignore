@@ -64,11 +64,14 @@ witness.wtns
 *.backup
 backup_*
 backups/
+.backups/
 
 # Logs
 logs/
 *.log
 *.log.*
+scripts-test-*.log
+*test-*.log
 
 # Docker volumes (local data)
 postgres_data/
@@ -80,8 +83,24 @@ redis_data/
 *.pem
 ssl/
 certs/
+
+# Session/state files
+ESTADO_ACTUAL.txt
+RESUMEN_SESION.txt
+*ESTADO*.txt
+*RESUMEN*.txt
+
+# Temporary evidence directories
+*-evidence-*/
+stellar-*-evidence-*/
+
+# IDE and tools
 .aider*
-*.log
-scripts-test-*.log
 .archive/
-*test-*.log
+
+# Duplicated files (artifacts from file operations)
+*\ 2.ts
+*\ 2.tsx
+*\ 2.js
+*\ 2.map
+*/did\ 2/
