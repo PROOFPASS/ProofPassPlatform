@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 550">
+  <defs>
+    <linearGradient id="issuerGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3730A3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="vcGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="blockchainGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrowVC" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6366F1"/>
+    </marker>
+    <filter id="shadowVC" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="550" fill="#FAFAFA"/>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1E293B">Verifiable Credential Lifecycle</text>
+  <text x="450" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748B">W3C VC Data Model 1.1 + Ed25519 Signatures + DID:key Method</text>
+
+  <!-- Actors -->
+  <g transform="translate(50, 80)">
+    <rect width="120" height="60" rx="30" fill="url(#issuerGrad)" filter="url(#shadowVC)"/>
+    <text x="60" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">ISSUER</text>
+    <text x="60" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#C7D2FE">Organization</text>
+  </g>
+
+  <g transform="translate(390, 80)">
+    <rect width="120" height="60" rx="30" fill="#10B981" filter="url(#shadowVC)"/>
+    <text x="60" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">HOLDER</text>
+    <text x="60" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">User/Subject</text>
+  </g>
+
+  <g transform="translate(730, 80)">
+    <rect width="120" height="60" rx="30" fill="#8B5CF6" filter="url(#shadowVC)"/>
+    <text x="60" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">VERIFIER</text>
+    <text x="60" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#E9D5FF">Third Party</text>
+  </g>
+
+  <!-- Flow arrows between actors -->
+  <path d="M170 110 L390 110" stroke="#6366F1" stroke-width="2" stroke-dasharray="5,5"/>
+  <path d="M510 110 L730 110" stroke="#6366F1" stroke-width="2" stroke-dasharray="5,5"/>
+
+  <!-- Step 1: Issue VC -->
+  <g transform="translate(50, 170)">
+    <rect width="230" height="110" rx="10" fill="url(#issuerGrad)" filter="url(#shadowVC)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4F46E5">1</text>
+    <text x="120" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Issue Credential</text>
+    <text x="115" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#C7D2FE">POST /attestations</text>
+    <line x1="15" y1="62" x2="215" y2="62" stroke="#C7D2FE" stroke-width="1"/>
+    <text x="115" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#E0E7FF">• Create claims (subject, type, data)</text>
+    <text x="115" y="92" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#E0E7FF">• Sign with Ed25519 private key</text>
+    <text x="115" y="106" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#E0E7FF">• Generate QR code</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M280 225 L330 225" stroke="#6366F1" stroke-width="2" marker-end="url(#arrowVC)"/>
+
+  <!-- Step 2: Store VC -->
+  <g transform="translate(340, 170)">
+    <rect width="220" height="110" rx="10" fill="url(#vcGrad)" filter="url(#shadowVC)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#059669">2</text>
+    <text x="115" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Store Credential</text>
+    <text x="110" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#A7F3D0">PostgreSQL + Blockchain</text>
+    <line x1="15" y1="62" x2="205" y2="62" stroke="#A7F3D0" stroke-width="1"/>
+    <text x="110" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">• VC stored in database</text>
+    <text x="110" y="92" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">• Hash anchored to Stellar</text>
+    <text x="110" y="106" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">• Immutable proof created</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M560 225 L610 225" stroke="#6366F1" stroke-width="2" marker-end="url(#arrowVC)"/>
+
+  <!-- Step 3: Present/Verify -->
+  <g transform="translate(620, 170)">
+    <rect width="230" height="110" rx="10" fill="#8B5CF6" filter="url(#shadowVC)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#8B5CF6">3</text>
+    <text x="120" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Present &amp; Verify</text>
+    <text x="115" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#E9D5FF">POST /:id/verify (public)</text>
+    <line x1="15" y1="62" x2="215" y2="62" stroke="#E9D5FF" stroke-width="1"/>
+    <text x="115" y="78" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#F3E8FF">• QR scan or API call</text>
+    <text x="115" y="92" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#F3E8FF">• Ed25519 signature verified</text>
+    <text x="115" y="106" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#F3E8FF">• Blockchain proof checked</text>
+  </g>
+
+  <!-- VC Structure Box -->
+  <rect x="50" y="310" width="400" height="220" rx="10" fill="#F0FDF4" stroke="#86EFAC" stroke-width="2"/>
+  <text x="250" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#166534">W3C Verifiable Credential Structure</text>
+
+  <g transform="translate(70, 350)">
+    <rect width="360" height="165" rx="5" fill="#1E293B" filter="url(#shadowVC)"/>
+    <text x="15" y="20" font-family="monospace" font-size="9" fill="#A7F3D0">{</text>
+    <text x="25" y="35" font-family="monospace" font-size="9" fill="#FCD34D">"@context"</text><text x="90" y="35" font-family="monospace" font-size="9" fill="#A7F3D0">: ["https://www.w3.org/2018/credentials/v1"],</text>
+    <text x="25" y="50" font-family="monospace" font-size="9" fill="#FCD34D">"type"</text><text x="65" y="50" font-family="monospace" font-size="9" fill="#A7F3D0">: ["VerifiableCredential", "ProofPassAttestation"],</text>
+    <text x="25" y="65" font-family="monospace" font-size="9" fill="#FCD34D">"issuer"</text><text x="75" y="65" font-family="monospace" font-size="9" fill="#A7F3D0">: "did:key:z6MkhaXgBZD...",</text>
+    <text x="25" y="80" font-family="monospace" font-size="9" fill="#FCD34D">"issuanceDate"</text><text x="110" y="80" font-family="monospace" font-size="9" fill="#A7F3D0">: "2025-12-03T00:00:00Z",</text>
+    <text x="25" y="95" font-family="monospace" font-size="9" fill="#FCD34D">"credentialSubject"</text><text x="135" y="95" font-family="monospace" font-size="9" fill="#A7F3D0">: {</text>
+    <text x="40" y="110" font-family="monospace" font-size="9" fill="#FCD34D">"id"</text><text x="60" y="110" font-family="monospace" font-size="9" fill="#A7F3D0">: "did:key:z6MkpTH...",</text>
+    <text x="40" y="125" font-family="monospace" font-size="9" fill="#FCD34D">"type"</text><text x="70" y="125" font-family="monospace" font-size="9" fill="#A7F3D0">: "ProductCertification",</text>
+    <text x="40" y="140" font-family="monospace" font-size="9" fill="#FCD34D">"claims"</text><text x="85" y="140" font-family="monospace" font-size="9" fill="#A7F3D0">: { ... }</text>
+    <text x="25" y="155" font-family="monospace" font-size="9" fill="#A7F3D0">},</text>
+    <text x="15" y="165" font-family="monospace" font-size="9" fill="#A7F3D0">}</text>
+  </g>
+
+  <!-- Blockchain Anchoring -->
+  <rect x="480" y="310" width="370" height="220" rx="10" fill="#FEF3C7" stroke="#FCD34D" stroke-width="2"/>
+  <text x="665" y="335" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#92400E">Blockchain Anchoring</text>
+
+  <!-- Stellar Box -->
+  <g transform="translate(500, 350)">
+    <rect width="160" height="80" rx="8" fill="url(#blockchainGrad)" filter="url(#shadowVC)"/>
+    <text x="80" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Stellar</text>
+    <text x="80" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FEF3C7">Testnet/Mainnet</text>
+    <text x="80" y="60" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FEF3C7">MEMO_HASH: SHA256</text>
+    <text x="80" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FEF3C7">of VC content</text>
+  </g>
+
+  <!-- Optimism Box -->
+  <g transform="translate(680, 350)">
+    <rect width="150" height="80" rx="8" fill="#EF4444" filter="url(#shadowVC)"/>
+    <text x="75" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Optimism</text>
+    <text x="75" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FECACA">L2 Ethereum</text>
+    <text x="75" y="60" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FECACA">Registry Contract</text>
+    <text x="75" y="72" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FECACA">VC hash stored</text>
+  </g>
+
+  <!-- Verification Result -->
+  <g transform="translate(500, 450)">
+    <rect width="330" height="65" rx="8" fill="#059669" filter="url(#shadowVC)"/>
+    <text x="165" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="white">Verification Result</text>
+    <text x="165" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#A7F3D0">signature_valid: true | blockchain_verified: true</text>
+    <text x="165" y="58" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#A7F3D0">issuer_did: did:key:z6Mk... | not_expired: true</text>
+  </g>
+</svg>

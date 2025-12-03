@@ -107,7 +107,9 @@ export async function generateThresholdProof(
       nullifierHash,
     };
   } catch (error) {
-    throw new Error(`Failed to generate threshold proof: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to generate threshold proof: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -115,14 +117,15 @@ export async function generateThresholdProof(
  * Verify a threshold proof
  */
 export async function verifyThresholdProof(
-  proof: string,
+  proof: string | object,
   publicSignals: string[]
 ): Promise<SNARKVerificationResult> {
   try {
     const vkeyPath = getCircuitPath('threshold', 'vkey');
     const vkey = JSON.parse(fs.readFileSync(vkeyPath, 'utf-8'));
 
-    const proofObj = JSON.parse(proof);
+    // Handle both string and object proof formats (JSONB returns object)
+    const proofObj = typeof proof === 'string' ? JSON.parse(proof) : proof;
     const verified = await snarkjs.groth16.verify(vkey, publicSignals, proofObj);
 
     return { verified };
@@ -138,9 +141,7 @@ export async function verifyThresholdProof(
  * Generate a range proof using real zk-SNARKs
  * Proves that: minValue <= value <= maxValue
  */
-export async function generateRangeProof(
-  inputs: RangeProofInputs
-): Promise<SNARKProofResult> {
+export async function generateRangeProof(inputs: RangeProofInputs): Promise<SNARKProofResult> {
   const { value, min, max } = inputs;
 
   // Validate inputs
@@ -177,7 +178,9 @@ export async function generateRangeProof(
       nullifierHash,
     };
   } catch (error) {
-    throw new Error(`Failed to generate range proof: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to generate range proof: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -185,14 +188,15 @@ export async function generateRangeProof(
  * Verify a range proof
  */
 export async function verifyRangeProof(
-  proof: string,
+  proof: string | object,
   publicSignals: string[]
 ): Promise<SNARKVerificationResult> {
   try {
     const vkeyPath = getCircuitPath('range', 'vkey');
     const vkey = JSON.parse(fs.readFileSync(vkeyPath, 'utf-8'));
 
-    const proofObj = JSON.parse(proof);
+    // Handle both string and object proof formats (JSONB returns object)
+    const proofObj = typeof proof === 'string' ? JSON.parse(proof) : proof;
     const verified = await snarkjs.groth16.verify(vkey, publicSignals, proofObj);
 
     return { verified };
@@ -276,7 +280,9 @@ export async function generateSetMembershipProof(
       nullifierHash,
     };
   } catch (error) {
-    throw new Error(`Failed to generate set membership proof: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to generate set membership proof: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 }
 
@@ -284,14 +290,15 @@ export async function generateSetMembershipProof(
  * Verify a set membership proof
  */
 export async function verifySetMembershipProof(
-  proof: string,
+  proof: string | object,
   publicSignals: string[]
 ): Promise<SNARKVerificationResult> {
   try {
     const vkeyPath = getCircuitPath('set-membership', 'vkey');
     const vkey = JSON.parse(fs.readFileSync(vkeyPath, 'utf-8'));
 
-    const proofObj = JSON.parse(proof);
+    // Handle both string and object proof formats (JSONB returns object)
+    const proofObj = typeof proof === 'string' ? JSON.parse(proof) : proof;
     const verified = await snarkjs.groth16.verify(vkey, publicSignals, proofObj);
 
     return { verified };

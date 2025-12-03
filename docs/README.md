@@ -18,6 +18,20 @@ Welcome to the ProofPass Platform documentation. This guide will help you find w
 
 ---
 
+## Architecture Diagrams
+
+Visual guides to understand the ProofPass platform:
+
+| Diagram | Description |
+|---------|-------------|
+| [Architecture Overview](diagrams/architecture-overview.svg) | Platform layers: Client, API, Services, Data |
+| [E2E Flow](diagrams/e2e-flow.svg) | Complete flow from registration to verification |
+| [ZKP Flow](diagrams/zkp-flow.svg) | Groth16 zero-knowledge proof generation/verification |
+| [Auth Flow](diagrams/auth-flow.svg) | JWT and API Key authentication methods |
+| [VC Lifecycle](diagrams/vc-lifecycle.svg) | W3C Verifiable Credential issuance and verification |
+
+---
+
 ## Documentation Structure
 
 ```
@@ -29,6 +43,14 @@ docs/
 ├── SECURITY.md                # Security best practices
 ├── DPG_SUBMISSION.md          # Digital Public Good submission
 ├── DOCKER_TESTING.md          # Docker testing guide
+├── E2E_FLOW.md                # End-to-end flow documentation
+│
+├── diagrams/                  # SVG architecture diagrams
+│   ├── architecture-overview.svg
+│   ├── e2e-flow.svg
+│   ├── zkp-flow.svg
+│   ├── auth-flow.svg
+│   └── vc-lifecycle.svg
 │
 ├── architecture/              # System design documents
 │   ├── TECHNICAL_ARCHITECTURE.md
@@ -241,7 +263,7 @@ Found a typo or want to improve docs? Please submit a pull request!
 
 ---
 
-**Last Updated**: November 2024
+**Last Updated**: December 2024
 **Documentation Version**: 2.0.0
 **ProofPass Version**: 2.0.0
 

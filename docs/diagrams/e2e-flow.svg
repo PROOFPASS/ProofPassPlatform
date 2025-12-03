@@ -1,0 +1,182 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700">
+  <defs>
+    <linearGradient id="stepGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6366F1"/>
+    </marker>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="700" fill="#FAFAFA"/>
+
+  <!-- Title -->
+  <text x="500" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1E293B">ProofPass E2E Flow: Registration to Verification</text>
+
+  <!-- Step 1: Registration -->
+  <g transform="translate(50, 70)">
+    <rect width="180" height="100" rx="10" fill="#3B82F6" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#3B82F6">1</text>
+    <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">User Registration</text>
+    <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#BFDBFE">POST /auth/register</text>
+    <text x="90" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#DBEAFE">email + password + name</text>
+  </g>
+  <path d="M230 120 L270 120" stroke="#6366F1" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 2: Login -->
+  <g transform="translate(280, 70)">
+    <rect width="180" height="100" rx="10" fill="#4F46E5" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#4F46E5">2</text>
+    <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Authentication</text>
+    <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#C7D2FE">POST /auth/login</text>
+    <text x="90" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#DDD6FE">Returns JWT Token</text>
+  </g>
+  <path d="M460 120 L500 120" stroke="#6366F1" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 3: DID Generation -->
+  <g transform="translate(510, 70)">
+    <rect width="180" height="100" rx="10" fill="#6366F1" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#6366F1">3</text>
+    <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">DID Generation</text>
+    <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#C7D2FE">Auto-generated</text>
+    <text x="90" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#DDD6FE">did:key:z6Mk...</text>
+  </g>
+  <path d="M690 120 L730 120" stroke="#6366F1" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 4: API Key -->
+  <g transform="translate(740, 70)">
+    <rect width="180" height="100" rx="10" fill="#7C3AED" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#7C3AED">4</text>
+    <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">API Key (Optional)</text>
+    <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#DDD6FE">POST /admin/api-keys</text>
+    <text x="90" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#EDE9FE">For programmatic access</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M830 180 L830 220 L600 220 L600 250" stroke="#6366F1" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 5: Create VC -->
+  <g transform="translate(510, 260)">
+    <rect width="180" height="120" rx="10" fill="#059669" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#059669">5</text>
+    <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Create Attestation</text>
+    <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#A7F3D0">POST /attestations</text>
+    <text x="90" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">W3C Verifiable Credential</text>
+    <text x="90" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">+ Blockchain Anchor</text>
+    <text x="90" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">+ QR Code</text>
+  </g>
+
+  <path d="M510 320 L450 320" stroke="#6366F1" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 6: Verify VC -->
+  <g transform="translate(280, 260)">
+    <rect width="160" height="120" rx="10" fill="#10B981" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#10B981">6</text>
+    <text x="80" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Verify VC</text>
+    <text x="80" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#A7F3D0">POST /:id/verify</text>
+    <text x="80" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">Signature Valid</text>
+    <text x="80" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">Blockchain Verified</text>
+    <text x="80" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#D1FAE5">Public Endpoint</text>
+  </g>
+
+  <!-- Arrow right to ZKP -->
+  <path d="M690 320 L750 320" stroke="#6366F1" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 7: Generate ZK Proof -->
+  <g transform="translate(760, 260)">
+    <rect width="180" height="120" rx="10" fill="#DC2626" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#DC2626">7</text>
+    <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Generate ZK Proof</text>
+    <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FECACA">POST /zkp/proofs</text>
+    <text x="90" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FEE2E2">Groth16 SNARK</text>
+    <text x="90" y="100" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FEE2E2">threshold | range</text>
+    <text x="90" y="115" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FEE2E2">set-membership</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M850 390 L850 420" stroke="#6366F1" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Step 8: Verify ZKP -->
+  <g transform="translate(760, 430)">
+    <rect width="180" height="100" rx="10" fill="#EF4444" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#EF4444">8</text>
+    <text x="90" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Verify ZK Proof</text>
+    <text x="90" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FEE2E2">GET /:id/verify</text>
+    <text x="90" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FECACA">Zero-Knowledge Verified</text>
+  </g>
+
+  <!-- Product Passport Flow -->
+  <g transform="translate(50, 430)">
+    <rect width="200" height="100" rx="10" fill="#F59E0B" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#F59E0B">9</text>
+    <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Product Passport</text>
+    <text x="100" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FEF3C7">POST /passports</text>
+    <text x="100" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FDE68A">Digital Product Passport</text>
+  </g>
+
+  <!-- QR Scan Flow -->
+  <g transform="translate(280, 430)">
+    <rect width="200" height="100" rx="10" fill="#D97706" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#D97706">10</text>
+    <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">QR Scan Verify</text>
+    <text x="100" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#FEF3C7">Public Verification</text>
+    <text x="100" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FDE68A">No Auth Required</text>
+  </g>
+
+  <!-- Usage Tracking -->
+  <g transform="translate(510, 430)">
+    <rect width="200" height="100" rx="10" fill="#8B5CF6" filter="url(#shadow)"/>
+    <circle cx="25" cy="25" r="15" fill="white"/>
+    <text x="25" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#8B5CF6">11</text>
+    <text x="100" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="bold" fill="white">Usage Tracking</text>
+    <text x="100" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#E9D5FF">GET /usage</text>
+    <text x="100" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#EDE9FE">API Calls + Quotas</text>
+  </g>
+
+  <!-- Legend -->
+  <g transform="translate(50, 560)">
+    <rect width="900" height="120" rx="10" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="450" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="#475569">Technology Stack</text>
+
+    <!-- Row 1 -->
+    <rect x="30" y="45" width="15" height="15" fill="#4F46E5"/>
+    <text x="55" y="57" font-family="Arial, sans-serif" font-size="11" fill="#475569">Auth: JWT + bcrypt + RBAC</text>
+
+    <rect x="230" y="45" width="15" height="15" fill="#059669"/>
+    <text x="255" y="57" font-family="Arial, sans-serif" font-size="11" fill="#475569">VC: W3C Data Model v1.1 + Ed25519</text>
+
+    <rect x="480" y="45" width="15" height="15" fill="#DC2626"/>
+    <text x="505" y="57" font-family="Arial, sans-serif" font-size="11" fill="#475569">ZKP: Groth16 + Circom + SnarkJS</text>
+
+    <rect x="720" y="45" width="15" height="15" fill="#F59E0B"/>
+    <text x="745" y="57" font-family="Arial, sans-serif" font-size="11" fill="#475569">Blockchain: Stellar + EVM</text>
+
+    <!-- Row 2 -->
+    <rect x="30" y="75" width="15" height="15" fill="#3B82F6"/>
+    <text x="55" y="87" font-family="Arial, sans-serif" font-size="11" fill="#475569">API: Fastify + OpenAPI</text>
+
+    <rect x="230" y="75" width="15" height="15" fill="#10B981"/>
+    <text x="255" y="87" font-family="Arial, sans-serif" font-size="11" fill="#475569">Database: PostgreSQL + Redis</text>
+
+    <rect x="480" y="75" width="15" height="15" fill="#8B5CF6"/>
+    <text x="505" y="87" font-family="Arial, sans-serif" font-size="11" fill="#475569">Queue: BullMQ Workers</text>
+
+    <rect x="720" y="75" width="15" height="15" fill="#1E293B"/>
+    <text x="745" y="87" font-family="Arial, sans-serif" font-size="11" fill="#475569">Deploy: Docker Compose</text>
+  </g>
+</svg>

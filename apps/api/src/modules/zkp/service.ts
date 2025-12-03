@@ -11,7 +11,6 @@ import {
 import type {
   ZKProof,
   GenerateZKProofDTO,
-  CircuitType,
   ThresholdProofInputs,
   RangeProofInputs,
   SetMembershipProofInputs,
@@ -20,10 +19,7 @@ import type {
 /**
  * Generate a zero-knowledge proof for an attestation
  */
-export async function generateZKProof(
-  data: GenerateZKProofDTO,
-  userId: string
-): Promise<ZKProof> {
+export async function generateZKProof(data: GenerateZKProofDTO, userId: string): Promise<ZKProof> {
   // Verify attestation exists and belongs to user
   const attestationResult = await query(
     'SELECT * FROM attestations WHERE id = $1 AND user_id = $2',
@@ -34,7 +30,7 @@ export async function generateZKProof(
     throw new Error('Attestation not found');
   }
 
-  const attestation = attestationResult.rows[0];
+  // Attestation exists and belongs to user (verified above)
 
   // Generate proof based on circuit type using real zk-SNARKs
   let proofResult: SNARKProofResult;
@@ -72,14 +68,15 @@ export async function generateZKProof(
       default:
         throw new Error(`Unsupported circuit type: ${data.circuit_type}`);
     }
-  } catch (error: any) {
-    throw new Error(`Proof generation failed: ${error.message}`);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    throw new Error(`Proof generation failed: ${errorMessage}`);
   }
 
   // Store proof in database (SNARK proof data)
   const result = await query(
     `INSERT INTO zk_proofs
-     (user_id, attestation_id, circuit_type, public_inputs, proof, verified)
+     (user_id, attestation_id, circuit_type, public_inputs, proof_data, verified)
      VALUES ($1, $2, $3, $4, $5, $6)
      RETURNING *`,
     [
@@ -102,7 +99,7 @@ export async function generateZKProof(
     attestation_id: zkProof.attestation_id,
     circuit_type: zkProof.circuit_type,
     public_inputs: zkProof.public_inputs,
-    proof: zkProof.proof,
+    proof: zkProof.proof_data, // Map from proof_data column
     verified: zkProof.verified,
     created_at: zkProof.created_at,
     user_id: zkProof.user_id,
@@ -112,10 +109,7 @@ export async function generateZKProof(
 /**
  * Get ZK proof by ID
  */
-export async function getZKProof(
-  proofId: string,
-  userId?: string
-): Promise<ZKProof | null> {
+export async function getZKProof(proofId: string, userId?: string): Promise<ZKProof | null> {
   const queryStr = userId
     ? 'SELECT * FROM zk_proofs WHERE id = $1 AND user_id = $2'
     : 'SELECT * FROM zk_proofs WHERE id = $1';
@@ -134,7 +128,7 @@ export async function getZKProof(
     attestation_id: zkProof.attestation_id,
     circuit_type: zkProof.circuit_type,
     public_inputs: zkProof.public_inputs,
-    proof: zkProof.proof,
+    proof: zkProof.proof_data, // Map from proof_data column
     verified: zkProof.verified,
     created_at: zkProof.created_at,
     user_id: zkProof.user_id,
@@ -162,7 +156,7 @@ export async function listZKProofs(
     attestation_id: row.attestation_id,
     circuit_type: row.circuit_type,
     public_inputs: row.public_inputs,
-    proof: row.proof,
+    proof: row.proof_data, // Map from proof_data column
     verified: row.verified,
     created_at: row.created_at,
     user_id: row.user_id,
@@ -206,18 +200,16 @@ export async function verifyZKProof(proofId: string): Promise<{
       default:
         throw new Error(`Unsupported circuit type: ${zkProof.circuit_type}`);
     }
-  } catch (error: any) {
-    verificationResult = { verified: false, error: error.message };
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    verificationResult = { verified: false, error: errorMessage };
   }
 
   const isValid = verificationResult.verified;
 
   // Update verification status if changed
   if (isValid !== zkProof.verified) {
-    await query('UPDATE zk_proofs SET verified = $1 WHERE id = $2', [
-      isValid,
-      proofId,
-    ]);
+    await query('UPDATE zk_proofs SET verified = $1 WHERE id = $2', [isValid, proofId]);
     zkProof.verified = isValid;
   }
 
@@ -246,7 +238,7 @@ export async function getProofsForAttestation(
     attestation_id: row.attestation_id,
     circuit_type: row.circuit_type,
     public_inputs: row.public_inputs,
-    proof: row.proof,
+    proof: row.proof_data, // Map from proof_data column
     verified: row.verified,
     created_at: row.created_at,
     user_id: row.user_id,

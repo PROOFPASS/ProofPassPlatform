@@ -1,0 +1,177 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500">
+  <defs>
+    <linearGradient id="authGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3730A3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="successGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#059669;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#047857;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="keyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#F59E0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#D97706;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrowAuth" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#6366F1"/>
+    </marker>
+    <filter id="shadowAuth" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="3" stdDeviation="3" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="500" fill="#FAFAFA"/>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="bold" fill="#1E293B">Authentication &amp; Authorization Flow</text>
+
+  <!-- Auth Methods Header -->
+  <text x="450" y="65" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#64748B">Two authentication methods: JWT (user sessions) | API Keys (programmatic access)</text>
+
+  <!-- JWT Flow Section -->
+  <rect x="40" y="85" width="400" height="390" rx="10" fill="#EEF2FF" stroke="#A5B4FC" stroke-width="2"/>
+  <text x="240" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#4F46E5">JWT Authentication</text>
+
+  <!-- Step 1: Register -->
+  <g transform="translate(60, 130)">
+    <rect width="170" height="60" rx="8" fill="url(#authGrad)" filter="url(#shadowAuth)"/>
+    <circle cx="20" cy="20" r="12" fill="white"/>
+    <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#4F46E5">1</text>
+    <text x="95" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Register</text>
+    <text x="95" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#C7D2FE">POST /auth/register</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M230 165 L250 165" stroke="#4F46E5" stroke-width="2" marker-end="url(#arrowAuth)"/>
+
+  <!-- Step 2: Hash Password -->
+  <g transform="translate(250, 130)">
+    <rect width="170" height="60" rx="8" fill="url(#authGrad)" filter="url(#shadowAuth)"/>
+    <circle cx="20" cy="20" r="12" fill="white"/>
+    <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#4F46E5">2</text>
+    <text x="95" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">bcrypt Hash</text>
+    <text x="95" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#C7D2FE">Cost factor: 10</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M335 200 L335 220" stroke="#4F46E5" stroke-width="2" marker-end="url(#arrowAuth)"/>
+
+  <!-- Step 3: Generate DID -->
+  <g transform="translate(250, 230)">
+    <rect width="170" height="60" rx="8" fill="#7C3AED" filter="url(#shadowAuth)"/>
+    <circle cx="20" cy="20" r="12" fill="white"/>
+    <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#7C3AED">3</text>
+    <text x="95" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Generate DID</text>
+    <text x="95" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#E9D5FF">did:key:z6Mk...</text>
+  </g>
+
+  <!-- Arrow left -->
+  <path d="M250 265 L230 265" stroke="#7C3AED" stroke-width="2" marker-end="url(#arrowAuth)"/>
+
+  <!-- Step 4: Login -->
+  <g transform="translate(60, 230)">
+    <rect width="170" height="60" rx="8" fill="url(#authGrad)" filter="url(#shadowAuth)"/>
+    <circle cx="20" cy="20" r="12" fill="white"/>
+    <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#4F46E5">4</text>
+    <text x="95" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Login</text>
+    <text x="95" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#C7D2FE">POST /auth/login</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M145 300 L145 320" stroke="#4F46E5" stroke-width="2" marker-end="url(#arrowAuth)"/>
+
+  <!-- Step 5: JWT Token -->
+  <g transform="translate(60, 330)">
+    <rect width="360" height="60" rx="8" fill="url(#successGrad)" filter="url(#shadowAuth)"/>
+    <circle cx="20" cy="20" r="12" fill="white"/>
+    <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#059669">5</text>
+    <text x="190" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">JWT Token Issued</text>
+    <text x="190" y="43" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#A7F3D0">Payload: { sub: userId, did, role, exp: 7d }</text>
+    <text x="190" y="55" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#A7F3D0">Header: Authorization: Bearer &lt;token&gt;</text>
+  </g>
+
+  <!-- Step 6: Request -->
+  <g transform="translate(60, 405)">
+    <rect width="170" height="50" rx="8" fill="#3B82F6" filter="url(#shadowAuth)"/>
+    <text x="85" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">API Request</text>
+    <text x="85" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#BFDBFE">+ Bearer Token</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M230 430 L250 430" stroke="#3B82F6" stroke-width="2" marker-end="url(#arrowAuth)"/>
+
+  <!-- Step 7: Verify -->
+  <g transform="translate(250, 405)">
+    <rect width="170" height="50" rx="8" fill="url(#successGrad)" filter="url(#shadowAuth)"/>
+    <text x="85" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Verify + RBAC</text>
+    <text x="85" y="42" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#A7F3D0">Access Granted ✓</text>
+  </g>
+
+  <!-- API Key Flow Section -->
+  <rect x="460" y="85" width="400" height="390" rx="10" fill="#FEF3C7" stroke="#FCD34D" stroke-width="2"/>
+  <text x="660" y="110" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#D97706">API Key Authentication</text>
+
+  <!-- Step A1: Create Key -->
+  <g transform="translate(480, 130)">
+    <rect width="170" height="60" rx="8" fill="url(#keyGrad)" filter="url(#shadowAuth)"/>
+    <circle cx="20" cy="20" r="12" fill="white"/>
+    <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D97706">A</text>
+    <text x="95" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Create API Key</text>
+    <text x="95" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FEF3C7">POST /admin/api-keys</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M650 165 L670 165" stroke="#D97706" stroke-width="2" marker-end="url(#arrowAuth)"/>
+
+  <!-- Step A2: Generate -->
+  <g transform="translate(670, 130)">
+    <rect width="170" height="60" rx="8" fill="url(#keyGrad)" filter="url(#shadowAuth)"/>
+    <circle cx="20" cy="20" r="12" fill="white"/>
+    <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D97706">B</text>
+    <text x="95" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Generate Key</text>
+    <text x="95" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FEF3C7">pp_live_xxxxx</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M755 200 L755 220" stroke="#D97706" stroke-width="2" marker-end="url(#arrowAuth)"/>
+
+  <!-- Key Storage -->
+  <g transform="translate(480, 230)">
+    <rect width="360" height="70" rx="8" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1"/>
+    <text x="180" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="#475569">Key Storage (Database)</text>
+    <text x="180" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#64748B">Hashed key + permissions + rate limits</text>
+    <text x="180" y="60" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#64748B">Original key shown ONCE at creation</text>
+  </g>
+
+  <!-- Arrow down -->
+  <path d="M660 310 L660 330" stroke="#D97706" stroke-width="2" marker-end="url(#arrowAuth)"/>
+
+  <!-- API Request -->
+  <g transform="translate(480, 340)">
+    <rect width="170" height="60" rx="8" fill="url(#keyGrad)" filter="url(#shadowAuth)"/>
+    <circle cx="20" cy="20" r="12" fill="white"/>
+    <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#D97706">C</text>
+    <text x="95" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">API Request</text>
+    <text x="95" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#FEF3C7">X-API-Key: pp_live_xxx</text>
+  </g>
+
+  <!-- Arrow -->
+  <path d="M650 375 L670 375" stroke="#D97706" stroke-width="2" marker-end="url(#arrowAuth)"/>
+
+  <!-- Verify -->
+  <g transform="translate(670, 340)">
+    <rect width="170" height="60" rx="8" fill="url(#successGrad)" filter="url(#shadowAuth)"/>
+    <circle cx="20" cy="20" r="12" fill="white"/>
+    <text x="20" y="25" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#059669">D</text>
+    <text x="95" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" font-weight="bold" fill="white">Verify + Limits</text>
+    <text x="95" y="48" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#A7F3D0">Access Granted ✓</text>
+  </g>
+
+  <!-- Rate Limiting Box -->
+  <g transform="translate(480, 415)">
+    <rect width="360" height="50" rx="8" fill="#FEE2E2" stroke="#FECACA" stroke-width="1"/>
+    <text x="180" y="22" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#DC2626">Rate Limiting (Redis)</text>
+    <text x="180" y="40" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="#DC2626">Sliding window: 100 req/min (default) | Configurable per key</text>
+  </g>
+</svg>

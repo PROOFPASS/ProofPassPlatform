@@ -32,7 +32,11 @@ export const attestationSchema = {
     claims: { type: 'object', description: 'Attestation claims (key-value pairs)' },
     issuer: { type: 'string', description: 'Issuer DID' },
     blockchain_tx_hash: { type: 'string', description: 'Blockchain transaction hash (anchor)' },
-    blockchain_network: { type: 'string', enum: ['stellar', 'optimism'], description: 'Blockchain network used' },
+    blockchain_network: {
+      type: 'string',
+      enum: ['stellar', 'optimism'],
+      description: 'Blockchain network used',
+    },
     created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
     verifiable_credential: { type: 'object', description: 'W3C Verifiable Credential format' },
   },
@@ -50,7 +54,12 @@ export const passportSchema = {
     attestation_ids: {
       type: 'array',
       items: { type: 'string', format: 'uuid' },
-      description: 'List of associated attestation IDs'
+      description: 'List of associated attestation IDs',
+    },
+    aggregated_credential: {
+      type: 'object',
+      description: 'Aggregated W3C Verifiable Credential for the passport',
+      additionalProperties: true,
     },
     qr_code: { type: 'string', description: 'Base64-encoded QR code image' },
     created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
@@ -61,17 +70,22 @@ export const passportSchema = {
 export const zkProofSchema = {
   type: 'object',
   properties: {
-    proof: { type: 'string', description: 'Zero-knowledge proof (hex-encoded)' },
+    id: { type: 'string', format: 'uuid', description: 'ZK proof unique identifier' },
+    attestation_id: { type: 'string', format: 'uuid', description: 'Associated attestation ID' },
+    proof: { type: 'object', description: 'Zero-knowledge proof data (SNARK proof object)' },
     public_inputs: {
-      type: 'array',
-      items: { type: 'string' },
-      description: 'Public inputs used in proof generation'
+      type: 'object',
+      description:
+        'Public inputs used in proof generation (includes publicSignals and nullifierHash)',
     },
     circuit_type: {
       type: 'string',
-      enum: ['age', 'range', 'membership'],
-      description: 'Type of ZK circuit used'
+      enum: ['threshold', 'range', 'set-membership'],
+      description: 'Type of ZK circuit used',
     },
+    verified: { type: 'boolean', description: 'Whether the proof has been verified' },
+    created_at: { type: 'string', format: 'date-time', description: 'Creation timestamp' },
+    user_id: { type: 'string', format: 'uuid', description: 'User who created the proof' },
   },
 };
 
@@ -94,7 +108,7 @@ export const readinessSchema = {
   },
 };
 
-// Request body schemas
+// Request body schemas (without 'example' keyword to avoid AJV strict mode issues)
 export const registerBodySchema = {
   type: 'object',
   required: ['email', 'password', 'name'],
@@ -102,25 +116,21 @@ export const registerBodySchema = {
     email: {
       type: 'string',
       format: 'email',
-      description: 'User email address',
-      example: 'user@example.com'
+      description: 'User email address (e.g., user@example.com)',
     },
     password: {
       type: 'string',
       minLength: 8,
       description: 'User password (min 8 characters)',
-      example: 'SecurePass123!'
     },
     name: {
       type: 'string',
       minLength: 2,
       description: 'User full name',
-      example: 'John Doe'
     },
     organization: {
       type: 'string',
       description: 'Organization name (optional)',
-      example: 'ACME Corp'
     },
   },
 };
@@ -133,12 +143,10 @@ export const loginBodySchema = {
       type: 'string',
       format: 'email',
       description: 'User email address',
-      example: 'user@example.com'
     },
     password: {
       type: 'string',
       description: 'User password',
-      example: 'SecurePass123!'
     },
   },
 };
@@ -150,27 +158,26 @@ export const createAttestationBodySchema = {
     subject: {
       type: 'string',
       description: 'Subject DID or identifier',
-      example: 'did:example:123456789abcdefghi'
     },
     type: {
       type: 'string',
-      description: 'Attestation type',
-      example: 'ProductCertification'
+      description: 'Attestation type (e.g., ProductCertification)',
     },
     claims: {
       type: 'object',
-      description: 'Attestation claims',
-      example: {
-        certification: 'ISO 9001',
-        issueDate: '2024-01-15',
-        expiryDate: '2025-01-15'
-      }
+      description: 'Attestation claims as key-value pairs',
     },
     blockchain_network: {
       type: 'string',
-      enum: ['stellar', 'optimism'],
-      description: 'Blockchain network for anchoring (default: stellar)',
-      example: 'stellar'
+      enum: [
+        'stellar-testnet',
+        'stellar-mainnet',
+        'optimism',
+        'optimism-sepolia',
+        'arbitrum',
+        'arbitrum-sepolia',
+      ],
+      description: 'Blockchain network for anchoring (default: stellar-testnet)',
     },
   },
 };
@@ -182,37 +189,27 @@ export const createPassportBodySchema = {
     product_id: {
       type: 'string',
       description: 'Product identifier (SKU, GTIN, etc.)',
-      example: 'SKU-12345'
     },
     product_name: {
       type: 'string',
       description: 'Product name',
-      example: 'Organic Coffee Beans'
     },
     product_type: {
       type: 'string',
       description: 'Product category',
-      example: 'Food & Beverage'
     },
     manufacturer: {
       type: 'string',
       description: 'Manufacturer name',
-      example: 'Fair Trade Coffee Co.'
     },
     metadata: {
       type: 'object',
       description: 'Additional product information',
-      example: {
-        origin: 'Colombia',
-        harvestDate: '2024-10-01',
-        certifications: ['Organic', 'Fair Trade']
-      }
     },
     attestation_ids: {
       type: 'array',
       items: { type: 'string', format: 'uuid' },
       description: 'Associated attestation IDs',
-      example: ['550e8400-e29b-41d4-a716-446655440000']
     },
   },
 };
@@ -225,15 +222,10 @@ export const generateZKProofBodySchema = {
       type: 'string',
       enum: ['age', 'range', 'membership'],
       description: 'Type of zero-knowledge circuit',
-      example: 'age'
     },
     inputs: {
       type: 'object',
       description: 'Circuit-specific inputs',
-      example: {
-        birthDate: '1990-01-01',
-        minAge: 18
-      }
     },
   },
 };
@@ -253,7 +245,7 @@ export const attestationListResponseSchema = {
     attestations: {
       type: 'array',
       items: attestationSchema,
-      description: 'List of attestations'
+      description: 'List of attestations',
     },
   },
 };
@@ -272,10 +264,10 @@ export const zkVerificationResponseSchema = {
   type: 'object',
   properties: {
     valid: { type: 'boolean', description: 'Whether the zero-knowledge proof is valid' },
-    circuit_type: {
-      type: 'string',
-      enum: ['age', 'range', 'membership'],
-      description: 'Type of circuit used'
+    proof: {
+      type: 'object',
+      description: 'The verified ZK proof object',
+      additionalProperties: true,
     },
   },
 };
@@ -288,8 +280,15 @@ export const anchorDataBodySchema = {
     data: { type: 'string', description: 'Data to anchor on blockchain' },
     network: {
       type: 'string',
-      enum: ['stellar-testnet', 'stellar-mainnet', 'optimism', 'optimism-sepolia', 'arbitrum', 'arbitrum-sepolia'],
-      description: 'Blockchain network to use'
+      enum: [
+        'stellar-testnet',
+        'stellar-mainnet',
+        'optimism',
+        'optimism-sepolia',
+        'arbitrum',
+        'arbitrum-sepolia',
+      ],
+      description: 'Blockchain network to use',
     },
   },
 };
@@ -308,7 +307,11 @@ export const transactionInfoSchema = {
   type: 'object',
   properties: {
     txHash: { type: 'string', description: 'Transaction hash' },
-    status: { type: 'string', enum: ['pending', 'confirmed', 'failed'], description: 'Transaction status' },
+    status: {
+      type: 'string',
+      enum: ['pending', 'confirmed', 'failed'],
+      description: 'Transaction status',
+    },
     network: { type: 'string', description: 'Blockchain network' },
     blockNumber: { type: 'number', description: 'Block number' },
     timestamp: { type: 'string', format: 'date-time', description: 'Transaction timestamp' },
@@ -322,7 +325,7 @@ export const transactionHistoryResponseSchema = {
     transactions: {
       type: 'array',
       items: transactionInfoSchema,
-      description: 'List of transactions'
+      description: 'List of transactions',
     },
     total: { type: 'number', description: 'Total number of transactions' },
   },
@@ -336,8 +339,15 @@ export const verifyAnchorBodySchema = {
     data: { type: 'string', description: 'Original data to verify against' },
     network: {
       type: 'string',
-      enum: ['stellar-testnet', 'stellar-mainnet', 'optimism', 'optimism-sepolia', 'arbitrum', 'arbitrum-sepolia'],
-      description: 'Blockchain network'
+      enum: [
+        'stellar-testnet',
+        'stellar-mainnet',
+        'optimism',
+        'optimism-sepolia',
+        'arbitrum',
+        'arbitrum-sepolia',
+      ],
+      description: 'Blockchain network',
     },
   },
 };
@@ -374,7 +384,7 @@ export const blockchainInfoResponseSchema = {
           balance: { type: 'string', description: 'Wallet balance' },
         },
       },
-      description: 'Available blockchain networks'
+      description: 'Available blockchain networks',
     },
     defaultNetwork: { type: 'string', description: 'Default network for operations' },
   },
