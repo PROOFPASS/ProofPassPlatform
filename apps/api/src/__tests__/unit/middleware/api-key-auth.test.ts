@@ -4,7 +4,7 @@
 
 import { authenticateAPIKey } from '../../../middleware/api-key-auth';
 import * as bcrypt from 'bcrypt';
-import { mockQuery, resetMocks, mockDBResponse } from '../../helpers/database';
+import { query } from '../../../config/database';
 
 // Mock dependencies
 jest.mock('../../../config/database', () => ({
@@ -12,6 +12,20 @@ jest.mock('../../../config/database', () => ({
 }));
 
 jest.mock('bcrypt');
+
+// Helper functions for mocking
+const mockQuery = query as jest.MockedFunction<typeof query>;
+
+function resetMocks() {
+  mockQuery.mockReset();
+}
+
+function mockDBResponse(rows: any[] = [], rowCount: number | null = null) {
+  mockQuery.mockResolvedValueOnce({
+    rows,
+    rowCount: rowCount !== null ? rowCount : rows.length,
+  } as any);
+}
 
 describe('API Key Authentication Middleware', () => {
   let mockRequest: any;
@@ -41,7 +55,7 @@ describe('API Key Authentication Middleware', () => {
       expect(mockReply.code).toHaveBeenCalledWith(401);
       expect(mockReply.send).toHaveBeenCalledWith({
         error: 'API key required',
-        message: 'Please provide an API key in the X-API-Key header'
+        message: 'Please provide an API key in the X-API-Key header',
       });
     });
   });
@@ -55,7 +69,7 @@ describe('API Key Authentication Middleware', () => {
       expect(mockReply.code).toHaveBeenCalledWith(401);
       expect(mockReply.send).toHaveBeenCalledWith({
         error: 'Invalid API key format',
-        message: 'API key must start with pk_live_ or pk_test_'
+        message: 'API key must start with pk_live_ or pk_test_',
       });
     });
   });
@@ -71,23 +85,25 @@ describe('API Key Authentication Middleware', () => {
       expect(mockReply.code).toHaveBeenCalledWith(401);
       expect(mockReply.send).toHaveBeenCalledWith({
         error: 'Invalid API key',
-        message: 'API key not found or organization is not active'
+        message: 'API key not found or organization is not active',
       });
     });
 
     it('should return 401 if bcrypt verification fails', async () => {
       mockRequest.headers['x-api-key'] = 'pk_live_test123';
 
-      mockDBResponse([{
-        id: 'key-123',
-        key_hash: '$2b$10$hash',
-        is_active: true,
-        org_id: 'org-123',
-        org_status: 'active',
-        plan_name: 'Pro',
-        requests_per_day: 10000,
-        blockchain_ops_per_month: 1000,
-      }]);
+      mockDBResponse([
+        {
+          id: 'key-123',
+          key_hash: '$2b$10$hash',
+          is_active: true,
+          org_id: 'org-123',
+          org_status: 'active',
+          plan_name: 'Pro',
+          requests_per_day: 10000,
+          blockchain_ops_per_month: 1000,
+        },
+      ]);
 
       (bcrypt.compare as jest.Mock).mockResolvedValue(false);
 
@@ -96,7 +112,7 @@ describe('API Key Authentication Middleware', () => {
       expect(mockReply.code).toHaveBeenCalledWith(401);
       expect(mockReply.send).toHaveBeenCalledWith({
         error: 'Invalid API key',
-        message: 'API key authentication failed'
+        message: 'API key authentication failed',
       });
     });
 
@@ -104,16 +120,18 @@ describe('API Key Authentication Middleware', () => {
       mockRequest.headers['x-api-key'] = 'pk_live_test123';
 
       const pastDate = new Date('2023-01-01');
-      mockDBResponse([{
-        id: 'key-123',
-        key_hash: '$2b$10$hash',
-        is_active: true,
-        expires_at: pastDate,
-        org_id: 'org-123',
-        org_status: 'active',
-        plan_name: 'Pro',
-        requests_per_day: 10000,
-      }]);
+      mockDBResponse([
+        {
+          id: 'key-123',
+          key_hash: '$2b$10$hash',
+          is_active: true,
+          expires_at: pastDate,
+          org_id: 'org-123',
+          org_status: 'active',
+          plan_name: 'Pro',
+          requests_per_day: 10000,
+        },
+      ]);
 
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
@@ -122,7 +140,7 @@ describe('API Key Authentication Middleware', () => {
       expect(mockReply.code).toHaveBeenCalledWith(401);
       expect(mockReply.send).toHaveBeenCalledWith({
         error: 'API key expired',
-        message: 'This API key has expired. Please generate a new one.'
+        message: 'This API key has expired. Please generate a new one.',
       });
     });
   });
@@ -132,14 +150,16 @@ describe('API Key Authentication Middleware', () => {
       mockRequest.headers['x-api-key'] = 'pk_live_test123';
 
       // First query: get API key
-      mockDBResponse([{
-        id: 'key-123',
-        key_hash: '$2b$10$hash',
-        is_active: true,
-        org_id: 'org-123',
-        plan_name: 'Free',
-        requests_per_day: 100,
-      }]);
+      mockDBResponse([
+        {
+          id: 'key-123',
+          key_hash: '$2b$10$hash',
+          is_active: true,
+          org_id: 'org-123',
+          plan_name: 'Free',
+          requests_per_day: 100,
+        },
+      ]);
 
       // Second query: get usage count
       mockDBResponse([{ count: '100' }]);
@@ -161,14 +181,16 @@ describe('API Key Authentication Middleware', () => {
     it('should allow unlimited requests for plans with limit = -1', async () => {
       mockRequest.headers['x-api-key'] = 'pk_live_test123';
 
-      mockDBResponse([{
-        id: 'key-123',
-        key_hash: '$2b$10$hash',
-        is_active: true,
-        org_id: 'org-123',
-        plan_name: 'Enterprise',
-        requests_per_day: -1, // Unlimited
-      }]);
+      mockDBResponse([
+        {
+          id: 'key-123',
+          key_hash: '$2b$10$hash',
+          is_active: true,
+          org_id: 'org-123',
+          plan_name: 'Enterprise',
+          requests_per_day: -1, // Unlimited
+        },
+      ]);
 
       mockDBResponse([{ count: '999999' }]); // High usage
 
@@ -185,15 +207,17 @@ describe('API Key Authentication Middleware', () => {
     it('should attach client info to request on successful auth', async () => {
       mockRequest.headers['x-api-key'] = 'pk_live_test123';
 
-      mockDBResponse([{
-        id: 'key-123',
-        key_hash: '$2b$10$hash',
-        is_active: true,
-        org_id: 'org-123',
-        plan_name: 'Pro',
-        requests_per_day: 10000,
-        blockchain_ops_per_month: 1000,
-      }]);
+      mockDBResponse([
+        {
+          id: 'key-123',
+          key_hash: '$2b$10$hash',
+          is_active: true,
+          org_id: 'org-123',
+          plan_name: 'Pro',
+          requests_per_day: 10000,
+          blockchain_ops_per_month: 1000,
+        },
+      ]);
 
       mockDBResponse([{ count: '50' }]); // Current usage
 
@@ -215,22 +239,31 @@ describe('API Key Authentication Middleware', () => {
     it('should set rate limit headers on successful auth', async () => {
       mockRequest.headers['x-api-key'] = 'pk_live_test123';
 
-      mockDBResponse([{
-        id: 'key-123',
-        key_hash: '$2b$10$hash',
-        is_active: true,
-        org_id: 'org-123',
-        requests_per_day: 100,
-      }]);
+      // First query: get API key
+      mockDBResponse([
+        {
+          id: 'key-123',
+          key_hash: '$2b$10$hash',
+          is_active: true,
+          org_id: 'org-123',
+          plan_name: 'Free',
+          requests_per_day: 100,
+          blockchain_ops_per_month: 50,
+        },
+      ]);
 
+      // Second query: get usage count
       mockDBResponse([{ count: '45' }]);
+
+      // Third query: update last_used_at (fire and forget)
+      mockDBResponse([]);
 
       (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
       await authenticateAPIKey(mockRequest, mockReply);
 
       expect(mockReply.header).toHaveBeenCalledWith('X-RateLimit-Limit', 100);
-      expect(mockReply.header).toHaveBeenCalledWith('X-RateLimit-Remaining', 55);
+      expect(mockReply.header).toHaveBeenCalledWith('X-RateLimit-Remaining', 54);
       expect(mockReply.header).toHaveBeenCalledWith('X-RateLimit-Reset', expect.any(Number));
     });
   });
@@ -246,7 +279,7 @@ describe('API Key Authentication Middleware', () => {
       expect(mockReply.code).toHaveBeenCalledWith(500);
       expect(mockReply.send).toHaveBeenCalledWith({
         error: 'Authentication failed',
-        message: 'Internal server error during authentication'
+        message: 'Internal server error during authentication',
       });
     });
   });

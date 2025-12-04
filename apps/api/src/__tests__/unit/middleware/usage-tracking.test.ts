@@ -3,11 +3,18 @@
  */
 
 import { trackUsage } from '../../../middleware/usage-tracking';
-import { mockQuery, resetMocks, mockDBResponse } from '../../helpers/database';
+import { query } from '../../../config/database';
 
 jest.mock('../../../config/database', () => ({
   query: jest.fn(),
 }));
+
+// Helper functions for mocking
+const mockQuery = query as jest.MockedFunction<typeof query>;
+
+function resetMocks() {
+  mockQuery.mockReset();
+}
 
 describe('Usage Tracking Middleware', () => {
   let mockRequest: any;
@@ -33,7 +40,7 @@ describe('Usage Tracking Middleware', () => {
       statusCode: 201,
     };
 
-    mockQuery.mockResolvedValue({ rows: [], rowCount: 1 });
+    mockQuery.mockResolvedValue({ rows: [], rowCount: 1 } as any);
   });
 
   describe('Track Request', () => {
@@ -159,13 +166,14 @@ describe('Usage Tracking Middleware', () => {
       await trackUsage(mockRequest, mockReply);
 
       // First call: insert usage_record
-      expect(mockQuery).toHaveBeenNthCalledWith(1,
+      expect(mockQuery).toHaveBeenNthCalledWith(
+        1,
         expect.stringContaining('INSERT INTO usage_records'),
         expect.any(Array)
       );
 
       // Wait for async aggregate update
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Second call should be aggregate update
       expect(mockQuery).toHaveBeenCalledWith(

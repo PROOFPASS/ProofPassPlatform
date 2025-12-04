@@ -71,7 +71,7 @@
 .button {
   font-weight: 600;
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: all 0.35s ease;
 }
 
 .button--primary {
@@ -117,7 +117,7 @@ code {
 
 .footer__link-item {
   color: rgba(255, 255, 255, 0.7);
-  transition: color 0.2s;
+  transition: color 0.3s ease;
 }
 
 .footer__link-item:hover {
@@ -149,7 +149,7 @@ code {
 /* Sidebar */
 .menu__link {
   border-radius: 6px;
-  transition: background 0.2s;
+  transition: background 0.3s ease;
 }
 
 .menu__link--active {
@@ -161,7 +161,7 @@ code {
 /* Pagination */
 .pagination-nav__link {
   border-radius: 8px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .pagination-nav__link:hover {
@@ -177,7 +177,7 @@ code {
 /* Cards and boxes */
 .card {
   border-radius: 12px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
 }
 
 .card:hover {

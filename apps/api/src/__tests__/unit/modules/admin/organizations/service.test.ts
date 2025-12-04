@@ -10,11 +10,40 @@ import {
   updateOrganizationPlan,
   updateOrganizationStatus,
 } from '../../../../../modules/admin/organizations/service';
-import { mockQuery, resetMocks, mockDBResponse, createMockOrganization } from '../../../../helpers/database';
+import { query } from '../../../../../config/database';
 
 jest.mock('../../../../../config/database', () => ({
   query: jest.fn(),
 }));
+
+// Helper functions for mocking
+const mockQuery = query as jest.MockedFunction<typeof query>;
+
+function resetMocks() {
+  mockQuery.mockReset();
+}
+
+function mockDBResponse(rows: any[] = [], rowCount: number | null = null) {
+  mockQuery.mockResolvedValueOnce({
+    rows,
+    rowCount: rowCount !== null ? rowCount : rows.length,
+  } as any);
+}
+
+function createMockOrganization(overrides: Partial<any> = {}) {
+  return {
+    id: 'org-123',
+    name: 'Test Organization',
+    email: 'test@org.com',
+    plan_id: 'plan-free',
+    status: 'active',
+    billing_email: 'billing@org.com',
+    subscription_end: new Date('2024-12-31'),
+    created_at: new Date(),
+    updated_at: new Date(),
+    ...overrides,
+  };
+}
 
 describe('Organizations Service', () => {
   beforeEach(() => {
@@ -137,15 +166,15 @@ describe('Organizations Service', () => {
     });
 
     it('should throw if no fields to update', async () => {
-      await expect(updateOrganization('org-123', {}))
-        .rejects.toThrow('No fields to update');
+      await expect(updateOrganization('org-123', {})).rejects.toThrow('No fields to update');
     });
 
     it('should throw if organization not found', async () => {
       mockDBResponse([]);
 
-      await expect(updateOrganization('org-123', { name: 'New' }))
-        .rejects.toThrow('Organization not found');
+      await expect(updateOrganization('org-123', { name: 'New' })).rejects.toThrow(
+        'Organization not found'
+      );
     });
   });
 
@@ -162,8 +191,9 @@ describe('Organizations Service', () => {
     it('should throw if organization not found', async () => {
       mockDBResponse([]);
 
-      await expect(updateOrganizationPlan('org-123', 'plan-pro'))
-        .rejects.toThrow('Organization not found');
+      await expect(updateOrganizationPlan('org-123', 'plan-pro')).rejects.toThrow(
+        'Organization not found'
+      );
     });
   });
 

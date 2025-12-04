@@ -3,6 +3,38 @@
  * and scoped locally.
  */
 
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 /* Hero Section */
 .heroBanner {
   padding: 6rem 0;
@@ -16,6 +48,7 @@
 .heroContent {
   max-width: 800px;
   margin: 0 auto;
+  animation: fadeInUp 0.8s ease-out;
 }
 
 .badge {
@@ -28,6 +61,7 @@
   font-weight: 600;
   margin-bottom: 1.5rem;
   border: 1px solid rgba(37, 194, 160, 0.3);
+  animation: scaleIn 0.6s ease-out 0.2s backwards;
 }
 
 .heroTitle {
@@ -101,7 +135,13 @@
 
 .statItem {
   padding: 1rem;
+  animation: fadeInUp 0.5s ease-out backwards;
 }
+
+.statItem:nth-child(1) { animation-delay: 0.1s; }
+.statItem:nth-child(2) { animation-delay: 0.2s; }
+.statItem:nth-child(3) { animation-delay: 0.3s; }
+.statItem:nth-child(4) { animation-delay: 0.4s; }
 
 .statValue {
   font-size: 2.5rem;
@@ -159,9 +199,17 @@
   margin-bottom: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border: 1px solid #e9ecef;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
   height: 100%;
+  animation: fadeInUp 0.6s ease-out backwards;
 }
+
+.featureCard:nth-child(1) { animation-delay: 0.1s; }
+.featureCard:nth-child(2) { animation-delay: 0.2s; }
+.featureCard:nth-child(3) { animation-delay: 0.3s; }
+.featureCard:nth-child(4) { animation-delay: 0.4s; }
+.featureCard:nth-child(5) { animation-delay: 0.5s; }
+.featureCard:nth-child(6) { animation-delay: 0.6s; }
 
 .featureCard:hover {
   transform: translateY(-4px);
@@ -221,7 +269,23 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   border: 1px solid #e9ecef;
   min-width: 120px;
+  animation: scaleIn 0.4s ease-out backwards;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
+.techBadge:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.techBadge:nth-child(1) { animation-delay: 0.05s; }
+.techBadge:nth-child(2) { animation-delay: 0.1s; }
+.techBadge:nth-child(3) { animation-delay: 0.15s; }
+.techBadge:nth-child(4) { animation-delay: 0.2s; }
+.techBadge:nth-child(5) { animation-delay: 0.25s; }
+.techBadge:nth-child(6) { animation-delay: 0.3s; }
+.techBadge:nth-child(7) { animation-delay: 0.35s; }
+.techBadge:nth-child(8) { animation-delay: 0.4s; }
 
 [data-theme='dark'] .techBadge {
   background: #1e1e3f;
@@ -258,11 +322,18 @@
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border: 1px solid #e9ecef;
-  transition: transform 0.2s;
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  animation: fadeInUp 0.6s ease-out backwards;
 }
 
+.useCaseCard:nth-child(1) { animation-delay: 0.1s; }
+.useCaseCard:nth-child(2) { animation-delay: 0.2s; }
+.useCaseCard:nth-child(3) { animation-delay: 0.3s; }
+.useCaseCard:nth-child(4) { animation-delay: 0.4s; }
+
 .useCaseCard:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme='dark'] .useCaseCard {
